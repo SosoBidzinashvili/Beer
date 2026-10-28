@@ -3,140 +3,302 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0d0d0d">
+<meta name="theme-color" content="#15110c">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>ხარშვის ასისტენტი</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wdth,wght@62.5..100,100..900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
-  /* ===== ფერები და საბაზისო სტილი (ბნელი, მაღალი კონტრასტი) ===== */
+  /* =====================================================================
+     დიზაინის სისტემა
+     კონცეფცია: სამზარეულოს ხელსაწყოს პანელი — ერთი სვეტი, ციფრები ინსტრუმენტივით,
+     თბილი „ალაოს" ნეიტრალები, ქარვისფერი აქცენტი. მხოლოდ ბნელი (სპეციფიკაციით).
+     ===================================================================== */
   :root {
-    --bg: #0d0d0d; --card: #1a1a1a; --card2: #262626; --line: #3d3d3d;
-    --text: #ffffff; --muted: #b5b5b5;
-    --acc: #ffb000; --acc2: #ffd166;
-    --ok: #3ddc84; --warn: #ffa31a; --bad: #ff5252;
+    color-scheme: dark;
+    /* ფერი */
+    --bg: #15110c;          /* მოხალული ალაო */
+    --surface: #211b14;
+    --surface-2: #2c241b;
+    --line: #42382c;
+    --fg: #f8f0e3;
+    --muted: #bcae9a;
+    --faint: #8a7d6b;
+    --amber: #f6a823;       /* აქცენტი — ლუდი */
+    --amber-soft: #3a2a10;
+    --on-amber: #1b1204;
+    --ok: #5fd394;  --ok-soft: #12301f;
+    --warn: #ff8f45; --warn-soft: #3a2010;
+    --bad: #ff6464; --bad-soft: #3d1414;
+    --info: #9cc2ff; --info-soft: #18243a;
+    --violet: #d7a8ff;
+    /* ტიპოგრაფია */
+    --font-ui: "Noto Sans Georgian", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-num: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --t-xs: 0.8125rem; --t-sm: 0.9375rem; --t-md: 1.0625rem; --t-lg: 1.3125rem; --t-xl: 1.75rem; --t-xxl: 4.5rem;
+    /* ფორმა */
+    --r: 14px; --r-sm: 10px;
+    --tap: 56px;
+    --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+    --gutter-r: max(16px, env(safe-area-inset-right, 0px));
   }
+
   * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--bg); color: var(--text); }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); }
   body {
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    font-size: 18px; line-height: 1.45; -webkit-text-size-adjust: 100%;
-    padding-bottom: 120px;
+    font-family: var(--font-ui); font-size: var(--t-md); line-height: 1.5;
+    -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
   }
-  main { max-width: 640px; margin: 0 auto; padding: 12px 16px; }
-  h1 { font-size: 25px; margin: 10px 0 12px; line-height: 1.25; }
-  h2 { font-size: 21px; margin: 22px 0 10px; color: var(--acc); }
-  h3 { font-size: 19px; margin: 14px 0 8px; }
-  a { color: var(--acc2); }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+  .wrap { max-width: 620px; margin: 0 auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+  main.wrap { padding-block: 8px 24px; display: flex; flex-direction: column; gap: 16px; }
+
+  h1, h2, h3 { font-stretch: 80%; text-wrap: balance; margin: 0; line-height: 1.2; }
+  h1 { font-size: var(--t-xl); font-weight: 800; }
+  h2 { font-size: var(--t-lg); font-weight: 750; display: flex; align-items: center; gap: 8px; }
+  h2 .ic { color: var(--amber); }
+  h3 { font-size: var(--t-md); font-weight: 700; }
+  p { margin: 0; }
+  a { color: var(--amber); }
+  .eyebrow { font-size: var(--t-xs); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--amber); }
   .muted { color: var(--muted); }
-  .small { font-size: 15px; }
-  .center { text-align: center; }
+  .small { font-size: var(--t-sm); }
+  .num { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+  .ic { width: 1.3em; height: 1.3em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .sec { display: flex; flex-direction: column; gap: 10px; }
+  .sec:empty { display: none; }
+  .sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 8px; }
 
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin: 12px 0; }
-  a.card { display: block; color: var(--text); text-decoration: none; }
-  a.card:active { border-color: var(--acc); }
+  /* --- ზედაპირები --- */
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .panel.hl { border-color: var(--amber); }
 
+  /* --- ღილაკები --- */
   button, .btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    min-height: 56px; padding: 10px 14px; border-radius: 12px;
-    border: 2px solid var(--line); background: var(--card2); color: var(--text);
-    font: inherit; font-weight: 700; cursor: pointer; width: 100%;
-    text-decoration: none; text-align: center; touch-action: manipulation;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    min-height: var(--tap); padding: 10px 16px; border-radius: var(--r-sm);
+    border: 1.5px solid var(--line); background: var(--surface-2); color: var(--fg);
+    font: inherit; font-weight: 700; cursor: pointer; width: 100%; text-decoration: none; text-align: center;
+    touch-action: manipulation; transition: transform .08s, background .15s;
   }
-  button:active, .btn:active { transform: scale(.98); }
-  button.primary, .btn.primary { background: var(--acc); border-color: var(--acc); color: #000; }
-  button.okb { background: var(--ok); border-color: var(--ok); color: #000; }
-  button.danger { border-color: var(--bad); color: var(--bad); background: transparent; }
-  button:disabled { opacity: .4; }
-  button.dim { opacity: .55; }
-  .row { display: flex; gap: 10px; margin: 10px 0; }
-  .row > * { flex: 1; min-width: 0; }
-  .stack > * + * { margin-top: 10px; }
+  button:active, .btn:active { transform: scale(.97); }
+  button:focus-visible, .btn:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+  .primary { background: var(--amber); border-color: var(--amber); color: var(--on-amber); }
+  .ghost { background: transparent; }
+  .danger { background: transparent; border-color: var(--bad-soft); color: var(--bad); }
+  .icon-btn { width: var(--tap); min-width: var(--tap); padding: 0; flex: none; }
+  button:disabled { opacity: .35; }
+  .gated { opacity: .5; }
+  .btn-row { display: flex; gap: 10px; }
+  .btn-row > * { flex: 1; min-width: 0; }
 
+  /* --- ველები --- */
+  label.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  label.field > .lbl { font-size: var(--t-sm); color: var(--muted); font-weight: 600; }
   input, select, textarea {
-    font: inherit; color: var(--text); background: #000; border: 2px solid var(--line);
-    border-radius: 10px; padding: 12px; width: 100%; min-height: 56px;
+    font: inherit; color: var(--fg); background: var(--bg); border: 1.5px solid var(--line);
+    border-radius: var(--r-sm); padding: 12px 14px; width: 100%; min-height: var(--tap); min-width: 0;
   }
-  textarea { min-height: 96px; }
-  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--acc); }
-  label.field { display: block; margin: 10px 0; }
-  label.field > span { display: block; color: var(--muted); font-size: 16px; margin-bottom: 4px; }
-  .bigin input { font-size: 30px; font-weight: 800; text-align: center; }
+  textarea { min-height: 104px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--amber); }
+  .unit-in { position: relative; display: block; min-width: 0; }
+  .unit-in input { padding-right: 2.6em; font-family: var(--font-num); font-weight: 600; }
+  .unit-in > span { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--faint); pointer-events: none; font-size: var(--t-sm); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 
-  .check { display: flex; align-items: center; gap: 14px; min-height: 54px; padding: 6px 2px; border-bottom: 1px solid var(--line); cursor: pointer; }
-  .check input { width: 30px; height: 30px; min-height: 0; flex: none; accent-color: var(--acc); }
-  .check.done span { color: var(--muted); text-decoration: line-through; }
+  /* დიდი ციფრული ველი ± ღილაკებით (სველი ხელებისთვის) */
+  .reading { display: flex; flex-direction: column; gap: 6px; }
+  .reading .lbl { font-size: var(--t-sm); color: var(--muted); font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
+  .stepper { display: grid; grid-template-columns: 64px 1fr 64px; gap: 8px; }
+  .stepper button { min-height: 68px; padding: 0; font-size: 1.6rem; }
+  .stepper .unit-in input { min-height: 68px; font-size: 2rem; text-align: center; padding: 8px 2.2em; }
 
-  .chip { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 14px; font-weight: 700; background: var(--card2); border: 1px solid var(--line); }
-  .chip.planned { color: #9ecbff; } .chip.brewing { color: var(--acc); border-color: var(--acc); }
-  .chip.fermenting { color: var(--ok); } .chip.bottled { color: #d6a2ff; } .chip.done { color: var(--muted); }
+  /* ჩეკლისტი */
+  .checks { display: flex; flex-direction: column; }
+  .check { display: flex; align-items: center; gap: 14px; min-height: 54px; padding: 8px 2px; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .check:last-child { border-bottom: 0; }
+  .check input { appearance: none; -webkit-appearance: none; width: 30px; height: 30px; min-height: 0; padding: 0; flex: none; border: 2px solid var(--faint); border-radius: 8px; background: var(--bg); display: grid; place-items: center; }
+  .check input:checked { background: var(--amber); border-color: var(--amber); }
+  .check input:checked::after { content: ""; width: 8px; height: 14px; border: solid var(--on-amber); border-width: 0 3px 3px 0; transform: translateY(-2px) rotate(45deg); }
+  .check.done > span { color: var(--faint); text-decoration: line-through; }
 
-  .msg { padding: 12px 14px; border-radius: 10px; margin: 10px 0; font-weight: 600; }
-  .msg.ok { background: #0b3a20; color: #8affbf; }
-  .msg.warn { background: #3d2900; color: #ffd27a; }
-  .msg.bad { background: #4a0c0c; color: #ffadad; }
-  .msg.info { background: #172438; color: #c3dbff; }
+  /* გადამრთველი */
+  .switch { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 60px; cursor: pointer; }
+  .switch input { appearance: none; -webkit-appearance: none; width: 54px; height: 32px; min-height: 0; padding: 0; border-radius: 99px; background: var(--surface-2); border: 1.5px solid var(--line); position: relative; flex: none; transition: background .15s; }
+  .switch input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 23px; height: 23px; border-radius: 50%; background: var(--muted); transition: transform .15s; }
+  .switch input:checked { background: var(--amber); border-color: var(--amber); }
+  .switch input:checked::after { transform: translateX(22px); background: var(--on-amber); }
 
-  nav.tabs { display: flex; gap: 6px; max-width: 640px; margin: 0 auto; padding: 8px 16px 0; }
-  nav.tabs a { flex: 1; text-align: center; padding: 12px 4px; border-radius: 10px; text-decoration: none; color: var(--muted); font-weight: 700; background: var(--card); font-size: 16px; }
-  nav.tabs a.on { color: #000; background: var(--acc); }
+  /* სტატუსი */
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 99px; font-size: var(--t-xs); font-weight: 700; white-space: nowrap; border: 1px solid currentColor; }
+  .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .pill.planned { color: var(--info); } .pill.brewing { color: var(--amber); } .pill.fermenting { color: var(--ok); }
+  .pill.bottled { color: var(--violet); } .pill.done { color: var(--faint); }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 6px; background: var(--amber-soft); color: var(--amber); font-size: var(--t-xs); font-weight: 700; white-space: nowrap; }
 
-  /* ხარშვის რეჟიმის ზედა ზოლი */
-  .topbar { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
-  .topbar .inner { max-width: 640px; margin: 0 auto; padding: 8px 16px 10px; }
-  .topbar .row { margin: 0 0 8px; align-items: center; }
-  .topbar button { min-height: 48px; font-size: 15px; padding: 6px 10px; }
-  .stage { font-weight: 800; color: var(--acc); font-size: 17px; }
-  .progress { height: 10px; background: var(--card2); border-radius: 5px; overflow: hidden; }
-  .progress > div { height: 100%; background: var(--acc); }
+  /* შეტყობინებები */
+  .msg { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: var(--r-sm); font-weight: 600; }
+  .msg .ic { margin-top: 2px; }
+  .msg.ok { background: var(--ok-soft); color: var(--ok); }
+  .msg.warn { background: var(--warn-soft); color: var(--warn); }
+  .msg.bad { background: var(--bad-soft); color: var(--bad); }
+  .msg.info { background: var(--info-soft); color: var(--info); }
 
-  .steplines { font-size: 21px; padding-left: 22px; margin: 8px 0; }
-  .steplines li { margin: 8px 0; }
+  /* სიის რიგები (ნავიგაცია) */
+  .list { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+  .list-row { display: flex; align-items: center; gap: 14px; padding: 14px; min-height: 68px; color: var(--fg); text-decoration: none; background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; text-align: left; font-weight: 400; justify-content: flex-start; }
+  .list-row:last-child { border-bottom: 0; }
+  .list-row .ic.lead { color: var(--amber); width: 1.5em; height: 1.5em; }
+  .list-row .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .list-row .title { font-weight: 700; }
+  .list-row .sub { font-size: var(--t-sm); color: var(--muted); }
+  .list-row .chev { color: var(--faint); }
 
-  /* ქვედა ფიქსირებული ზოლი */
-  .bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: rgba(0,0,0,.94); border-top: 1px solid var(--line); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
-  .bar .inner { max-width: 640px; margin: 0 auto; display: flex; gap: 8px; }
-  .bar .inner > button { flex: 1; white-space: nowrap; padding: 10px 8px; font-size: 17px; }
-  .bar .inner > button.wide { flex: 2.2; }
+  /* პარტიის / რეცეპტის ბარათი */
+  .batch { display: flex; flex-direction: column; gap: 8px; padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); color: var(--fg); text-decoration: none; }
+  .batch .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .batch .top .ic { color: var(--faint); }
+  .batch .name { font-weight: 750; font-size: var(--t-lg); font-stretch: 85%; min-width: 0; overflow-wrap: anywhere; }
+  .meter { height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+  .meter > div { height: 100%; background: var(--amber); border-radius: 3px; }
+
+  /* ზედა ზოლი (ქვეგვერდები) */
+  .appbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .appbar .wrap { display: flex; align-items: center; gap: 10px; padding-block: 8px; min-height: 64px; }
+  .appbar .ttl { flex: 1; min-width: 0; font-weight: 750; font-stretch: 85%; font-size: var(--t-lg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .appbar .icon-btn { min-height: 48px; width: 48px; min-width: 48px; border-color: transparent; background: var(--surface); }
+  .saved { font-size: var(--t-xs); color: var(--faint); white-space: nowrap; transition: color .3s; }
+  .saved.flash { color: var(--ok); }
+
+  /* ქვედა ნავიგაცია */
+  .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: color-mix(in srgb, var(--bg) 94%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .tabbar .wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding-block: 6px; }
+  .tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 60px; border-radius: var(--r-sm); color: var(--faint); text-decoration: none; font-size: var(--t-xs); font-weight: 700; }
+  .tabbar a.on { color: var(--amber); background: var(--amber-soft); }
+
+  /* ხარშვის რეჟიმი */
+  .brewbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .brewbar .wrap { padding-block: 8px 10px; display: flex; flex-direction: column; gap: 8px; }
+  .brewbar .row1 { display: flex; align-items: center; gap: 10px; }
+  .brewbar .icon-btn { min-height: 48px; width: 48px; min-width: 48px; background: var(--surface); border-color: transparent; }
+  .brewbar .icon-btn.on { color: var(--amber); }
+  .brewbar .where { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
+  .brewbar .where b { font-stretch: 85%; font-size: var(--t-md); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .segs { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+  .segs > div { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+  .segs > div > i { display: block; height: 100%; background: var(--amber); }
+  .step-head { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+  .step-head h1 { font-size: 2rem; }
+  .instr { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: var(--t-lg); line-height: 1.4; }
+  .instr li { display: grid; grid-template-columns: 14px 1fr; gap: 12px; }
+  .instr li::before { content: ""; width: 8px; height: 8px; margin-top: .6em; border-radius: 2px; background: var(--amber); transform: rotate(45deg); }
+  .instr li.later { color: var(--muted); }
+  .instr li.later::before { background: transparent; border: 2px solid var(--amber); }
+  .actionbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: color-mix(in srgb, var(--bg) 95%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .actionbar .wrap { display: grid; grid-template-columns: 56px 1fr 2fr; gap: 8px; padding-block: 10px; }
+  .actionbar button { white-space: nowrap; padding: 8px 10px; }
+  .stamp { display: inline-flex; align-self: flex-start; gap: 8px; align-items: center; color: var(--ok); font-weight: 700; font-size: var(--t-sm); }
+
+  /* სკალა (ტემპერატურა/მოცულობა) */
+  .gauge { display: flex; flex-direction: column; gap: 6px; padding: 4px 2px 0; }
+  .gauge .track { position: relative; height: 14px; border-radius: 7px; background: var(--surface-2); }
+  .gauge .band { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--ok) 35%, transparent); border-left: 2px solid var(--ok); border-right: 2px solid var(--ok); }
+  .gauge .mark { position: absolute; top: -7px; width: 4px; height: 28px; margin-left: -2px; border-radius: 2px; background: var(--fg); box-shadow: 0 0 0 2px var(--bg); }
+  .gauge .mark.out { background: var(--warn); }
+  .gauge .scale { position: relative; height: 18px; font-family: var(--font-num); font-size: var(--t-xs); color: var(--faint); }
+  .gauge .scale span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+  .gauge .scale span.end { transform: translateX(-100%); }
+  .gauge .scale span.start { transform: none; }
 
   /* ტაიმერი */
-  .timer { border-color: var(--acc); }
-  .digits { font-size: 72px; font-weight: 800; font-variant-numeric: tabular-nums; text-align: center; color: var(--acc); line-height: 1.05; margin: 6px 0; }
-  .digits.paused { color: var(--muted); }
-  .digits.over { color: var(--bad); }
+  .timer { display: flex; flex-direction: column; gap: 12px; }
+  .timer .head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .timer .head .lbl { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--amber); }
+  .digits { font-family: var(--font-num); font-weight: 600; font-variant-numeric: tabular-nums; font-size: var(--t-xxl); line-height: 1; text-align: center; letter-spacing: -0.02em; color: var(--fg); }
+  .digits.paused { color: var(--faint); }
+  .digits.over { color: var(--amber); }
+  .digits.mini { font-size: 1.6rem; text-align: right; }
+  .tbar { position: relative; height: 12px; border-radius: 6px; background: var(--surface-2); }
+  .tbar > i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--amber); border-radius: 6px; }
+  .tbar > b { position: absolute; top: -4px; bottom: -4px; width: 3px; margin-left: -1.5px; background: var(--fg); border-radius: 2px; }
+  .tbar > b.fired { background: var(--faint); }
+  .alerts { display: flex; flex-direction: column; gap: 2px; }
+  .alerts div { display: grid; grid-template-columns: 4.6em 1fr; gap: 10px; padding: 6px 0; font-size: var(--t-sm); border-top: 1px dashed var(--line); }
+  .alerts div .num { color: var(--amber); }
+  .alerts div.fired { color: var(--faint); }
+  .alerts div.fired .num { color: var(--faint); text-decoration: line-through; }
 
-  /* სიგნალის სრულეკრანიანი ფანჯარა */
-  #overlay { position: fixed; inset: 0; z-index: 50; background: #000; display: none; flex-direction: column; justify-content: center; padding: 24px; gap: 16px; }
-  #overlay.on { display: flex; }
-  #overlay .big { font-size: 32px; font-weight: 800; color: var(--acc); text-align: center; line-height: 1.25; }
-  #overlay .flash { animation: flash 1s infinite; }
-  @keyframes flash { 50% { opacity: .35; } }
+  /* მაჩვენებლები */
+  .kv { display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; align-items: baseline; }
+  .kv > b { font-family: var(--font-num); font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+  .stat { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0; }
+  .stat .big { font-family: var(--font-num); font-weight: 600; font-size: 3rem; line-height: 1.05; color: var(--amber); }
+  .stat .cap { font-size: var(--t-sm); color: var(--muted); text-align: center; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+  .tile { background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .tile .k { font-size: var(--t-xs); color: var(--muted); font-weight: 600; }
+  .tile .v { font-family: var(--font-num); font-weight: 600; font-size: var(--t-lg); }
+  .tile.warn .v { color: var(--warn); }
 
-  table { width: 100%; border-collapse: collapse; font-size: 16px; }
+  .tablewrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: var(--t-sm); }
   td, th { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align: left; vertical-align: top; }
-  th { color: var(--muted); font-weight: 600; }
-  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  th { color: var(--muted); font-weight: 600; font-size: var(--t-xs); }
+  td.n { text-align: right; font-family: var(--font-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-  details { background: var(--card); border: 1px solid var(--line); border-radius: 12px; margin: 12px 0; padding: 0 14px; }
-  details > summary { min-height: 54px; display: flex; align-items: center; font-weight: 700; color: var(--warn); cursor: pointer; list-style: none; }
-  details > summary::before { content: "▸ "; margin-right: 6px; }
-  details[open] > summary::before { content: "▾ "; }
-  details ul { margin: 0 0 12px; padding-left: 20px; }
+  details { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+  details > summary { min-height: 56px; display: flex; align-items: center; gap: 10px; padding: 0 14px; font-weight: 700; cursor: pointer; list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary .chev { margin-left: auto; transition: transform .15s; color: var(--faint); }
+  details[open] > summary .chev { transform: rotate(90deg); }
+  details.trouble > summary { color: var(--warn); }
+  details > .inner { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 8px; }
+  details ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
 
-  .kv { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; font-size: 18px; }
-  .kv b { color: var(--acc2); text-align: right; font-variant-numeric: tabular-nums; }
-  .big-num { font-size: 40px; font-weight: 800; color: var(--acc); text-align: center; }
+  /* რეცეპტის რედაქტორი: თითო მარცვალი/სვია — ცალკე ბლოკი */
+  .items { display: flex; flex-direction: column; gap: 8px; }
+  .item { display: grid; grid-template-columns: 1fr 1fr 56px; gap: 8px; align-items: end; background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px; }
+  .item .nm { grid-column: 1 / -1; }
+  .item .icon-btn { color: var(--faint); background: transparent; border-color: var(--line); }
+  .hint { font-size: var(--t-sm); color: var(--muted); }
 
-  .toast { position: fixed; left: 50%; bottom: 120px; transform: translateX(-50%); background: var(--acc); color: #000; padding: 12px 18px; border-radius: 12px; font-weight: 700; z-index: 60; max-width: 90vw; text-align: center; }
-  .debug-badge { background: var(--bad); color: #fff; font-size: 13px; padding: 2px 8px; border-radius: 6px; font-weight: 700; }
-  .gridrow { display: grid; grid-template-columns: 1fr 90px 80px 48px; gap: 6px; align-items: center; margin: 6px 0; }
-  .gridrow.g3 { grid-template-columns: 1fr 100px 48px; }
-  .gridrow input { padding: 8px; }
-  .gridrow button { min-height: 56px; padding: 0; }
-  .today { border-color: var(--acc); }
+  /* სიგნალი და დიალოგი */
+  #overlay, #modal { position: fixed; inset: 0; z-index: 50; display: none; }
+  #overlay.on, #modal.on { display: flex; }
+  #overlay { background: var(--bg); flex-direction: column; justify-content: center; gap: 18px; padding: calc(24px + env(safe-area-inset-top, 0px)) var(--gutter-r) calc(24px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); }
+  #overlay .ring { width: 96px; height: 96px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center; background: var(--amber); color: var(--on-amber); animation: pulse 1s ease-in-out infinite; }
+  #overlay .ring .ic { width: 48px; height: 48px; }
+  #overlay .big { font-size: 2rem; font-weight: 800; font-stretch: 85%; text-align: center; line-height: 1.2; text-wrap: balance; }
+  #overlay .cap { text-align: center; color: var(--muted); }
+  @keyframes pulse { 50% { transform: scale(1.08); box-shadow: 0 0 0 16px color-mix(in srgb, var(--amber) 20%, transparent); } }
+  #modal { background: rgba(0,0,0,.7); align-items: flex-end; justify-content: center; }
+  #modal .sheet { width: 100%; max-width: 620px; background: var(--surface); border-top: 1px solid var(--line); border-radius: 18px 18px 0 0; padding: 20px var(--gutter-r) calc(20px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); display: flex; flex-direction: column; gap: 14px; }
+  #modal .sheet p { font-size: var(--t-lg); font-weight: 650; }
+
+  .toast { position: fixed; left: 50%; bottom: calc(110px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 12px 18px; border-radius: 99px; font-weight: 700; z-index: 60; max-width: calc(100vw - 32px); text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+  .debug { display: inline-block; background: var(--bad); color: var(--fg); font-size: var(--t-xs); padding: 1px 7px; border-radius: 6px; font-weight: 700; vertical-align: middle; letter-spacing: .04em; }
+  .empty { text-align: center; padding: 28px 16px; display: flex; flex-direction: column; gap: 12px; align-items: center; color: var(--muted); }
+  .empty .ic { width: 56px; height: 56px; color: var(--amber); stroke-width: 1.5; }
+  .today { border-color: var(--amber); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  @media (max-width: 360px) {
+    .grid3 { grid-template-columns: 1fr 1fr; }
+    .digits { font-size: 3.6rem; }
+  }
 </style>
 </head>
 <body>
 <div id="app"></div>
-<div id="overlay"></div>
+<div id="overlay" role="alertdialog" aria-live="assertive"></div>
+<div id="modal" role="dialog" aria-modal="true"></div>
 
 <script>
 'use strict';
@@ -146,6 +308,7 @@
    ===================================================================== */
 const STORAGE_KEY = 'brewAssistant.v1';
 const POT_SAFE_L = 4.0;           // 5 ლ ქვაბში მაქსიმალური უსაფრთხო მოცულობა ხარშვისთვის
+const POT_L = 5.0;                // ქვაბის / ფერმენტერის მოცულობა
 const DEBUG_TIMER_MS = 10000;     // debug რეჟიმში ყოველი ტაიმერი 10 წამია
 const SUGAR_G_PER_L = 5.5;        // ჩამოსხმის შაქარი, გ/ლ
 const BITTER_HIGH_G_PER_L = 2.75; // სიმწარის ზღვარი (სვია გ/ლ)
@@ -160,11 +323,13 @@ const STATUS = {
   bottled: 'ჩამოსხმული', done: 'დასრულებული'
 };
 
-/* ჩაშენებული რეცეპტები. სტაუტის ციფრები placeholder-ია — შეცვალე „რეცეპტებში". */
+/* ჩაშენებული რეცეპტები. სტაუტის ციფრები placeholder-ია — შეცვალე „რეცეპტებში".
+   grains[].minute = გაშაქრების რომელ წუთზე ჩაიყაროს (0 = თავიდან).
+   hops[].minute   = რამდენი წუთი რჩება ხარშვის ბოლომდე (60 = დასაწყისში). */
 const DEFAULT_RECIPES = [
   {
     id: 'pale-kveik', name: 'ღია ელი (M12 Kveik)', style: 'Pale Ale / Kveik',
-    grains: [{ name: 'Pilsner', grams: 900 }, { name: 'CARAHELL', grams: 220 }],
+    grains: [{ name: 'Pilsner', grams: 900, minute: 0 }, { name: 'CARAHELL', grams: 220, minute: 0 }],
     hops: [{ name: 'Perle', grams: 6, minute: 60 }, { name: 'Perle', grams: 5, minute: 5 }],
     yeast: { name: 'M12 Kveik', grams: 3, tempMin: 20, tempMax: 30 },
     mashTemp: 70, mashMin: 60, boilMin: 60,
@@ -173,7 +338,7 @@ const DEFAULT_RECIPES = [
   },
   {
     id: 'stout', name: 'სტაუტი', style: 'Stout',
-    grains: [{ name: 'Pilsner', grams: 1000 }, { name: 'Black', grams: 100 }],
+    grains: [{ name: 'Pilsner', grams: 1000, minute: 0 }, { name: 'Black', grams: 100, minute: 45 }],
     hops: [{ name: 'Perle', grams: 6, minute: 60 }, { name: 'Perle', grams: 5, minute: 5 }],
     yeast: { name: 'M44', grams: 3, tempMin: 18, tempMax: 24 },
     mashTemp: 68, mashMin: 60, boilMin: 60,
@@ -221,16 +386,24 @@ const STAGES = [
   { letter: 'თ', name: 'დასრულება' }
 ];
 
+/* მარცვალი: თავიდან ჩასაყრელი და გვიანი დამატებები (მაგ. Black 45-ე წუთზე) */
+const grainMin = g => Math.max(0, +g.minute || 0);
+const startGrains = r => r.grains.filter(g => grainMin(g) === 0);
+const lateGrains = r => r.grains.filter(g => grainMin(g) > 0 && grainMin(g) < r.mashMin).sort((a, b) => grainMin(a) - grainMin(b));
+/* სიგნალის დროს მომხმარებელი სავარაუდოდ რომელ ნაბიჯზეა */
+const mashStepAt = (r, minute) => minute < r.mashMin / 2 ? 's9' : (r.mashMin - minute > 10 ? 's10' : 's11');
+
 /* ტაიმერები. alerts[].at = რამდენი წუთი რჩება, როცა სიგნალი ირთვება. */
 const TIMERS = {
   mash: {
     label: 'გაშაქრება',
     minutes: r => r.mashMin,
     alerts: r => [
+      ...lateGrains(r).map(g => ({ at: r.mashMin - grainMin(g), msg: `ჩაყარე ${g.grams} გ ${g.name} და კარგად მოურიე`, step: mashStepAt(r, grainMin(g)) })),
       { at: r.mashMin / 2, msg: 'შუა გაშაქრება: მოურიე და გაზომე ტემპერატურა', step: 's10' },
       ...(r.mashMin > 10 ? [{ at: 10, msg: `ჩამორეცხვის წყალი ${r.spargeWaterL} ლ გააცხელე 77°C-მდე`, step: 's11' }] : []),
       { at: 0, msg: 'გაშაქრება დასრულდა! ტომარა ასწიე', step: 's12' }
-    ]
+    ].sort((a, b) => b.at - a.at)
   },
   boil: {
     label: 'ხარშვა',
@@ -249,9 +422,13 @@ const TIMERS = {
   }
 };
 
+/* გვიანი მარცვლის ჩეკლისტი (ნაბიჯები 9–11 იზიარებენ ერთ ჩეკლისტს) */
+const lateGrainChecklist = r => lateGrains(r).map(g => `${g.grams} გ ${g.name} — ${grainMin(g)}-ე წუთზე`);
+
 /* ხარშვის დღის ნაბიჯები. ციფრები მოდის რეცეპტიდან (r), პარტიიდან (b) და კალკულატორიდან (c).
-   ველები: key, stage, title, lines(), inputs[], checklist(), timer, autoTimer,
-   feedback() → [{cls,text}], gate() → შეტყობინება ან null, trouble[], doneLabel, custom() → HTML */
+   ველები: key, stage, title, lines() → [ტექსტი | {text, later}], inputs[{k,label,unit,step,start()}],
+   checklist(), checklistKey, checklistTitle, timer, autoTimer, gauge(), feedback() → [{cls,text}],
+   gate() → შეტყობინება ან null, trouble[], doneLabel, custom() → HTML */
 const STEPS = [
   /* ---- ა. მომზადება ---- */
   { key: 's1', stage: 0, title: 'ინვენტარის ჩეკლისტი',
@@ -262,8 +439,9 @@ const STEPS = [
     lines: () => ['1.5–2 ლ ბაკურიანი ჩადე მაცივარში.', 'ეს წყალი განზავებისთვისაა: ცივი და სუფთა.'],
     trouble: ['ბაკურიანი არ გაქვს? ადუღებული და გაცივებული წყალი, დახურულ ჭურჭელში.'] },
   { key: 's3', stage: 0, title: 'მარცვალი აწონე და დაფქვი',
-    lines: () => ['აწონე თითო მარცვალი ცალკე.', 'დაფქვი დღესვე, ხარშვის წინ.'],
-    checklist: r => r.grains.map(g => `${g.name} — ${g.grams} გ`),
+    lines: r => ['აწონე თითო მარცვალი ცალკე.', 'დაფქვი დღესვე, ხარშვის წინ.',
+      ...(lateGrains(r).length ? ['გვიანი მარცვალი ცალკე ჯამში შეინახე — ის მოგვიანებით ჩაიყრება.'] : [])],
+    checklist: r => r.grains.map(g => `${g.name} — ${g.grams} გ${grainMin(g) > 0 ? ` (ცალკე, ${grainMin(g)}-ე წუთზე)` : ''}`),
     trouble: ['უხეში დაფქვა = დაბალი Brix. BIAB-ში წვრილი დაფქვა ნორმალურია.', 'ფქვილად ნუ აქცევ — ტომარა გაიჭედება.'] },
   { key: 's4', stage: 0, title: 'სვია აწონე',
     lines: () => ['აწონე თითო დამატება ცალ-ცალკე.', 'ქაღალდზე დააწერე გრამი და წუთი.', 'საყინულეში დააბრუნე.'],
@@ -282,22 +460,34 @@ const STEPS = [
       `სამიზნე: ${r.mashTemp + 8}°C.`, 'ტომარა ჯერ არ ჩადო.'],
     trouble: ['გადააჭარბე? თავსახური ახადე, ურიე და დაელოდე.', 'მარცვალი ცივია — ამიტომ ვაცხელებთ 8°C-ით მეტზე.'] },
   { key: 's8', stage: 1, title: 'ტომარა და მარცვალი',
-    lines: () => ['ცეცხლი გამორთე. ტომარა ჩადე.', 'მარცვალი ნელ-ნელა ჩაყარე და ურიე — გუნდები არ დატოვო.', '1 წთ შემდეგ გაზომე ტემპერატურა.'],
-    inputs: [{ k: 'doughInTemp', label: 'ტემპერატურა', unit: '°C' }],
+    lines: r => [
+      'ცეცხლი გამორთე. ტომარა ჩადე.',
+      `ნელ-ნელა ჩაყარე და ურიე: ${startGrains(r).map(g => `${g.name} ${g.grams} გ`).join(', ') || '—'}.`,
+      ...lateGrains(r).map(g => ({ text: `${g.name} ${g.grams} გ — ჯერ არა: ${grainMin(g)}-ე წუთზე (სიგნალი).`, later: true })),
+      '1 წთ შემდეგ გაზომე ტემპერატურა.'
+    ],
+    inputs: [{ k: 'doughInTemp', label: 'ტემპერატურა', unit: '°C', step: 0.5, start: r => r.mashTemp }],
+    gauge: r => mashGauge(r, 'doughInTemp'),
     feedback: (r, b) => mashFeedback(r, val(b, 'doughInTemp')),
     trouble: ['გუნდებია? ნიჩბით დაშალე კედელზე.', 'თერმომეტრი შუაში ჩაყავი, არა ძირზე.'] },
   { key: 's9', stage: 1, title: 'გაშაქრების ტაიმერი',
-    lines: r => ['თავსახური დაახურე, ქვაბი პირსახოცით შეახვიე.', `ტაიმერი: ${r.mashMin} წთ.`, 'სიგნალი: შუაზე, ბოლომდე 10 წთ-ით ადრე და ბოლოს.'],
+    lines: r => ['თავსახური დაახურე, ქვაბი პირსახოცით შეახვიე.', `ტაიმერი: ${r.mashMin} წთ.`,
+      ...lateGrains(r).map(g => ({ text: `${grainMin(g)}-ე წუთზე: ${g.grams} გ ${g.name} (სიგნალი).`, later: true })),
+      'სიგნალი: შუაზე, ბოლომდე 10 წთ-ით ადრე და ბოლოს.'],
+    checklist: lateGrainChecklist, checklistKey: 'lateGrains', checklistTitle: 'გვიანი მარცვალი',
     timer: 'mash', autoTimer: 'mash',
-    trouble: ['ტელეფონი არ დაიძინოს — ზემოთ ჩართე „ეკრანი ☀".', 'ხმა არ ისმის? შეეხე ეკრანს ერთხელ — ბრაუზერს ხმის ჩართვა ჭირდება.'] },
+    trouble: ['ტელეფონი არ დაიძინოს — ზემოთ ჩართე მზის ღილაკი.', 'ხმა არ ისმის? შეეხე ეკრანს ერთხელ — ბრაუზერს ხმის ჩართვა ჭირდება.'] },
   { key: 's10', stage: 1, title: 'შუა გაშაქრება',
     lines: () => ['მოურიე.', 'გაზომე ტემპერატურა.'],
-    inputs: [{ k: 'midMashTemp', label: 'ტემპერატურა', unit: '°C' }],
+    inputs: [{ k: 'midMashTemp', label: 'ტემპერატურა', unit: '°C', step: 0.5, start: r => r.mashTemp }],
+    gauge: r => mashGauge(r, 'midMashTemp'),
     feedback: (r, b) => mashFeedback(r, val(b, 'midMashTemp')),
+    checklist: lateGrainChecklist, checklistKey: 'lateGrains', checklistTitle: 'გვიანი მარცვალი',
     timer: 'mash',
-    trouble: ['ბევრი დაიკლო? უფრო კარგად შეახვიე, ან ქვაბი ღუმელში (გამორთული, თბილი).'] },
+    trouble: ['ბევრი დაიკლო? უფრო კარგად შეახვიე, ან ქვაბი ღუმელში (გამორთული, თბილი).', 'გვიანი მარცვლის შემდეგ ტემპერატურა 1–2°C-ით დაიწევს — ეს ნორმაა.'] },
   { key: 's11', stage: 1, title: 'ჩამორეცხვის წყალი',
     lines: r => [`${r.spargeWaterL} ლ წყალი გააცხელე 77°C-მდე.`, 'არ გადააჭარბო 80°C-ს.'],
+    checklist: lateGrainChecklist, checklistKey: 'lateGrains', checklistTitle: 'გვიანი მარცვალი',
     timer: 'mash',
     trouble: ['80°C-ზე ცხელი წყალი მარცვლიდან ტანინს გამოიტანს (მწკლარტე გემო).', 'გადააჭარბე? ცოტა ცივი წყალი დაამატე.'] },
 
@@ -307,19 +497,20 @@ const STEPS = [
     trouble: ['ტომარა მძიმეა? ქვაბზე დადე ორი ნიჩაბი ან ცხაური.', 'ცხელია — ხელთათმანი.'] },
   { key: 's13', stage: 2, title: 'მოცულობა ხარშვის წინ',
     lines: () => ['ქვაბში დონე შეხედე.', 'ჩაწერე მოცულობა.'],
-    inputs: [{ k: 'preBoilVol', label: 'მოცულობა ხარშვის წინ', unit: 'ლ' }],
+    inputs: [{ k: 'preBoilVol', label: 'მოცულობა ხარშვის წინ', unit: 'ლ', step: 0.1, start: () => 4.0 }],
+    gauge: () => ({ k: 'preBoilVol', lo: 0, hi: POT_SAFE_L, min: 2, max: POT_L, unit: 'ლ' }),
     feedback: (r, b) => {
       const v = val(b, 'preBoilVol');
       if (v == null) return [];
-      if (v > POT_SAFE_L) return [{ cls: 'bad', text: `⚠ ${fmt(v)} ლ > ${POT_SAFE_L} ლ — 5 ლ ქვაბში ადუღებისას გადმოვა! ნაწილი ცალკე გადაასხი და ხარშვის ბოლოს დაამატე.` }];
-      return [{ cls: 'ok', text: 'კარგია ✓' }];
+      if (v > POT_SAFE_L) return [{ cls: 'bad', text: `${fmt(v)} ლ > ${POT_SAFE_L} ლ — 5 ლ ქვაბში ადუღებისას გადმოვა! ნაწილი ცალკე გადაასხი და ხარშვის ბოლოს დაამატე.` }];
+      return [{ cls: 'ok', text: 'კარგია, ქვაბში ეტევა.' }];
     },
     trouble: ['დონის გასაზომად: სახაზავი ან წინასწარ მონიშნული ნიჩაბი.'] },
 
   /* ---- დ. ხარშვა ---- */
   { key: 's14', stage: 3, title: 'ადუღება',
     lines: () => ['ცეცხლი მაქსიმუმზე, თავსახური ღია.', 'ქვაბთან დადექი!', 'ქაფზე ცეცხლი დაუწიე.', 'როცა ადუღდება — „ადუღდა".'],
-    doneLabel: 'ადუღდა 🔥',
+    doneLabel: 'ადუღდა',
     trouble: ['ქაფი ადის? ცეცხლი დაუწიე, ურიე, ზემოდან წყალი შეასხურე.', 'თავსახური არ დაახურო — გადმოვა.'] },
   { key: 's15', stage: 3, title: 'სვია და ხარშვის ტაიმერი',
     lines: r => {
@@ -328,16 +519,17 @@ const STEPS = [
       return [
         first.length ? `ახლავე ჩაყარე: ${first.map(h => `${h.grams} გ ${h.name}`).join(', ')}.` : 'ახლა სვია არ არის.',
         `ტაიმერი: ${r.boilMin} წთ.`,
-        ...later.map(h => `როცა ${h.minute} წთ დარჩება: ${h.grams} გ ${h.name} (სიგნალი).`),
+        ...later.map(h => ({ text: `როცა ${h.minute} წთ დარჩება: ${h.grams} გ ${h.name} (სიგნალი).`, later: true })),
         'მსუბუქი დუღილი.'
       ];
     },
     checklist: r => r.hops.slice().sort((a, b) => b.minute - a.minute).map(h => `${h.grams} გ ${h.name} @${h.minute}`),
+    checklistTitle: 'სვიის დამატებები',
     timer: 'boil', autoTimer: 'boil',
     trouble: ['სვია ქაფს იწვევს — ჩაყრისას ცეცხლი დაუწიე.', 'დამატება გამოგრჩა? ჩაყარე როგორც კი გაიხსენებ.'] },
   { key: 's16', stage: 3, title: 'დეზინფექცია',
     lines: () => ['ბოლომდე 15 წთ: დაიწყე დეზინფექცია.'],
-    custom: () => '<div class="msg bad">⚠ სპრეი ქურისგან მოშორებით! სპირტი ადვილად აალდება.</div>',
+    custom: () => msgHtml('bad', 'სპრეი ქურისგან მოშორებით! სპირტი ადვილად აალდება.'),
     checklist: () => SANITIZE, timer: 'boil',
     trouble: ['ზეჟანგი ჩამორეცხვა არ ჭირდება — სწრაფად იშლება.', 'სპირტი 30 წამი იმოქმედოს.'] },
   { key: 's17', stage: 3, title: 'ხარშვის დასასრული',
@@ -348,12 +540,13 @@ const STEPS = [
   /* ---- ე. გაცივება ---- */
   { key: 's18', stage: 4, title: 'გაცივება',
     lines: () => ['ქვაბი ნიჟარაში, ყინულიან წყალში.', '5–10 წთ-ში წყალი გამოცვალე.', '20 წთ-ის შემდეგ გაზომე ტემპერატურა.', `გაგრძელება — როცა ≤ ${COOL_MAX_T}°C.`],
-    inputs: [{ k: 'cooledTemp', label: 'ტემპერატურა', unit: '°C' }],
+    inputs: [{ k: 'cooledTemp', label: 'ტემპერატურა', unit: '°C', step: 1, start: () => 35 }],
+    gauge: () => ({ k: 'cooledTemp', lo: 10, hi: COOL_MAX_T, min: 10, max: 70, unit: '°C' }),
     timer: 'cool',
     feedback: (r, b) => {
       const t = val(b, 'cooledTemp');
       if (t == null) return [];
-      return t <= COOL_MAX_T ? [{ cls: 'ok', text: 'გაცივდა ✓' }] : [{ cls: 'warn', text: `ჯერ ცხელია (${fmt(t)}°C). წყალი გამოცვალე, მეტი ყინული.` }];
+      return t <= COOL_MAX_T ? [{ cls: 'ok', text: 'გაცივდა.' }] : [{ cls: 'warn', text: `ჯერ ცხელია (${fmt(t)}°C). წყალი გამოცვალე, მეტი ყინული.` }];
     },
     gate: (r, b) => { const t = val(b, 'cooledTemp'); return (t == null || t > COOL_MAX_T) ? `დაელოდე ≤ ${COOL_MAX_T}°C-მდე` : null; },
     trouble: ['ნელა ცივდება? მეტი ყინული, წყალი ხშირად გამოცვალე.', 'თავსახური არ ახადო — ბაქტერიები.'] },
@@ -361,10 +554,11 @@ const STEPS = [
   /* ---- ვ. გაზომვა და განზავება ---- */
   { key: 's19', stage: 5, title: 'მოცულობა ქვაბში',
     lines: () => ['გაზომე მოცულობა ქვაბში.'],
-    inputs: [{ k: 'potVol', label: 'მოცულობა ქვაბში', unit: 'ლ' }] },
+    inputs: [{ k: 'potVol', label: 'მოცულობა ქვაბში', unit: 'ლ', step: 0.1, start: () => 3.5 }] },
   { key: 's20', stage: 5, title: 'ნიმუში და Brix',
     lines: () => ['ნიმუში ცილინდრში (~150–220 მლ).', '2–3 წთ ცივ წყალში ჩადე.', 'ჩაუშვი არეომეტრი, წაიკითხე Brix.'],
-    inputs: [{ k: 'sampleMl', label: 'ნიმუში', unit: 'მლ' }, { k: 'brix', label: 'Brix', unit: '°Bx' }],
+    inputs: [{ k: 'sampleMl', label: 'ნიმუში', unit: 'მლ', step: 10, start: () => 200 },
+             { k: 'brix', label: 'Brix', unit: '°Bx', step: 0.5, start: r => r.targetBrix }],
     trouble: ['თბილ ნიმუშზე Brix დაბალი გამოდის — გააცივე 20°C-მდე.', 'არეომეტრი კედელს არ უნდა ეხებოდეს.', 'ნიმუში ქვაბში არ დააბრუნო.'] },
   { key: 's21', stage: 5, title: 'კალკულატორი',
     lines: () => ['ავტომატური გამოთვლა შენი ციფრებით.'],
@@ -372,25 +566,26 @@ const STEPS = [
     trouble: ['ციფრები არ ჩანს? დაბრუნდი და შეიყვანე მოცულობა და Brix.', 'Brix სამიზნეზე დაბალია? წყალს ნუ დაამატებ — ლუდი ცოტა მსუბუქი იქნება.'] },
   { key: 's22', stage: 5, title: 'ფერმენტერში გადატანა',
     lines: (r, b, c) => ['ტკბილი ფერმენტერში ძაბრით და საცერით.', 'ძირში 1 სმ ნალექი დატოვე.',
-      c.ready ? `დაამატე ${Math.round(c.addL * 100) * 10} მლ ცივი წყალი (სამიზნე: ${fmt(c.vol, 2)} ლ).` : 'წყლის რაოდენობა: ჯერ შეავსე კალკულატორი.'],
-    inputs: [{ k: 'finalVol', label: 'ფაქტობრივი საბოლოო მოცულობა', unit: 'ლ' }],
+      c.ready ? `დაამატე ${mlRound(c.addL)} მლ ცივი წყალი (სამიზნე: ${fmt(c.vol, 2)} ლ).` : 'წყლის რაოდენობა: ჯერ შეავსე კალკულატორი.'],
+    inputs: [{ k: 'finalVol', label: 'ფაქტობრივი საბოლოო მოცულობა', unit: 'ლ', step: 0.1, start: (r, b, c) => c.ready ? round1(c.vol) : 3.5 }],
     trouble: ['საცერი გაიჭედა? კოვზით გაწმინდე (დეზინფიცირებული).', 'ფერმენტერის ხაზებით გაზომე.'] },
 
   /* ---- ზ. საფუარი ---- */
   { key: 's23', stage: 6, title: 'შენჯღრევა და ტემპერატურა',
     lines: r => ['თავსახური დაახურე, 1 წთ კარგად შეანჯღრიე.', 'გაზომე ტემპერატურა.', `${r.yeast.name}: ${r.yeast.tempMin}–${r.yeast.tempMax}°C.`],
-    inputs: [{ k: 'pitchTemp', label: 'ტემპერატურა', unit: '°C' }],
+    inputs: [{ k: 'pitchTemp', label: 'ტემპერატურა', unit: '°C', step: 0.5, start: r => r.yeast.tempMax }],
+    gauge: r => ({ k: 'pitchTemp', lo: r.yeast.tempMin, hi: r.yeast.tempMax, min: r.yeast.tempMin - 8, max: r.yeast.tempMax + 10, unit: '°C' }),
     feedback: (r, b) => {
       const t = val(b, 'pitchTemp');
       if (t == null) return [];
       if (t > r.yeast.tempMax) return [{ cls: 'warn', text: `ცხელია: დაელოდე ${r.yeast.tempMax}°C-მდე (ცივ წყალში ჩადე).` }];
       if (t < r.yeast.tempMin) return [{ cls: 'warn', text: `ცივია: თბილ ოთახში დადგი ${r.yeast.tempMin}°C-მდე.` }];
-      return [{ cls: 'ok', text: 'დიაპაზონშია ✓' }];
+      return [{ cls: 'ok', text: 'დიაპაზონშია.' }];
     },
     gate: (r, b) => { const t = val(b, 'pitchTemp'); return (t == null || t < r.yeast.tempMin || t > r.yeast.tempMax) ? `საჭიროა ${r.yeast.tempMin}–${r.yeast.tempMax}°C` : null; } },
   { key: 's24', stage: 6, title: 'საფუარი',
     lines: (r, b, c) => [`საფუარი: ${yeastSuggest(r, b, c)} გ (1 გ/ლ, მინ. 2).`, 'ზემოდან მოაყარე.', 'არ მოურიო.'],
-    inputs: [{ k: 'yeastG', label: 'ფაქტობრივი', unit: 'გ' }],
+    inputs: [{ k: 'yeastG', label: 'ფაქტობრივი', unit: 'გ', step: 0.5, start: (r, b, c) => yeastSuggest(r, b, c) }],
     trouble: ['პაკეტი დეზინფიცირებული მაკრატლით გაჭერი.', 'ნაკლები გაქვს? არაუშავს, დუღილი ცოტა გვიან დაიწყება.'] },
   { key: 's25', stage: 6, title: 'დახურვა',
     lines: () => ['თავსახური + grommet + საკეტი.', 'ჰერმეტულობის ტესტი: ბოცას დააწექი — საკეტში ბუშტუკი უნდა გაიაროს.', 'ლანგარზე, ბნელში, 23–26°C.'],
@@ -399,18 +594,57 @@ const STEPS = [
   /* ---- თ. დასრულება ---- */
   { key: 's26', stage: 7, title: 'ხარშვა დასრულდა',
     lines: () => ['შეამოწმე შეჯამება.', 'დააჭირე „ხარშვა დასრულდა" — დაიწყება დადუღების დღიური.'],
-    custom: (r, b, c) => renderSummary(b),
-    doneLabel: 'ხარშვა დასრულდა 🍺' }
+    custom: (r, b) => renderSummary(b),
+    doneLabel: 'ხარშვა დასრულდა' }
 ];
 
 /* =====================================================================
-   2. დამხმარე ფუნქციები
+   2. ხატულები (inline SVG, გარე ფაილის გარეშე)
+   ===================================================================== */
+const ICON = {
+  back: '<path d="M15 18l-6-6 6-6"/>',
+  chev: '<path d="M9 6l6 6-6 6"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  minus: '<path d="M5 12h14"/>',
+  trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  flame: '<path d="M12 3c.8 3.5 5 5.2 5 10a5 5 0 0 1-10 0c0-2.4 1.3-4 2.4-5 .4 1.8 1.4 2.8 2.4 2.8C11.8 8 11 5.6 12 3z"/>',
+  timer: '<circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 2M9.5 2.5h5"/>',
+  bubbles: '<circle cx="8.5" cy="15" r="4.5"/><circle cx="16.5" cy="7.5" r="3"/><circle cx="17.5" cy="17" r="2"/>',
+  bottle: '<path d="M10 2.5h4v3.5l2 3V20a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 8 20V9l2-3z"/><path d="M8 13h8"/>',
+  doc: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
+  book: '<path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19v-3M9 7h6"/>',
+  sliders: '<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+  mug: '<path d="M5 8h10v11.5a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 5 19.5z"/><path d="M15 11h2a2 2 0 0 1 2 2v2.5a2 2 0 0 1-2 2h-2M5 8a3 3 0 0 1 3-4 3.2 3.2 0 0 1 5 0 2.6 2.6 0 0 1 2 4M9 12v5M12 12v5"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+  moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+  bell: '<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>',
+  volume: '<path d="M4 9.5h3.5L13 5v14l-5.5-4.5H4z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/>',
+  copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5.5A1.5 1.5 0 0 1 6.5 4H15"/>',
+  download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  upload: '<path d="M12 16V5M7 10l5-5 5 5M5 20h14"/>',
+  pause: '<path d="M8.5 5v14M15.5 5v14"/>',
+  play: '<path d="M7 4.5l12.5 7.5L7 19.5z"/>',
+  alert: '<path d="M12 3.5l9.5 17h-19z"/><path d="M12 10v4.5M12 17.5v.1"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.1"/>',
+  reset: '<path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/>',
+  edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+  list: '<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
+  wheat: '<path d="M12 21V8"/><path d="M12 8c0-2.5 1.5-4 3.5-5-.2 2.6-1.3 4.2-3.5 5zM12 8C12 5.5 10.5 4 8.5 3c.2 2.6 1.3 4.2 3.5 5zM12 13c1-2.4 3-3.5 5-3.5-.6 2.4-2.4 3.6-5 3.5zM12 13c-1-2.4-3-3.5-5-3.5.6 2.4 2.4 3.6 5 3.5zM12 18c1-2.4 3-3.5 5-3.5-.6 2.4-2.4 3.6-5 3.5zM12 18c-1-2.4-3-3.5-5-3.5.6 2.4 2.4 3.6 5 3.5z"/>',
+  hop: '<path d="M12 3c3 2 4.5 5 4.5 8.5S14.5 19 12 21c-2.5-2-4.5-5.5-4.5-9.5S9 5 12 3z"/><path d="M12 3v18M8 9l4 2.5L16 9M8 14l4 2.5 4-2.5"/>',
+  yeast: '<circle cx="9" cy="10" r="5"/><circle cx="16.5" cy="15.5" r="3.5"/><path d="M8 9.5h.1M10.5 11.5h.1"/>'
+};
+const ic = (n, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[n] || ''}</svg>`;
+
+/* =====================================================================
+   3. დამხმარე ფუნქციები
    ===================================================================== */
 const $ = s => document.querySelector(s);
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 const clone = o => JSON.parse(JSON.stringify(o));
 const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
 const pad = n => String(n).padStart(2, '0');
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 
 function num(v) {
   if (v == null || v === '') return null;
@@ -422,8 +656,10 @@ function fmt(n, d = 1) {
   return (Math.round(n * 10 ** d) / 10 ** d).toString();
 }
 const round1 = n => Math.round(n * 10) / 10;
+const mlRound = L => Math.round(L * 100) * 10;   // ლიტრი → მლ, 10 მლ-მდე
 function todayStr(d = new Date()) { return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
 function addDays(dateStr, n) { const d = new Date(dateStr + 'T12:00:00'); d.setDate(d.getDate() + n); return todayStr(d); }
+function daysBetween(a, b) { return Math.round((new Date(b + 'T12:00:00') - new Date(a + 'T12:00:00')) / 864e5); }
 function fmtDate(s) { if (!s) return '—'; const [y, m, d] = s.split('-'); return `${d}.${m}.${y}`; }
 function fmtTime(ts) { if (!ts) return '—'; const d = new Date(ts); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; }
 function fmtMs(ms) {
@@ -432,6 +668,8 @@ function fmtMs(ms) {
   return h ? `${h}:${pad(m)}:${pad(ss)}` : `${pad(m)}:${pad(ss)}`;
 }
 const sgFromBrix = brix => 1 + brix * 0.004;
+const msgIcon = { ok: 'check', warn: 'alert', bad: 'alert', info: 'info' };
+const msgHtml = (cls, text) => `<div class="msg ${cls}">${ic(msgIcon[cls])}<span>${esc(text)}</span></div>`;
 
 /* რეფრაქტომეტრის კორექცია (Terrill), ალკოჰოლის არსებობისას */
 function refractFG(ogBrix, fgBrix, wcf = 1.04) {
@@ -441,14 +679,31 @@ function refractFG(ogBrix, fgBrix, wcf = 1.04) {
 }
 
 function toast(text) {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
   const t = document.createElement('div');
-  t.className = 'toast'; t.textContent = text;
+  t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = text;
   document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2200);
+  setTimeout(() => t.remove(), 2400);
+}
+
+/* დადასტურების ფანჯარა (confirm()-ის ნაცვლად) */
+function ask(text, okLabel = 'დიახ', danger = false) {
+  return new Promise(resolve => {
+    const m = $('#modal');
+    m.innerHTML = `<div class="sheet"><p>${esc(text)}</p>
+      <button class="${danger ? 'danger' : 'primary'}" id="askOk">${esc(okLabel)}</button>
+      <button class="ghost" id="askNo">გაუქმება</button></div>`;
+    m.classList.add('on');
+    const close = v => { m.classList.remove('on'); m.innerHTML = ''; resolve(v); };
+    $('#askOk').onclick = () => close(true);
+    $('#askNo').onclick = () => close(false);
+    m.onclick = e => { if (e.target === m) close(false); };
+    $('#askOk').focus();
+  });
 }
 
 /* =====================================================================
-   3. მონაცემები (localStorage)
+   4. მონაცემები (localStorage)
    ===================================================================== */
 let S = load();
 
@@ -464,7 +719,7 @@ function migrate(s) {
   s.batches.forEach(b => {
     Object.assign(b, Object.assign({
       readings: {}, stepsDone: {}, checks: {}, timers: {}, cur: 0, fermentationLog: [],
-      instrument: 'hydro', notes: '', status: 'planned'
+      instrument: 'hydro', notes: '', status: 'planned', created: Date.now()
     }, b));
     b.bottling = Object.assign({ fg: null, volume: null, sugar: null, bottles: null, date: '', tasting: '' }, b.bottling || {});
     if (b.recipe) fixRecipe(b.recipe);
@@ -473,6 +728,10 @@ function migrate(s) {
 }
 function fixRecipe(r) {
   r.grains = r.grains || []; r.hops = r.hops || [];
+  r.grains.forEach(g => {
+    // ძველი შენახული სტაუტი: Black ჩაიყრება 45-ე წუთზე
+    if (g.minute == null) g.minute = (r.id === 'stout' && g.name === 'Black') ? 45 : 0;
+  });
   r.yeast = Object.assign({ name: '', grams: 2, tempMin: 18, tempMax: 24 }, r.yeast || {});
   if (r.autoScale == null) r.autoScale = true;
 }
@@ -485,18 +744,18 @@ function load() {
 }
 function save() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(S)); }
-  catch (e) { toast('შენახვა ვერ მოხერხდა!'); }
+  catch (e) { toast('შენახვა ვერ მოხერხდა — მეხსიერება სავსეა?'); }
 }
 
 const getBatch = id => S.batches.find(b => b.id === id);
 const getRecipe = id => S.recipes.find(r => r.id === id);
-/* ხარშვის დაწყებისას რეცეპტი პარტიაში კოპირდება, რომ მერე ცვლილებებმა არ იმოქმედოს */
+/* ხარშვის დაწყებისას რეცეპტი პარტიაში კოპირდება; ასლი ცალკე რედაქტირდება */
 const recipeOf = b => b.recipe || getRecipe(b.recipeId) || S.recipes[0];
 function val(b, k) { const r = b.readings[k]; return r ? r.value : null; }
 function brewDay(b) { return b.stepsDone.s26 ? todayStr(new Date(b.stepsDone.s26)) : b.date; }
 
 /* =====================================================================
-   4. გამოთვლები
+   5. გამოთვლები
    ===================================================================== */
 function calc(b, r) {
   const pot = val(b, 'potVol'), brix = val(b, 'brix'), ml = val(b, 'sampleMl') || 0;
@@ -524,11 +783,12 @@ function calc(b, r) {
   };
 }
 
+function mashGauge(r, k) { return { k, lo: r.mashTemp - 1, hi: r.mashTemp + 2, min: r.mashTemp - 10, max: r.mashTemp + 10, unit: '°C' }; }
 function mashFeedback(r, t) {
   if (t == null) return [];
   if (t < r.mashTemp - 1) return [{ cls: 'warn', text: `დაბალია (${fmt(t)}°C): დაბალ ცეცხლზე, ურიე, ${r.mashTemp}°C-ზე გამორთე.` }];
   if (t > r.mashTemp + 2) return [{ cls: 'warn', text: `მაღალია (${fmt(t)}°C): თავსახური ღია, ურიე, ან 50–100 მლ ცივი წყალი.` }];
-  return [{ cls: 'ok', text: `კარგია ✓ (სამიზნე ${r.mashTemp}°C)` }];
+  return [{ cls: 'ok', text: `კარგია — სამიზნე ${r.mashTemp}°C.` }];
 }
 
 function yeastSuggest(r, b, c) {
@@ -551,8 +811,21 @@ function fermStats(b) {
   return st;
 }
 
+/* რეცეპტის შემოწმება რედაქტორისთვის */
+function recipeIssues(r) {
+  const out = [];
+  if (!r.grains.length) out.push('მარცვალი არ არის.');
+  if (r.grains.length && !startGrains(r).length) out.push('ერთი მარცვალი მაინც 0-ე წუთზე უნდა ჩაიყაროს.');
+  r.grains.forEach(g => { if (grainMin(g) >= r.mashMin) out.push(`${g.name || 'მარცვალი'} ${grainMin(g)}-ე წუთზე — გაშაქრება ${r.mashMin} წთ-ია, ვერ ჩაიყრება.`); });
+  r.hops.forEach(h => { if (h.minute > r.boilMin) out.push(`${h.name || 'სვია'} @${h.minute} წთ — ხარშვაზე (${r.boilMin} წთ) მეტია; ჩაიყრება დასაწყისში.`); });
+  if (r.yeast.tempMin >= r.yeast.tempMax) out.push('საფუარის მინ. ტემპერატურა მაქსიმუმზე ნაკლები უნდა იყოს.');
+  if (r.mashWaterL > POT_SAFE_L) out.push(`გაშაქრების წყალი ${r.mashWaterL} ლ — 5 ლ ქვაბისთვის ბევრია.`);
+  if (r.maxVolumeL > POT_L) out.push(`მაქს. მოცულობა ${r.maxVolumeL} ლ ფერმენტერს (5 ლ) აჭარბებს.`);
+  return out;
+}
+
 /* =====================================================================
-   5. ტაიმერები, ხმა, შეტყობინებები, Wake Lock
+   6. ტაიმერები, ხმა, შეტყობინებები, Wake Lock
    ===================================================================== */
 let actx = null, beepTimeout = null;
 const alertQueue = [];
@@ -594,7 +867,7 @@ function askNotify() {
 }
 function notify(text) {
   if ('Notification' in window && Notification.permission === 'granted') {
-    try { new Notification('🍺 ხარშვის ასისტენტი', { body: text, tag: 'brew', renotify: true }); } catch (e) { /* ignore */ }
+    try { new Notification('ხარშვის ასისტენტი', { body: text, tag: 'brew', renotify: true }); } catch (e) { /* ignore */ }
   }
 }
 
@@ -623,14 +896,7 @@ function adjustTimer(b, id, dMin) {
 }
 const alertKey = a => `${a.at}|${a.msg}`;
 
-function nextAlert(b, id) {
-  const t = b.timers[id];
-  const rem = remaining(t);
-  const a = TIMERS[id].alerts(recipeOf(b)).filter(a => !t.fired.includes(alertKey(a))).sort((x, y) => y.at - x.at)[0];
-  return a ? `შემდეგი: ${a.msg} — ${fmtMs(rem - a.at * t.unit)}-ში` : '';
-}
-
-/* ყოველ 0.5 წამში: ტაიმერების შემოწმება და ციფრების განახლება */
+/* ყოველ 0.5 წამში: ტაიმერების შემოწმება და ეკრანის განახლება */
 function tick() {
   let changed = false;
   for (const b of S.batches) {
@@ -648,20 +914,21 @@ function tick() {
       if (rem <= 0 && !t.paused) { t.done = true; changed = true; }
     }
   }
-  if (changed) { save(); }
+  if (changed) save();
   document.querySelectorAll('[data-timer]').forEach(el => {
     const [bid, id] = el.dataset.timer.split(':');
     const b = getBatch(bid); const t = b && b.timers[id];
     if (!t) return;
-    const rem = remaining(t);
-    el.textContent = fmtMs(rem);
-    el.classList.toggle('paused', !!t.paused);
-    el.classList.toggle('over', rem <= 0);
-  });
-  document.querySelectorAll('[data-timer-next]').forEach(el => {
-    const [bid, id] = el.dataset.timerNext.split(':');
-    const b = getBatch(bid);
-    if (b && b.timers[id]) el.textContent = nextAlert(b, id);
+    const rem = remaining(t), total = t.minutes * t.unit;
+    if (el.classList.contains('digits')) {
+      el.textContent = fmtMs(rem);
+      el.classList.toggle('paused', !!t.paused);
+      el.classList.toggle('over', rem <= 0);
+    } else if (el.tagName === 'I') {
+      el.style.width = `${clamp(100 - rem / total * 100, 0, 100)}%`;
+    } else if (changed && el.classList.contains('alerts')) {
+      el.innerHTML = alertsHtml(b, id);
+    }
   });
 }
 
@@ -676,10 +943,11 @@ function renderOverlay() {
   const a = alertQueue[0];
   if (!a) { o.classList.remove('on'); o.innerHTML = ''; return; }
   o.innerHTML = `
-    <div class="center muted">⏰ ${esc(a.label)}${alertQueue.length > 1 ? ` · კიდევ ${alertQueue.length - 1}` : ''}</div>
-    <div class="big flash">${esc(a.msg)}</div>
-    <button class="primary" data-act="alertGo">ნაბიჯზე გადასვლა →</button>
-    <button data-act="alertMute">🔇 გაჩუმება</button>`;
+    <div class="ring">${ic('timer')}</div>
+    <div class="cap">${esc(a.label)}${alertQueue.length > 1 ? ` · კიდევ ${alertQueue.length - 1} სიგნალი` : ''}</div>
+    <div class="big">${esc(a.msg)}</div>
+    <button class="primary" data-act="alertGo">ნაბიჯზე გადასვლა ${ic('chev')}</button>
+    <button data-act="alertMute">${ic('check')} გასაგებია, გაჩუმება</button>`;
   o.classList.add('on');
 }
 
@@ -695,176 +963,313 @@ async function applyWake() {
 }
 
 /* =====================================================================
-   6. ეკრანები
+   7. საერთო კომპონენტები
    ===================================================================== */
 function route() {
   const parts = location.hash.replace(/^#\/?/, '').split('/');
   return { name: parts[0] || 'home', id: parts[1] };
 }
 
-function nav(on) {
-  const t = (h, n, l) => `<a href="${h}" class="${on === n ? 'on' : ''}">${l}</a>`;
-  return `<nav class="tabs">${t('#/', 'home', '🍺 პარტიები')}${t('#/recipes', 'recipes', '📋 რეცეპტები')}${t('#/settings', 'settings', '⚙')}</nav>`;
-}
-const chip = s => `<span class="chip ${s}">${STATUS[s] || s}</span>`;
-const debugBadge = () => S.settings.debug ? ' <span class="debug-badge">DEBUG</span>' : '';
+const pill = s => `<span class="pill ${s}">${STATUS[s] || s}</span>`;
+const debugTag = () => S.settings.debug ? ' <span class="debug">DEBUG</span>' : '';
 
-/* --- 6.1 პარტიების სია --- */
+function tabbar(on) {
+  const t = (h, n, icon, l) => `<a href="${h}" class="${on === n ? 'on' : ''}" ${on === n ? 'aria-current="page"' : ''}>${ic(icon)}<span>${l}</span></a>`;
+  return `<nav class="tabbar" aria-label="მთავარი"><div class="wrap">
+    ${t('#/', 'home', 'mug', 'პარტიები')}${t('#/recipes', 'recipes', 'book', 'რეცეპტები')}${t('#/settings', 'settings', 'sliders', 'პარამეტრები')}
+  </div></nav>`;
+}
+function appbar(title, backHref, extra = '') {
+  return `<header class="appbar"><div class="wrap">
+    ${backHref ? `<a class="btn icon-btn" href="${backHref}" aria-label="უკან">${ic('back')}</a>` : ''}
+    <div class="ttl">${title}</div>${extra}
+  </div></header>`;
+}
+function listRow(href, icon, title, sub, act) {
+  const inner = `${ic(icon, 'lead')}<span class="body"><span class="title">${title}</span>${sub ? `<span class="sub">${sub}</span>` : ''}</span>${ic('chev', 'chev')}`;
+  return href ? `<a class="list-row" href="${href}">${inner}</a>` : `<button type="button" class="list-row" data-act="${act}">${inner}</button>`;
+}
+function checklistHtml(key, items, b, title = 'ჩეკლისტი') {
+  const done = items.filter((_, k) => b.checks[key] && b.checks[key][k]).length;
+  return `<section class="panel"><div class="sec-head" style="margin:0"><h3>${esc(title)}</h3><span class="num small muted" id="cnt-${key}" data-total="${items.length}">${done}/${items.length}</span></div>
+    <div class="checks">${items.map((t, k) => {
+      const on = b.checks[key] && b.checks[key][k];
+      return `<label class="check ${on ? 'done' : ''}"><input type="checkbox" id="ck-${key}-${k}" data-bind="check:${key}:${k}" ${on ? 'checked' : ''}><span>${esc(t)}</span></label>`;
+    }).join('')}</div></section>`;
+}
+function unitInput(attrs, value, unit) {
+  return `<span class="unit-in"><input inputmode="decimal" autocomplete="off" ${attrs} value="${esc(value)}"><span>${esc(unit)}</span></span>`;
+}
+
+/* შემდეგი მოქმედება პარტიის ბარათზე */
+function batchNext(b) {
+  const today = todayStr();
+  switch (b.status) {
+    case 'planned': return { text: `დაგეგმილი: ${fmtDate(b.date)}`, pct: 0 };
+    case 'brewing': return { text: `ნაბიჯი ${b.cur + 1}/${STEPS.length} · ${STEPS[b.cur].title}`, pct: (b.cur + 1) / STEPS.length * 100 };
+    case 'fermenting': {
+      const d = daysBetween(brewDay(b), today);
+      const next = FERM_DAYS.find(x => x >= d);
+      return { text: `დადუღება · დღე ${Math.max(d, 0)}${next != null ? ` · ჩანაწერი: დღე ${next}` : ' · დროა FG-ს'}`, pct: clamp(d / 11 * 100, 0, 100) };
+    }
+    case 'bottled': return { text: b.bottling.date ? `ჩამოსხმული ${fmtDate(b.bottling.date)} · გემო ${fmtDate(addDays(b.bottling.date, 14))}` : 'ჩამოსხმული', pct: 100 };
+    default: return { text: 'დასრულებული', pct: 100 };
+  }
+}
+const grainLabel = g => `${esc(g.name)} ${g.grams} გ${grainMin(g) > 0 ? ` <span class="tag">${grainMin(g)}-ე წთ</span>` : ''}`;
+
+/* =====================================================================
+   8. ეკრანები
+   ===================================================================== */
+
+/* --- 8.1 პარტიების სია --- */
 function viewHome() {
   const list = S.batches.slice().sort((a, b) => (b.date || '').localeCompare(a.date || '') || b.created - a.created);
-  return `${nav('home')}<main>
-    <h1>ხარშვის ასისტენტი${debugBadge()}</h1>
-    <a class="btn primary" href="#/new">+ ახალი პარტია</a>
-    ${list.length ? list.map(b => `
-      <a class="card" href="#/batch/${b.id}">
-        <div class="row" style="margin:0;align-items:center"><b style="font-size:20px">${esc(b.name)}</b><div style="flex:none">${chip(b.status)}</div></div>
-        <div class="muted small">${fmtDate(b.date)} · ${esc(recipeOf(b).name)}</div>
-      </a>`).join('') : '<p class="muted center">ჯერ პარტია არ გაქვს.</p>'}
-  </main>`;
+  const active = list.find(b => b.status === 'brewing');
+  const timers = active ? Object.keys(active.timers).filter(id => active.timers[id] && !active.timers[id].done) : [];
+  return `<main class="wrap">
+    <div class="step-head" style="margin-top:14px">
+      <span class="eyebrow">BIAB · 5 ლ ქვაბი · ~4 ლ პარტია</span>
+      <h1>ხარშვის ასისტენტი${debugTag()}</h1>
+    </div>
+    ${active ? `<section class="panel hl">
+      <div class="sec-head" style="margin:0"><span class="eyebrow">ახლა იხარშება</span>${pill('brewing')}</div>
+      <h2>${esc(active.name)}</h2>
+      <p class="muted small">${esc(batchNext(active).text)}</p>
+      ${timers.map(id => `<div class="btn-row" style="align-items:center"><span class="muted" style="display:flex;gap:8px;align-items:center">${ic('timer')} ${TIMERS[id].label}</span><span class="digits mini" data-timer="${active.id}:${id}">--:--</span></div>`).join('')}
+      <a class="btn primary" href="#/brew/${active.id}">${ic('flame')} გაგრძელება</a>
+    </section>` : ''}
+    <a class="btn ${active ? '' : 'primary'}" href="#/new">${ic('plus')} ახალი პარტია</a>
+    ${list.length ? `<section class="sec"><div class="sec-head"><h2>პარტიები</h2><span class="muted small num">${list.length}</span></div>
+      ${list.map(b => { const n = batchNext(b); return `
+      <a class="batch" href="#/batch/${b.id}">
+        <div class="top"><span class="name">${esc(b.name)}</span>${pill(b.status)}</div>
+        <div class="muted small">${esc(recipeOf(b).name)} · ${fmtDate(b.date)}</div>
+        ${b.status !== 'planned' && b.status !== 'done' ? `<div class="meter" aria-hidden="true"><div style="width:${n.pct}%"></div></div>` : ''}
+        <div class="small">${esc(n.text)}</div>
+      </a>`; }).join('')}</section>`
+    : `<div class="empty">${ic('mug')}<h2 style="color:var(--fg)">პირველი პარტია</h2>
+        <p>აირჩიე რეცეპტი, დააყენე თარიღი და ხარშვის დღეს აპი ნაბიჯ-ნაბიჯ გაგიძღვება — ტაიმერებით, ჩეკლისტებით და განზავების კალკულატორით.</p></div>`}
+  </main>${tabbar('home')}`;
 }
 
-/* --- 6.2 ახალი პარტია --- */
+/* --- 8.2 ახალი პარტია --- */
 function viewNew() {
   const n = S.batches.length + 1;
-  return `${nav('home')}<main>
-    <h1>ახალი პარტია</h1>
-    <label class="field"><span>რეცეპტი</span>
+  return `${appbar('ახალი პარტია', '#/')}<main class="wrap">
+    <label class="field"><span class="lbl">რეცეპტი</span>
       <select id="nb-recipe">${S.recipes.map(r => `<option value="${r.id}">${esc(r.name)}</option>`).join('')}</select></label>
-    <label class="field"><span>სახელი</span><input id="nb-name" value="პარტია #${n}"></label>
-    <label class="field"><span>თარიღი</span><input id="nb-date" type="date" value="${todayStr()}"></label>
-    <button class="primary" data-act="createBatch">შექმნა</button>
-  </main>`;
+    <label class="field"><span class="lbl">სახელი</span><input id="nb-name" value="პარტია #${n}"></label>
+    <label class="field"><span class="lbl">ხარშვის თარიღი</span><input id="nb-date" type="date" value="${todayStr()}"></label>
+    <button class="primary" data-act="createBatch">${ic('plus')} შექმნა</button>
+  </main>${tabbar('home')}`;
 }
 
-/* --- 6.3 პარტიის გვერდი --- */
+/* --- 8.3 პარტიის გვერდი --- */
 function viewBatch(b) {
-  const r = recipeOf(b);
+  const r = recipeOf(b), c = calc(b, r);
   const started = Object.keys(b.stepsDone).length > 0 || b.status !== 'planned';
   const timers = Object.keys(b.timers).filter(id => b.timers[id] && !b.timers[id].done);
-  return `${nav('home')}<main>
-    <h1>${esc(b.name)} ${chip(b.status)}</h1>
-    <div class="muted">${fmtDate(b.date)} · ${esc(r.name)}</div>
-    ${timers.map(id => `<div class="card timer"><div class="muted">⏱ ${TIMERS[id].label}</div><div class="digits" data-timer="${b.id}:${id}">--:--</div></div>`).join('')}
-    <div class="stack" style="margin-top:14px">
-      <button class="primary" data-act="openBrew">🔥 ხარშვის დღე ${started ? `— ნაბიჯი ${b.cur + 1}/${STEPS.length}` : '— დაწყება'}</button>
-      <a class="btn" href="#/ferm/${b.id}">🫧 დადუღების დღიური</a>
-      <a class="btn" href="#/bottle/${b.id}">🍾 ჩამოსხმა</a>
-      <a class="btn" href="#/export/${b.id}">📄 ექსპორტი (Markdown)</a>
+  const fs = fermStats(b);
+  const main = {
+    planned: ['openBrew', 'flame', 'ხარშვის დაწყება'],
+    brewing: ['openBrew', 'flame', `ხარშვის გაგრძელება · ${b.cur + 1}/${STEPS.length}`],
+    fermenting: ['goFerm', 'bubbles', 'დადუღების დღიური'],
+    bottled: ['goBottle', 'bottle', 'ჩამოსხმა და გემო'],
+    done: ['goExport', 'doc', 'ექსპორტი']
+  }[b.status] || ['openBrew', 'flame', 'ხარშვის დღე'];
+  const editHref = b.recipe ? `#/brecipe/${b.id}` : `#/recipe/${r.id}`;
+  return `${appbar(esc(b.name), '#/')}<main class="wrap">
+    <div class="step-head">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">${pill(b.status)}<span class="muted small">${fmtDate(b.date)}</span></div>
+      <p class="muted">${esc(batchNext(b).text)}</p>
     </div>
-    <label class="field"><span>სტატუსი</span><select data-bind="batch:status">
-      ${Object.keys(STATUS).map(s => `<option value="${s}" ${s === b.status ? 'selected' : ''}>${STATUS[s]}</option>`).join('')}</select></label>
-    <label class="field"><span>სახელი</span><input data-bind="batch:name" value="${esc(b.name)}"></label>
-    <label class="field"><span>თარიღი</span><input type="date" data-bind="batch:date" value="${esc(b.date)}"></label>
-    <label class="field"><span>შენიშვნები</span><textarea data-bind="batch:notes">${esc(b.notes)}</textarea></label>
-    ${started ? `<details><summary>ყველა ნაბიჯი</summary>${STEPS.map((s, i) => `
-      <div class="check" data-act="goStep" data-i="${i}"><span>${b.stepsDone[s.key] ? '✅' : (i === b.cur ? '👉' : '⬜')} ${i + 1}. ${s.title}</span></div>`).join('')}</details>
-      <h2>შეჯამება</h2>${renderSummary(b)}` : ''}
-    ${!b.recipe ? `<p class="small muted">რეცეპტი ჯერ არ არის დაფიქსირებული — „${esc(r.name)}"-ს ცვლილებები აისახება.</p>` : ''}
-    <button class="danger" data-act="deleteBatch" style="margin-top:24px">🗑 პარტიის წაშლა</button>
-  </main>`;
+    ${timers.map(id => `<section class="panel hl timer"><div class="head"><span class="lbl">${ic('timer')} ${TIMERS[id].label}</span></div>
+      <div class="digits" data-timer="${b.id}:${id}">--:--</div></section>`).join('')}
+    <button class="primary" data-act="${main[0]}">${ic(main[1])} ${main[2]}</button>
+    ${fs.abv != null || c.ready ? `<div class="tiles">
+      <div class="tile"><span class="k">OG</span><span class="v">${fs.og ? fs.og.toFixed(3) : '—'}</span></div>
+      <div class="tile"><span class="k">FG</span><span class="v">${fs.fgSG ? fs.fgSG.toFixed(3) : '—'}</span></div>
+      <div class="tile"><span class="k">ABV</span><span class="v">${fs.abv != null ? fmt(fs.abv) + '%' : '~' + fmt(c.abv) + '%'}</span></div>
+    </div>` : ''}
+    <nav class="list">
+      ${listRow(null, 'flame', 'ხარშვის დღე', started ? `ნაბიჯი ${b.cur + 1} / ${STEPS.length}` : '26 ნაბიჯი, 8 ეტაპი', 'openBrew')}
+      ${listRow(`#/ferm/${b.id}`, 'bubbles', 'დადუღების დღიური', fs.finished ? 'FG სტაბილურია' : `დღეები ${FERM_DAYS.join(', ')}`)}
+      ${listRow(`#/bottle/${b.id}`, 'bottle', 'ჩამოსხმა', b.bottling.volume ? `${b.bottling.volume} ლ · შაქარი ${fmt(b.bottling.volume * SUGAR_G_PER_L)} გ` : 'შაქარი, ჩეკლისტი, გემო')}
+      ${listRow(`#/export/${b.id}`, 'doc', 'ექსპორტი', 'Markdown — კოპირება')}
+    </nav>
+
+    <section class="sec">
+      <div class="sec-head"><h2>${ic('book')} რეცეპტი</h2></div>
+      <a class="batch" href="${editHref}" aria-label="რეცეპტის რედაქტირება">
+        <div class="top"><span class="name" style="font-size:var(--t-md)">${esc(r.name)}</span>${ic('edit')}</div>
+        <div class="small muted">${r.grains.map(grainLabel).join(' · ')}</div>
+        <div class="small muted">${r.hops.map(h => `${esc(h.name)} ${h.grams} გ @${h.minute}`).join(' · ')} · ${esc(r.yeast.name)}</div>
+        <div class="small muted">${r.mashTemp}°C × ${r.mashMin} წთ · ხარშვა ${r.boilMin} წთ · Brix ${r.targetBrix}</div>
+      </a>
+      ${b.recipe ? '<p class="small muted">ხარშვის დაწყებისას რეცეპტი ამ პარტიაში დაკოპირდა. მისი ცვლილება ბიბლიოთეკის რეცეპტს არ ეხება.</p>'
+        : `<label class="field"><span class="lbl">სხვა რეცეპტის არჩევა</span><select id="b-recipe" data-bind="batch:recipeId">${S.recipes.map(x => `<option value="${x.id}" ${x.id === b.recipeId ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select></label>`}
+    </section>
+
+    <section class="sec">
+      <h2>დეტალები</h2>
+      <label class="field"><span class="lbl">სახელი</span><input id="b-name" data-bind="batch:name" value="${esc(b.name)}"></label>
+      <div class="grid2">
+        <label class="field"><span class="lbl">თარიღი</span><input id="b-date" type="date" data-bind="batch:date" value="${esc(b.date)}"></label>
+        <label class="field"><span class="lbl">სტატუსი</span><select id="b-status" data-bind="batch:status">
+          ${Object.keys(STATUS).map(s => `<option value="${s}" ${s === b.status ? 'selected' : ''}>${STATUS[s]}</option>`).join('')}</select></label>
+      </div>
+      <label class="field"><span class="lbl">შენიშვნები</span><textarea id="b-notes" data-bind="batch:notes" placeholder="რა გამოვიდა კარგად, რას შეცვლი შემდეგ ჯერზე">${esc(b.notes)}</textarea></label>
+    </section>
+
+    ${started ? `<details><summary>${ic('list')} ყველა ნაბიჯი${ic('chev', 'chev')}</summary><div class="inner"><div class="checks">${STEPS.map((s, i) => `
+      <button type="button" class="list-row" style="min-height:52px;padding:8px 2px" data-act="goStep" data-i="${i}">
+        ${ic(b.stepsDone[s.key] ? 'check' : (i === b.cur ? 'chev' : 'minus'), 'lead')}<span class="body"><span>${i + 1}. ${s.title}</span></span></button>`).join('')}</div></div></details>
+      <details><summary>${ic('doc')} ხარშვის შეჯამება${ic('chev', 'chev')}</summary><div class="inner">${renderSummary(b)}</div></details>` : ''}
+    <button class="danger" data-act="deleteBatch">${ic('trash')} პარტიის წაშლა</button>
+  </main>${tabbar('home')}`;
 }
 
-/* --- 6.4 ხარშვის რეჟიმი (ნაბიჯ-ნაბიჯ) --- */
+/* --- 8.4 ხარშვის რეჟიმი (ნაბიჯ-ნაბიჯ) --- */
 function viewBrew(b) {
   const r = recipeOf(b);
-  const i = Math.min(Math.max(b.cur, 0), STEPS.length - 1);
+  const i = clamp(b.cur, 0, STEPS.length - 1);
   const st = STEPS[i], c = calc(b, r);
   const stage = STAGES[st.stage];
-  const checks = st.checklist ? st.checklist(r) : null;
   const done = b.stepsDone[st.key];
+  const checks = st.checklist ? st.checklist(r) : [];
+  // ეტაპების ზოლი: თითო ეტაპის შიგნით შევსება ნაბიჯების მიხედვით
+  const segs = STAGES.map((_, si) => {
+    const idx = STEPS.map((s, k) => s.stage === si ? k : -1).filter(k => k >= 0);
+    const fill = i > idx[idx.length - 1] ? 100 : i < idx[0] ? 0 : ((i - idx[0] + 1) / idx.length) * 100;
+    return `<div><i style="width:${fill}%"></i></div>`;
+  }).join('');
   return `
-  <div class="topbar"><div class="inner">
-    <div class="row">
-      <button style="flex:none;width:auto" data-act="goBatch">← პარტია</button>
-      <div class="stage">ეტაპი ${st.stage + 1}/${STAGES.length}: ${stage.letter}. ${stage.name}${debugBadge()}</div>
-      <button style="flex:none;width:auto" data-act="toggleWake" title="ეკრანი არ დაიძინოს">${S.settings.wake ? '☀ ON' : '☾ OFF'}</button>
+  <header class="brewbar"><div class="wrap">
+    <div class="row1">
+      <button class="icon-btn" data-act="goBatch" aria-label="პარტიაზე დაბრუნება">${ic('back')}</button>
+      <div class="where"><span class="eyebrow">ეტაპი ${st.stage + 1}/${STAGES.length}${debugTag()}</span><b>${stage.letter}. ${stage.name}</b></div>
+      <button class="icon-btn ${S.settings.wake ? 'on' : ''}" data-act="toggleWake" aria-pressed="${S.settings.wake}" aria-label="ეკრანი არ დაიძინოს">${ic(S.settings.wake ? 'sun' : 'moon')}</button>
     </div>
-    <div class="progress"><div style="width:${((i + 1) / STEPS.length) * 100}%"></div></div>
-    <div class="small muted" style="margin-top:4px">ნაბიჯი ${i + 1}/${STEPS.length}</div>
-  </div></div>
-  <main>
-    <h1>${i + 1}. ${st.title}</h1>
-    <ul class="steplines">${st.lines(r, b, c).map(l => `<li>${esc(l)}</li>`).join('')}</ul>
-    ${st.custom ? `<div id="custom">${st.custom(r, b, c)}</div>` : ''}
-    ${checks ? `<div class="card">${checks.map((t, k) => {
-      const on = b.checks[st.key] && b.checks[st.key][k];
-      return `<label class="check ${on ? 'done' : ''}"><input type="checkbox" data-bind="check:${st.key}:${k}" ${on ? 'checked' : ''}><span>${esc(t)}</span></label>`;
-    }).join('')}</div>` : ''}
-    ${(st.inputs || []).map(inp => inputHtml(b, inp)).join('')}
-    <div id="live">${liveHtml(st, r, b, c)}</div>
+    <div class="segs" role="progressbar" aria-valuemin="1" aria-valuemax="${STEPS.length}" aria-valuenow="${i + 1}">${segs}</div>
+  </div></header>
+  <main class="wrap">
+    <div class="step-head">
+      <span class="eyebrow num">ნაბიჯი ${i + 1} / ${STEPS.length}</span>
+      <h1>${st.title}</h1>
+    </div>
+    <ul class="instr">${st.lines(r, b, c).map(l => typeof l === 'string'
+      ? `<li><span>${esc(l)}</span></li>` : `<li class="${l.later ? 'later' : ''}"><span>${esc(l.text)}</span></li>`).join('')}</ul>
+    ${st.custom ? `<div id="custom" class="sec">${st.custom(r, b, c)}</div>` : ''}
+    ${(st.inputs || []).map(inp => readingHtml(b, inp)).join('')}
+    <div id="live" class="sec">${liveHtml(st, r, b, c)}</div>
+    ${checks.length ? checklistHtml(st.checklistKey || st.key, checks, b, st.checklistTitle) : ''}
     ${st.timer ? timerHtml(b, st.timer) : ''}
-    ${st.trouble ? `<details><summary>თუ რამე ისე არ არის</summary><ul>${st.trouble.map(t => `<li>${esc(t)}</li>`).join('')}</ul></details>` : ''}
-    ${done ? `<div class="msg ok">✓ შესრულდა ${fmtTime(done)}</div>` : ''}
+    ${st.trouble ? `<details class="trouble"><summary>${ic('alert')} თუ რამე ისე არ არის${ic('chev', 'chev')}</summary><div class="inner"><ul>${st.trouble.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div></details>` : ''}
+    ${done ? `<span class="stamp">${ic('check')} შესრულდა ${fmtTime(done)}</span>` : ''}
   </main>
-  <div class="bar"><div class="inner">
-    <button data-act="stepBack" ${i === 0 ? 'disabled' : ''}>← უკან</button>
+  <div class="actionbar"><div class="wrap">
+    <button class="icon-btn" data-act="stepBack" ${i === 0 ? 'disabled' : ''} aria-label="წინა ნაბიჯი">${ic('back')}</button>
     <button data-act="stepSkip">გამოტოვება</button>
-    <button class="primary wide" id="doneBtn" data-act="stepDone">${st.doneLabel || 'შესრულდა ✓'}</button>
+    <button class="primary ${st.gate && st.gate(r, b, c) ? 'gated' : ''}" id="doneBtn" data-act="stepDone">${ic('check')} ${st.doneLabel || 'შესრულდა'}</button>
   </div></div>`;
 }
 
-function inputHtml(b, inp) {
+function readingHtml(b, inp) {
   const v = b.readings[inp.k];
-  return `<label class="field bigin"><span>${inp.label}${inp.unit ? ` (${inp.unit})` : ''}${v ? ` · ჩაწერილია ${fmtTime(v.time)}` : ''}</span>
-    <input inputmode="decimal" autocomplete="off" data-bind="reading:${inp.k}" value="${v && v.value != null ? v.value : ''}"></label>`;
+  return `<div class="reading">
+    <label class="lbl" for="rd-${inp.k}"><span>${inp.label}</span><span id="rdt-${inp.k}" class="num">${v ? fmtTime(v.time) : ''}</span></label>
+    <div class="stepper">
+      <button type="button" data-act="nudge" data-k="${inp.k}" data-d="-1" aria-label="შემცირება">${ic('minus')}</button>
+      ${unitInput(`id="rd-${inp.k}" data-bind="reading:${inp.k}"`, v && v.value != null ? v.value : '', inp.unit)}
+      <button type="button" data-act="nudge" data-k="${inp.k}" data-d="1" aria-label="გაზრდა">${ic('plus')}</button>
+    </div></div>`;
 }
 
-/* ცოცხალი ბლოკი: გაფრთხილებები და "გაგრძელება" ღილაკის პირობა */
+/* სკალა: მწვანე ზოლი = სწორი დიაპაზონი, ხაზი = შენი ციფრი */
+function gaugeHtml(g, v) {
+  const p = x => clamp((x - g.min) / (g.max - g.min) * 100, 0, 100);
+  const inBand = v != null && v >= g.lo && v <= g.hi;
+  const lbl = (x, cls = '') => `<span class="${cls}" style="left:${p(x)}%">${fmt(x)}</span>`;
+  return `<div class="gauge" aria-hidden="true">
+    <div class="track"><div class="band" style="left:${p(g.lo)}%;width:${p(g.hi) - p(g.lo)}%"></div>
+      ${v != null ? `<div class="mark ${inBand ? '' : 'out'}" style="left:${p(v)}%"></div>` : ''}</div>
+    <div class="scale">${g.lo > g.min ? lbl(g.min, 'start') : ''}${lbl(g.lo, g.lo <= g.min ? 'start' : '')}${lbl(g.hi)}${lbl(g.max, 'end')}</div>
+  </div>`;
+}
+
+/* ცოცხალი ბლოკი: სკალა, გაფრთხილებები და პირობა გაგრძელებისთვის */
 function liveHtml(st, r, b, c) {
+  const g = st.gauge ? st.gauge(r) : null;
   const fb = st.feedback ? st.feedback(r, b, c) : [];
   const gate = st.gate ? st.gate(r, b, c) : null;
-  return fb.map(f => `<div class="msg ${f.cls}">${esc(f.text)}</div>`).join('')
-    + (gate ? `<div class="msg info">⏳ ${esc(gate)}</div>` : '');
+  return (g ? gaugeHtml(g, val(b, g.k)) : '')
+    + fb.map(f => msgHtml(f.cls, f.text)).join('')
+    + (gate && !fb.length ? msgHtml('info', gate) : '');
 }
 function refreshBrewLive(b) {
   const r = recipeOf(b), st = STEPS[b.cur], c = calc(b, r);
   const live = $('#live'); if (live) live.innerHTML = liveHtml(st, r, b, c);
-  const btn = $('#doneBtn'); if (btn) btn.classList.toggle('dim', !!(st.gate && st.gate(r, b, c)));
+  const btn = $('#doneBtn'); if (btn) btn.classList.toggle('gated', !!(st.gate && st.gate(r, b, c)));
+  if ($('#custom') && st.custom) $('#custom').innerHTML = st.custom(r, b, c);
+  (st.inputs || []).forEach(inp => { const el = $(`#rdt-${inp.k}`); const v = b.readings[inp.k]; if (el) el.textContent = v ? fmtTime(v.time) : ''; });
 }
 
+function alertsHtml(b, id) {
+  const t = b.timers[id], r = recipeOf(b);
+  const unit = t ? t.unit : 60000;
+  return TIMERS[id].alerts(r).map(a => {
+    const fired = t && t.fired.includes(alertKey(a));
+    return `<div class="${fired ? 'fired' : ''}"><span class="num">${fmtMs(a.at * unit)}</span><span>${esc(a.msg)}</span></div>`;
+  }).join('');
+}
 function timerHtml(b, id) {
   const t = b.timers[id], r = recipeOf(b), def = TIMERS[id];
+  const min = t ? t.minutes : def.minutes(r);
+  const marks = def.alerts(r).filter(a => a.at > 0 && a.at < min).map(a => {
+    const fired = t && t.fired.includes(alertKey(a));
+    return `<b class="${fired ? 'fired' : ''}" style="left:${100 - a.at / min * 100}%"></b>`;
+  }).join('');
+  const head = `<div class="head"><span class="lbl">${ic('timer')} ${def.label} · ${min} წთ</span>${S.settings.debug ? '<span class="debug">10 წმ</span>' : ''}</div>`;
   if (!t) {
-    const min = def.minutes(r);
-    return `<div class="card timer"><div class="muted">⏱ ${def.label}: ${min} წთ${S.settings.debug ? ' (debug: 10 წმ)' : ''}</div>
-      <button class="primary" data-act="timerStart" data-t="${id}" style="margin-top:8px">▶ ტაიმერის დაწყება</button></div>`;
+    return `<section class="panel hl timer">${head}
+      <div class="digits paused">${fmtMs(min * 60000)}</div>
+      <div class="tbar">${marks}</div>
+      <div class="alerts">${alertsHtml(b, id)}</div>
+      <button class="primary" data-act="timerStart" data-t="${id}">${ic('play')} ტაიმერის დაწყება</button></section>`;
   }
-  return `<div class="card timer">
-    <div class="muted">⏱ ${def.label}${t.done ? ' — დასრულდა' : ''}</div>
-    <div class="digits" data-timer="${b.id}:${id}">${fmtMs(remaining(t))}</div>
-    <div class="small muted center" data-timer-next="${b.id}:${id}">${nextAlert(b, id)}</div>
-    <div class="row">
+  return `<section class="panel hl timer">${head}
+    <div class="digits" data-timer="${b.id}:${id}" role="timer">${fmtMs(remaining(t))}</div>
+    <div class="tbar"><i data-timer="${b.id}:${id}" style="width:0"></i>${marks}</div>
+    <div class="alerts" data-timer="${b.id}:${id}">${alertsHtml(b, id)}</div>
+    <div class="btn-row">
       <button data-act="timerAdj" data-t="${id}" data-d="-1">−1 წთ</button>
-      <button data-act="timerPause" data-t="${id}">${t.paused ? '▶ გაგრძელება' : '⏸ პაუზა'}</button>
+      <button data-act="timerPause" data-t="${id}">${ic(t.paused ? 'play' : 'pause')} ${t.paused ? 'გაგრძელება' : 'პაუზა'}</button>
       <button data-act="timerAdj" data-t="${id}" data-d="1">+1 წთ</button>
     </div>
-    <button class="danger" data-act="timerReset" data-t="${id}" style="min-height:44px;font-size:15px">↺ ტაიმერის თავიდან დაწყება</button>
-  </div>`;
+    <button class="ghost small" data-act="timerReset" data-t="${id}" style="min-height:44px;color:var(--muted)">${ic('reset')} თავიდან დაწყება</button>
+  </section>`;
 }
 
 function renderCalc(r, b, c) {
-  if (!c.ready) return '<div class="msg warn">შეიყვანე მოცულობა ქვაბში და Brix (ნაბიჯები 19–20).</div>';
-  return `<div class="card">
-    <div class="kv">
-      <span>ტკბილი (ნიმუშის გარეშე)</span><b>${fmt(c.wortL, 2)} ლ</b>
-      <span>Brix / სამიზნე</span><b>${fmt(c.brix)} / ${r.targetBrix}</b>
-      <span>საბოლოო მოცულობა</span><b>${fmt(c.vol, 2)} ლ</b>
+  if (!c.ready) return msgHtml('warn', 'შეიყვანე მოცულობა ქვაბში და Brix (ნაბიჯები 19–20).');
+  return `<section class="panel">
+    <div class="stat"><span class="cap">დაამატე წყალი</span><span class="big">${mlRound(c.addL)} მლ</span><span class="cap">საბოლოო მოცულობა ${fmt(c.vol, 2)} ლ</span></div>
+    <div class="tiles">
+      <div class="tile"><span class="k">OG</span><span class="v">${c.og.toFixed(3)}</span></div>
+      <div class="tile"><span class="k">ABV ~</span><span class="v">${fmt(c.abv)}%</span></div>
+      <div class="tile"><span class="k">საბოლოო Brix</span><span class="v">${fmt(c.finalBrix)}</span></div>
+      <div class="tile ${c.bitterHigh ? 'warn' : ''}"><span class="k">სიმწარე, გ/ლ</span><span class="v">${fmt(c.bitter, 2)}${c.bitterHigh ? ' ↑' : ''}</span></div>
     </div>
-    <div class="muted center" style="margin-top:12px">დაამატე წყალი</div>
-    <div class="big-num">${Math.round(c.addL * 100) * 10} მლ</div>
-    <div class="kv" style="margin-top:10px">
-      <span>OG</span><b>${c.og.toFixed(3)}</b>
-      <span>საბოლოო Brix</span><b>${fmt(c.finalBrix)}</b>
-      <span>სავარაუდო ABV</span><b>~${fmt(c.abv)}%</b>
-      <span>სიმწარე (სვია გ/ლ)</span><b>${fmt(c.bitter, 2)} ${c.bitterHigh ? '— მაღალი' : '— ნორმა'}</b>
-    </div></div>
-    ${c.belowTarget ? '<div class="msg warn">Brix სამიზნეზე დაბალია — წყალს ნუ დაამატებ.</div>' : ''}
-    ${c.capped ? `<div class="msg info">მოცულობა შეზღუდულია ${r.maxVolumeL} ლ-ით — Brix სამიზნეზე მაღალი დარჩება (${fmt(c.finalBrix)}).</div>` : ''}
-    ${c.bitterHigh ? `<div class="msg warn">სიმწარე მაღალია (> ${BITTER_HIGH_G_PER_L} გ/ლ).</div>` : ''}
-    ${c.lowEff ? `<div class="msg bad">⚠ ეფექტურობა დაბალია, ალბათ დაფქვა. ალტერნატივა: ნაკლები Brix-ით მეტი მოცულობა:</div>
-      ${c.alts.length ? `<table><tr><th>Brix</th><th>მოცულობა</th><th>წყალი</th><th>ABV</th></tr>
-      ${c.alts.map(a => `<tr><td>${a.tb}</td><td class="num">${fmt(a.L, 2)} ლ${a.over ? ' ⚠' : ''}</td><td class="num">${Math.round(a.add * 100) * 10} მლ</td><td class="num">~${fmt(a.abv)}%</td></tr>`).join('')}
-      </table>${c.alts.some(a => a.over) ? `<p class="small muted">⚠ = მეტია ${r.maxVolumeL} ლ-ზე</p>` : ''}` : ''}` : ''}`;
+    <div class="kv small muted"><span>ტკბილი ნიმუშის გარეშე</span><b>${fmt(c.wortL, 2)} ლ</b><span>Brix / სამიზნე</span><b>${fmt(c.brix)} / ${r.targetBrix}</b></div>
+  </section>
+  ${c.belowTarget ? msgHtml('warn', 'Brix სამიზნეზე დაბალია — წყალს ნუ დაამატებ.') : ''}
+  ${c.capped ? msgHtml('info', `მოცულობა შეზღუდულია ${r.maxVolumeL} ლ-ით — Brix სამიზნეზე მაღალი დარჩება (${fmt(c.finalBrix)}).`) : ''}
+  ${c.bitterHigh ? msgHtml('warn', `სიმწარე მაღალია (> ${BITTER_HIGH_G_PER_L} გ/ლ).`) : ''}
+  ${c.lowEff ? msgHtml('bad', 'ეფექტურობა დაბალია, ალბათ დაფქვა. ალტერნატივა: ნაკლები Brix-ით მეტი მოცულობა.')
+    + (c.alts.length ? `<div class="panel tablewrap"><table><tr><th>Brix</th><th>მოცულობა</th><th>წყალი</th><th>ABV</th></tr>
+      ${c.alts.map(a => `<tr><td class="n">${a.tb}</td><td class="n">${fmt(a.L, 2)} ლ${a.over ? ' ⚠' : ''}</td><td class="n">${mlRound(a.add)} მლ</td><td class="n">~${fmt(a.abv)}%</td></tr>`).join('')}
+      </table>${c.alts.some(a => a.over) ? `<p class="small muted">⚠ მეტია ${r.maxVolumeL} ლ-ზე</p>` : ''}</div>` : '') : ''}`;
 }
 
 /* ხარშვის დღის შეჯამება: ნაბიჯები, დრო, ციფრები */
@@ -874,13 +1279,16 @@ function stepValues(b, st) {
 function renderSummary(b) {
   const r = recipeOf(b), c = calc(b, r);
   const rows = STEPS.filter(s => b.stepsDone[s.key] || stepValues(b, s));
-  return `<table><tr><th>ნაბიჯი</th><th>დრო</th><th>ციფრი</th></tr>
-    ${rows.map(s => `<tr><td>${STEPS.indexOf(s) + 1}. ${s.title}</td><td>${fmtTime(b.stepsDone[s.key])}</td><td>${esc(stepValues(b, s))}</td></tr>`).join('')}
-    </table>
-    ${c.ready ? `<div class="kv card"><span>OG</span><b>${c.og.toFixed(3)}</b><span>მოცულობა</span><b>${fmt(val(b, 'finalVol') || c.vol, 2)} ლ</b><span>სავარაუდო ABV</span><b>~${fmt(c.abv)}%</b></div>` : ''}`;
+  return `${c.ready ? `<div class="tiles">
+      <div class="tile"><span class="k">OG</span><span class="v">${c.og.toFixed(3)}</span></div>
+      <div class="tile"><span class="k">მოცულობა</span><span class="v">${fmt(val(b, 'finalVol') || c.vol, 2)} ლ</span></div>
+      <div class="tile"><span class="k">ABV ~</span><span class="v">${fmt(c.abv)}%</span></div></div>` : ''}
+    ${rows.length ? `<div class="tablewrap"><table><tr><th>ნაბიჯი</th><th>დრო</th><th>ციფრი</th></tr>
+    ${rows.map(s => `<tr><td>${STEPS.indexOf(s) + 1}. ${s.title}</td><td class="n">${fmtTime(b.stepsDone[s.key])}</td><td>${esc(stepValues(b, s))}</td></tr>`).join('')}
+    </table></div>` : '<p class="muted small">ჯერ ჩანაწერი არ არის.</p>'}`;
 }
 
-/* --- 6.5 დადუღების დღიური --- */
+/* --- 8.5 დადუღების დღიური --- */
 function ensureFerm(b, day) {
   let e = b.fermentationLog.find(x => x.day === day);
   if (!e) {
@@ -892,84 +1300,86 @@ function ensureFerm(b, day) {
 function viewFerm(b) {
   const days = [...new Set([...FERM_DAYS, ...b.fermentationLog.map(e => e.day)])].sort((a, z) => a - z);
   const today = todayStr();
-  return `${nav('home')}<main>
-    <h1>🫧 დადუღება: ${esc(b.name)}</h1>
-    <div class="muted">ხარშვის დღე: ${fmtDate(brewDay(b))}</div>
-    <label class="field"><span>Brix-ის ინსტრუმენტი</span><select data-bind="batch:instrument">
-      <option value="hydro" ${b.instrument !== 'refract' ? 'selected' : ''}>არეომეტრი (SG = 1 + Brix×0.004)</option>
-      <option value="refract" ${b.instrument === 'refract' ? 'selected' : ''}>რეფრაქტომეტრი (კორექციით)</option></select></label>
-    <div id="ferm-live">${fermLiveHtml(b)}</div>
+  return `${appbar('დადუღება', `#/batch/${b.id}`)}<main class="wrap">
+    <div class="step-head"><span class="eyebrow">${esc(b.name)}</span><p class="muted">ხარშვის დღე: ${fmtDate(brewDay(b))}</p></div>
+    <div id="ferm-live" class="sec">${fermLiveHtml(b)}</div>
+    <label class="field"><span class="lbl">Brix-ის ინსტრუმენტი</span><select id="f-instr" data-bind="batch:instrument">
+      <option value="hydro" ${b.instrument !== 'refract' ? 'selected' : ''}>არეომეტრი — SG = 1 + Brix × 0.004</option>
+      <option value="refract" ${b.instrument === 'refract' ? 'selected' : ''}>რეფრაქტომეტრი — ალკოჰოლის კორექციით</option></select></label>
     ${days.map(day => {
       const e = b.fermentationLog.find(x => x.day === day) || { day, date: addDays(brewDay(b), day) };
       const fgLabel = FG_DAYS[day] || (e.fg != null || day > 9 ? 'FG' : null);
-      return `<div class="card ${e.date === today ? 'today' : ''}">
-        <h3 style="margin-top:0">დღე ${day} · ${fmtDate(e.date)}${e.date === today ? ' · დღეს' : ''}${FG_DAYS[day] ? ` · ${FG_DAYS[day]}` : ''}</h3>
-        <div class="row">
-          <label class="field" style="margin:0"><span>ტემპ. °C</span><input inputmode="decimal" data-bind="ferm:${day}:temp" data-num="1" value="${e.temp ?? ''}"></label>
-          <label class="field" style="margin:0"><span>საკეტი</span><select data-bind="ferm:${day}:airlock"><option value=""></option>
+      const isToday = e.date === today;
+      return `<section class="panel ${isToday ? 'today' : ''}">
+        <div class="sec-head" style="margin:0"><h3>დღე ${day}${FG_DAYS[day] ? ` · ${FG_DAYS[day]}` : ''}</h3><span class="small ${isToday ? '' : 'muted'}" ${isToday ? 'style="color:var(--amber);font-weight:700"' : ''}>${isToday ? 'დღეს · ' : ''}${fmtDate(e.date)}</span></div>
+        <div class="grid2">
+          <label class="field"><span class="lbl">ტემპერატურა</span>${unitInput(`id="f-${day}-t" data-bind="ferm:${day}:temp" data-num="1"`, e.temp ?? '', '°C')}</label>
+          <label class="field"><span class="lbl">საკეტი</span><select id="f-${day}-a" data-bind="ferm:${day}:airlock"><option value="">—</option>
             ${AIRLOCK.map(a => `<option ${e.airlock === a ? 'selected' : ''}>${a}</option>`).join('')}</select></label>
         </div>
-        <label class="field"><span>ქაფი (სადამდე)</span><input data-bind="ferm:${day}:foam" value="${esc(e.foam)}"></label>
-        ${fgLabel ? `<label class="field bigin"><span>${fgLabel} (Brix)</span><input inputmode="decimal" data-bind="ferm:${day}:fg" data-num="1" value="${e.fg ?? ''}"></label>` : ''}
-        <label class="field"><span>შენიშვნა</span><input data-bind="ferm:${day}:note" value="${esc(e.note)}"></label>
-      </div>`;
+        ${fgLabel ? `<label class="field"><span class="lbl">${fgLabel}</span>${unitInput(`id="f-${day}-fg" data-bind="ferm:${day}:fg" data-num="1"`, e.fg ?? '', 'Bx')}</label>` : ''}
+        <div class="grid2">
+          <label class="field"><span class="lbl">ქაფი (სადამდე)</span><input id="f-${day}-f" data-bind="ferm:${day}:foam" value="${esc(e.foam)}"></label>
+          <label class="field"><span class="lbl">შენიშვნა</span><input id="f-${day}-n" data-bind="ferm:${day}:note" value="${esc(e.note)}"></label>
+        </div>
+      </section>`;
     }).join('')}
-    <button data-act="addFermDay">+ დამატებითი დღე (FG ხელახლა)</button>
-    <div class="card"><h3 style="margin-top:0">შემდეგ</h3>
-      <ul><li>FG #1 = FG #2 → დადუღება დასრულდა.</li><li>Cold crash: 2 დღე მაცივარში.</li><li>ჩამოსხმა.</li></ul>
-      <a class="btn" href="#/bottle/${b.id}">🍾 ჩამოსხმა →</a></div>
-    <a class="btn" href="#/batch/${b.id}">← პარტია</a>
-  </main>`;
+    <button data-act="addFermDay">${ic('plus')} დამატებითი დღე (FG ხელახლა)</button>
+    <section class="panel"><h3>შემდეგ</h3>
+      <ul style="margin:0;padding-left:20px"><li>FG #1 = FG #2 → დადუღება დასრულდა.</li><li>Cold crash: 2 დღე მაცივარში.</li><li>ჩამოსხმა.</li></ul>
+      <a class="btn" href="#/bottle/${b.id}">${ic('bottle')} ჩამოსხმაზე გადასვლა</a></section>
+  </main>${tabbar('home')}`;
 }
 function fermLiveHtml(b) {
   const st = fermStats(b);
-  return `<div class="card"><div class="kv">
-      <span>OG</span><b>${st.og ? st.og.toFixed(3) : '—'}</b>
-      <span>FG (ბოლო)</span><b>${st.fgSG ? `${st.fgSG.toFixed(3)} (${st.fgBrix} Bx)` : '—'}</b>
-      <span>ABV</span><b>${st.abv != null ? fmt(st.abv) + '%' : '—'}</b></div></div>
-    ${st.finished ? '<div class="msg ok">✓ დადუღება დასრულდა! FG სტაბილურია. Cold crash: 2 დღე მაცივარში, მერე ჩამოსხმა.</div>'
-      : st.fgCount >= 2 ? '<div class="msg warn">FG ჯერ იცვლება — დაელოდე 2 დღე და გაზომე ხელახლა.</div>' : ''}`;
+  return `<div class="tiles">
+      <div class="tile"><span class="k">OG</span><span class="v">${st.og ? st.og.toFixed(3) : '—'}</span></div>
+      <div class="tile"><span class="k">FG</span><span class="v">${st.fgSG ? st.fgSG.toFixed(3) : '—'}</span></div>
+      <div class="tile"><span class="k">ABV</span><span class="v">${st.abv != null ? fmt(st.abv) + '%' : '—'}</span></div></div>
+    ${st.finished ? msgHtml('ok', 'დადუღება დასრულდა! FG სტაბილურია. Cold crash: 2 დღე მაცივარში, მერე ჩამოსხმა.')
+      : st.fgCount >= 2 ? msgHtml('warn', 'FG ჯერ იცვლება — დაელოდე 2 დღე და გაზომე ხელახლა.') : ''}`;
 }
 
-/* --- 6.6 ჩამოსხმა --- */
+/* --- 8.6 ჩამოსხმა --- */
 function viewBottle(b) {
   const bt = b.bottling;
   const tasteDate = bt.date ? addDays(bt.date, 14) : null;
-  return `${nav('home')}<main>
-    <h1>🍾 ჩამოსხმა: ${esc(b.name)}</h1>
-    <label class="field bigin"><span>მოცულობა (ლ)</span><input inputmode="decimal" data-bind="bottle:volume" data-num="1" value="${bt.volume ?? ''}"></label>
+  return `${appbar('ჩამოსხმა', `#/batch/${b.id}`)}<main class="wrap">
+    <div class="step-head"><span class="eyebrow">${esc(b.name)}</span><div>${pill(b.status)}</div></div>
+    <div class="reading">
+      <label class="lbl" for="bt-vol"><span>მოცულობა</span></label>
+      <div class="stepper">
+        <button type="button" data-act="nudgeBottle" data-d="-1" aria-label="შემცირება">${ic('minus')}</button>
+        ${unitInput('id="bt-vol" data-bind="bottle:volume" data-num="1"', bt.volume ?? '', 'ლ')}
+        <button type="button" data-act="nudgeBottle" data-d="1" aria-label="გაზრდა">${ic('plus')}</button>
+      </div></div>
     <div id="bottle-live">${bottleLiveHtml(b)}</div>
-    <div class="card">${BOTTLING_CHECKS.map((t, k) => {
-      const on = b.checks.bottling && b.checks.bottling[k];
-      return `<label class="check ${on ? 'done' : ''}"><input type="checkbox" data-bind="check:bottling:${k}" ${on ? 'checked' : ''}><span>${esc(t)}</span></label>`;
-    }).join('')}</div>
-    <div class="row">
-      <label class="field"><span>ბოთლები (ც)</span><input inputmode="numeric" data-bind="bottle:bottles" data-num="1" value="${bt.bottles ?? ''}"></label>
-      <label class="field"><span>FG (Brix)</span><input inputmode="decimal" data-bind="bottle:fg" data-num="1" value="${bt.fg ?? ''}"></label>
+    ${checklistHtml('bottling', BOTTLING_CHECKS, b)}
+    <div class="grid2">
+      <label class="field"><span class="lbl">ბოთლები</span>${unitInput('id="bt-n" data-bind="bottle:bottles" data-num="1"', bt.bottles ?? '', 'ც')}</label>
+      <label class="field"><span class="lbl">FG</span>${unitInput('id="bt-fg" data-bind="bottle:fg" data-num="1"', bt.fg ?? '', 'Bx')}</label>
     </div>
-    <label class="field"><span>ჩამოსხმის თარიღი</span><input type="date" data-bind="bottle:date" value="${esc(bt.date)}"></label>
-    <label class="field"><span>გემოს შეფასება (2 კვირაზე${tasteDate ? `: ${fmtDate(tasteDate)}` : ''})</span><textarea data-bind="bottle:tasting">${esc(bt.tasting)}</textarea></label>
-    <div class="stack">
-      <button class="primary" data-act="markBottled">✓ ჩამოსხმულია</button>
-      <button data-act="markDone">🏁 პარტია დასრულებულია</button>
-      <a class="btn" href="#/batch/${b.id}">← პარტია</a>
-    </div>
-  </main>`;
+    <label class="field"><span class="lbl">ჩამოსხმის თარიღი</span><input id="bt-date" type="date" data-bind="bottle:date" value="${esc(bt.date)}"></label>
+    <label class="field"><span class="lbl">გემოს შეფასება — 2 კვირაზე${tasteDate ? `, ${fmtDate(tasteDate)}` : ''}</span><textarea id="bt-taste" data-bind="bottle:tasting" placeholder="ფერი, ქაფი, არომატი, სიმწარე, კარბონიზაცია">${esc(bt.tasting)}</textarea></label>
+    <button class="primary" data-act="markBottled">${ic('check')} ჩამოსხმულია</button>
+    <button data-act="markDone">${ic('mug')} პარტია დასრულებულია</button>
+  </main>${tabbar('home')}`;
 }
 function bottleLiveHtml(b) {
   const v = b.bottling.volume;
-  return v ? `<div class="card center"><div class="muted">შაქარი (${SUGAR_G_PER_L} გ/ლ)</div><div class="big-num">${fmt(v * SUGAR_G_PER_L)} გ</div>
-    <div class="small muted">~${Math.floor(v / 0.5)} ბოთლი × 0.5 ლ</div></div>` : '';
+  return v ? `<section class="panel"><div class="stat"><span class="cap">შაქარი · ${SUGAR_G_PER_L} გ/ლ</span><span class="big">${fmt(v * SUGAR_G_PER_L)} გ</span>
+    <span class="cap">≈ ${Math.floor(v / 0.5)} ბოთლი × 0.5 ლ · ან ${Math.floor(v / 0.33)} × 0.33 ლ</span></div></section>`
+    : msgHtml('info', 'შეიყვანე მოცულობა — შაქარს დავითვლი.');
 }
 
-/* --- 6.7 ექსპორტი (Markdown) --- */
+/* --- 8.7 ექსპორტი (Markdown) --- */
 function exportMd(b) {
   const r = recipeOf(b), c = calc(b, r), fs = fermStats(b), bt = b.bottling;
   const L = [];
   L.push(`# ${b.name}`, '', `- თარიღი: ${fmtDate(b.date)}`, `- სტატუსი: ${STATUS[b.status]}`, '');
   L.push(`## რეცეპტი: ${r.name}${r.style ? ` (${r.style})` : ''}`, '');
-  L.push('| მარცვალი | გ |', '|---|---:|', ...r.grains.map(g => `| ${g.name} | ${g.grams} |`), '');
-  L.push('| სვია | გ | წთ |', '|---|---:|---:|', ...r.hops.map(h => `| ${h.name} | ${h.grams} | ${h.minute} |`), '');
+  L.push('| მარცვალი | გ | ჩაყრა (წთ) |', '|---|---:|---:|', ...r.grains.map(g => `| ${g.name} | ${g.grams} | ${grainMin(g)} |`), '');
+  L.push('| სვია | გ | ბოლომდე (წთ) |', '|---|---:|---:|', ...r.hops.map(h => `| ${h.name} | ${h.grams} | ${h.minute} |`), '');
   L.push(`- საფუარი: ${r.yeast.name}, ${r.yeast.grams} გ (${r.yeast.tempMin}–${r.yeast.tempMax}°C)`);
   L.push(`- გაშაქრება: ${r.mashTemp}°C, ${r.mashMin} წთ, ${r.mashWaterL} ლ წყალი; ჩამორეცხვა ${r.spargeWaterL} ლ`);
   L.push(`- ხარშვა: ${r.boilMin} წთ; სამიზნე Brix ${r.targetBrix}; მაქს. ${r.maxVolumeL} ლ`, '');
@@ -990,65 +1400,105 @@ function exportMd(b) {
   return L.join('\n');
 }
 function viewExport(b) {
-  return `${nav('home')}<main>
-    <h1>📄 ექსპორტი</h1>
-    <button class="primary" data-act="copyMd">📋 კოპირება</button>
-    <textarea id="md" readonly style="min-height:60vh;font-size:14px;font-family:ui-monospace,monospace;margin-top:12px">${esc(exportMd(b))}</textarea>
-    <a class="btn" href="#/batch/${b.id}" style="margin-top:12px">← პარტია</a>
-  </main>`;
+  return `${appbar('ექსპორტი', `#/batch/${b.id}`)}<main class="wrap">
+    <p class="muted">მთელი პარტია Markdown ტექსტად — ჩასვი შენიშვნებში, ჩატში ან GitHub-ზე.</p>
+    <button class="primary" data-act="copyMd">${ic('copy')} კოპირება</button>
+    <textarea id="md" readonly style="min-height:60vh;font-size:var(--t-xs);font-family:var(--font-num)">${esc(exportMd(b))}</textarea>
+  </main>${tabbar('home')}`;
 }
 
-/* --- 6.8 რეცეპტები --- */
+/* --- 8.8 რეცეპტები --- */
 const grainTotal = r => r.grains.reduce((s, g) => s + (+g.grams || 0), 0);
 function viewRecipes() {
-  return `${nav('recipes')}<main>
-    <h1>რეცეპტები</h1>
-    ${S.recipes.map(r => `<a class="card" href="#/recipe/${r.id}"><b>${esc(r.name)}</b>
-      <div class="muted small">${esc(r.style)} · მარცვალი ${grainTotal(r)} გ · ${r.mashTemp}°C · Brix ${r.targetBrix}</div></a>`).join('')}
-    <button class="primary" data-act="newRecipe">+ ახალი რეცეპტი</button>
-    <button data-act="restoreRecipes" style="margin-top:10px">↺ ჩაშენებული რეცეპტების აღდგენა</button>
-  </main>`;
+  return `<main class="wrap">
+    <div class="step-head" style="margin-top:14px"><span class="eyebrow">ბიბლიოთეკა</span><h1>რეცეპტები</h1></div>
+    <p class="muted small">შეეხე რეცეპტს რედაქტირებისთვის. ცვლილებები ავტომატურად ინახება.</p>
+    <div class="sec">${S.recipes.map(r => `<a class="batch" href="#/recipe/${r.id}">
+      <div class="top"><span class="name">${esc(r.name)}</span>${ic('edit')}</div>
+      <div class="small muted">${r.grains.map(grainLabel).join(' · ')}</div>
+      <div class="tiles">
+        <div class="tile"><span class="k">მარცვალი</span><span class="v">${fmt(grainTotal(r) / 1000, 2)} კგ</span></div>
+        <div class="tile"><span class="k">გაშაქრება</span><span class="v">${r.mashTemp}°C</span></div>
+        <div class="tile"><span class="k">Brix</span><span class="v">${r.targetBrix}</span></div>
+      </div></a>`).join('')}</div>
+    <button class="primary" data-act="newRecipe">${ic('plus')} ახალი რეცეპტი</button>
+    <button class="ghost" data-act="restoreRecipes">${ic('reset')} ჩაშენებული რეცეპტების აღდგენა</button>
+  </main>${tabbar('recipes')}`;
+}
+
+/* რედაქტირებადი რეცეპტი: ბიბლიოთეკიდან (#/recipe/id) ან პარტიის ასლი (#/brecipe/batchId) */
+function editTarget() {
+  const rt = route();
+  if (rt.name === 'recipe') return getRecipe(rt.id);
+  if (rt.name === 'brecipe') { const b = getBatch(rt.id); return b && b.recipe; }
+  return null;
 }
 let recipeBaseTotal = 0;   // მარცვლის ჯამი ბოლო გადათვლისას
-function viewRecipe(r) {
+function viewRecipe(r, batch) {
   recipeBaseTotal = grainTotal(r);
-  const f = (path, label, unit, isNum = true) => `<label class="field"><span>${label}${unit ? ` (${unit})` : ''}</span>
-    <input ${isNum ? 'inputmode="decimal" data-num="1"' : ''} data-bind="rec:${path}" value="${esc(getPath(r, path))}"></label>`;
-  return `${nav('recipes')}<main>
-    <h1>რეცეპტი</h1>
-    ${f('name', 'სახელი', '', false)}${f('style', 'სტილი', '', false)}
-    <h2>მარცვალი</h2>
-    ${r.grains.map((g, i) => `<div class="gridrow g3">
-      <input data-bind="rec:grains.${i}.name" value="${esc(g.name)}" placeholder="სახელი">
-      <input inputmode="decimal" data-num="1" data-rescale="1" data-bind="rec:grains.${i}.grams" value="${g.grams}" placeholder="გ">
-      <button data-act="rmRow" data-list="grains" data-i="${i}">✕</button></div>`).join('')}
-    <button data-act="addRow" data-list="grains">+ მარცვალი</button>
-    <label class="field"><span>ჯამი (გ) — შეცვლისას ყველა მარცვალი პროპორციულად</span>
-      <input inputmode="decimal" id="grainTotal" data-total="1" value="${grainTotal(r)}"></label>
-    <label class="check"><input type="checkbox" data-bind="rec:autoScale" ${r.autoScale ? 'checked' : ''}>
-      <span>ავტომატური გადათვლა: წყალი ${MASH_WATER_L_PER_KG} ლ/კგ, სვია და ჩამორეცხვა პროპორციულად</span></label>
-    <h2>სვია</h2>
-    <div class="gridrow small muted"><span>სახელი</span><span>გ</span><span>წთ</span><span></span></div>
-    ${r.hops.map((h, i) => `<div class="gridrow">
-      <input data-bind="rec:hops.${i}.name" value="${esc(h.name)}">
-      <input inputmode="decimal" data-num="1" data-bind="rec:hops.${i}.grams" value="${h.grams}">
-      <input inputmode="decimal" data-num="1" data-bind="rec:hops.${i}.minute" value="${h.minute}">
-      <button data-act="rmRow" data-list="hops" data-i="${i}">✕</button></div>`).join('')}
-    <button data-act="addRow" data-list="hops">+ სვია</button>
-    <h2>საფუარი</h2>
-    ${f('yeast.name', 'სახელი', '', false)}
-    <div class="row">${f('yeast.grams', 'გ', '')}${f('yeast.tempMin', 'მინ', '°C')}${f('yeast.tempMax', 'მაქს', '°C')}</div>
-    <h2>პარამეტრები</h2>
-    <div class="row">${f('mashTemp', 'გაშაქრება', '°C')}${f('mashMin', 'გაშაქრება', 'წთ')}</div>
-    <div class="row">${f('mashWaterL', 'გაშაქრების წყალი', 'ლ')}${f('spargeWaterL', 'ჩამორეცხვა', 'ლ')}</div>
-    <div class="row">${f('boilMin', 'ხარშვა', 'წთ')}${f('targetBrix', 'სამიზნე Brix', '')}</div>
-    ${f('maxVolumeL', 'მაქს. მოცულობა', 'ლ')}
-    <div class="stack" style="margin-top:16px">
-      <button data-act="dupRecipe">⧉ დუბლირება</button>
-      <button class="danger" data-act="delRecipe">🗑 წაშლა</button>
-      <a class="btn" href="#/recipes">← რეცეპტები</a>
-    </div>
-  </main>`;
+  const f = (path, label, unit) => `<label class="field"><span class="lbl">${label}</span>
+    ${unitInput(`id="r-${path.replace('.', '-')}" data-num="1" data-bind="rec:${path}"`, getPath(r, path), unit)}</label>`;
+  return `${appbar(batch ? 'პარტიის რეცეპტი' : 'რეცეპტი', batch ? `#/batch/${batch.id}` : '#/recipes', '<span class="saved" id="saved">ავტომატურად ინახება</span>')}
+  <main class="wrap">
+    ${batch ? msgHtml('info', `ეს „${batch.name}"-ის ასლია. ცვლილება შეეხება მხოლოდ ამ პარტიას.`) : ''}
+    <section class="sec">
+      <label class="field"><span class="lbl">სახელი</span><input id="r-name" data-bind="rec:name" value="${esc(r.name)}"></label>
+      <label class="field"><span class="lbl">სტილი</span><input id="r-style" data-bind="rec:style" value="${esc(r.style)}"></label>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head"><h2>${ic('wheat')} მარცვალი</h2><span class="num muted" id="grainSum">${grainTotal(r)} გ</span></div>
+      <div class="items">${r.grains.map((g, i) => `<div class="item">
+        <label class="field nm"><span class="lbl">დასახელება</span><input id="r-g${i}-n" data-bind="rec:grains.${i}.name" value="${esc(g.name)}" placeholder="მაგ. Pilsner"></label>
+        <label class="field"><span class="lbl">წონა</span>${unitInput(`id="r-g${i}-g" data-num="1" data-rescale="1" data-bind="rec:grains.${i}.grams"`, g.grams, 'გ')}</label>
+        <label class="field"><span class="lbl">ჩაყრის წუთი</span>${unitInput(`id="r-g${i}-m" data-num="1" data-bind="rec:grains.${i}.minute"`, grainMin(g), 'წთ')}</label>
+        <button class="icon-btn" data-act="rmRow" data-list="grains" data-i="${i}" aria-label="წაშლა">${ic('trash')}</button>
+      </div>`).join('')}</div>
+      <p class="hint">„ჩაყრის წუთი" = გაშაქრების რომელ წუთზე ჩაიყაროს: 0 = თავიდანვე, 45 = 45-ე წუთზე (მაგ. Black ბოლო 15 წუთით). ტაიმერი სიგნალს მოგცემს.</p>
+      <button class="ghost" data-act="addRow" data-list="grains">${ic('plus')} მარცვლის დამატება</button>
+      <div class="panel">
+        <label class="field"><span class="lbl">ჯამური წონა — შეცვლისას ყველა მარცვალი პროპორციულად</span>
+          ${unitInput('id="grainTotal" data-total="1"', grainTotal(r), 'გ')}</label>
+        <label class="switch"><span><b>ავტომატური გადათვლა</b><br><span class="small muted">წყალი ${MASH_WATER_L_PER_KG} ლ/კგ; სვია და ჩამორეცხვა პროპორციულად; Brix უცვლელი</span></span>
+          <input type="checkbox" id="r-auto" data-bind="rec:autoScale" ${r.autoScale ? 'checked' : ''}></label>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head"><h2>${ic('hop')} სვია</h2><span class="num muted" id="hopSum">${fmt(r.hops.reduce((s, h) => s + (+h.grams || 0), 0))} გ</span></div>
+      <div class="items">${r.hops.map((h, i) => `<div class="item">
+        <label class="field nm"><span class="lbl">დასახელება</span><input id="r-h${i}-n" data-bind="rec:hops.${i}.name" value="${esc(h.name)}" placeholder="მაგ. Perle"></label>
+        <label class="field"><span class="lbl">წონა</span>${unitInput(`id="r-h${i}-g" data-num="1" data-bind="rec:hops.${i}.grams"`, h.grams, 'გ')}</label>
+        <label class="field"><span class="lbl">ბოლომდე</span>${unitInput(`id="r-h${i}-m" data-num="1" data-bind="rec:hops.${i}.minute"`, h.minute, 'წთ')}</label>
+        <button class="icon-btn" data-act="rmRow" data-list="hops" data-i="${i}" aria-label="წაშლა">${ic('trash')}</button>
+      </div>`).join('')}</div>
+      <p class="hint">„ბოლომდე" = რამდენი წუთი რჩება ხარშვის ბოლომდე: 60 = დასაწყისში, 5 = ბოლო 5 წუთი, 0 = ცეცხლის გამორთვისას.</p>
+      <button class="ghost" data-act="addRow" data-list="hops">${ic('plus')} სვიის დამატება</button>
+    </section>
+
+    <section class="sec">
+      <h2>${ic('yeast')} საფუარი</h2>
+      <label class="field"><span class="lbl">დასახელება</span><input id="r-yeast-name" data-bind="rec:yeast.name" value="${esc(r.yeast.name)}"></label>
+      <div class="grid3">${f('yeast.grams', 'რაოდენობა', 'გ')}${f('yeast.tempMin', 'მინ.', '°C')}${f('yeast.tempMax', 'მაქს.', '°C')}</div>
+    </section>
+
+    <section class="sec">
+      <h2>${ic('flame')} გაშაქრება და ხარშვა</h2>
+      <div class="grid2">${f('mashTemp', 'გაშაქრების ტემპ.', '°C')}${f('mashMin', 'გაშაქრების დრო', 'წთ')}</div>
+      <div class="grid2">${f('mashWaterL', 'გაშაქრების წყალი', 'ლ')}${f('spargeWaterL', 'ჩამორეცხვის წყალი', 'ლ')}</div>
+      <div class="grid2">${f('boilMin', 'ხარშვის დრო', 'წთ')}${f('targetBrix', 'სამიზნე Brix', 'Bx')}</div>
+      <div class="grid2">${f('maxVolumeL', 'მაქს. მოცულობა', 'ლ')}</div>
+    </section>
+
+    <div id="issues" class="sec">${recipeIssues(r).map(t => msgHtml('warn', t)).join('')}</div>
+
+    <section class="sec">
+      ${batch ? `<button data-act="saveBatchRecipeToLib">${ic('book')} ბიბლიოთეკაში შენახვა ახალ რეცეპტად</button>
+        ${getRecipe(batch.recipeId) ? `<button class="ghost" data-act="resetBatchRecipe">${ic('reset')} ბიბლიოთეკის ვერსიით ჩანაცვლება</button>` : ''}`
+      : `<button data-act="dupRecipe">${ic('copy')} დუბლირება</button>
+        <button class="danger" data-act="delRecipe">${ic('trash')} რეცეპტის წაშლა</button>`}
+    </section>
+  </main>${tabbar('recipes')}`;
 }
 function getPath(o, path) { return path.split('.').reduce((x, k) => x == null ? x : x[k], o) ?? ''; }
 function setPath(o, path, v) {
@@ -1057,11 +1507,12 @@ function setPath(o, path, v) {
 }
 /* მარცვლის ჯამის ცვლილებისას: წყალი 3 ლ/კგ, სვია და ჩამორეცხვა პროპორციულად, Brix უცვლელი */
 function rescaleRecipe(r, oldTotal, newTotal) {
-  if (!r.autoScale || !oldTotal || !newTotal || oldTotal === newTotal) return;
+  if (!r.autoScale || !oldTotal || !newTotal || oldTotal === newTotal) return false;
   const k = newTotal / oldTotal;
   r.mashWaterL = round1(MASH_WATER_L_PER_KG * newTotal / 1000);
   r.spargeWaterL = round1(r.spargeWaterL * k);
   r.hops.forEach(h => { h.grams = round1(h.grams * k); });
+  return true;
 }
 function syncRecipeInputs(r) {
   document.querySelectorAll('[data-bind^="rec:"]').forEach(el => {
@@ -1069,40 +1520,54 @@ function syncRecipeInputs(r) {
     el.value = getPath(r, el.dataset.bind.slice(4));
   });
   const t = $('#grainTotal'); if (t && t !== document.activeElement) t.value = grainTotal(r);
+  const s = $('#grainSum'); if (s) s.textContent = `${grainTotal(r)} გ`;
+  const h = $('#hopSum'); if (h) h.textContent = `${fmt(r.hops.reduce((x, y) => x + (+y.grams || 0), 0))} გ`;
+  const iss = $('#issues'); if (iss) iss.innerHTML = recipeIssues(r).map(t => msgHtml('warn', t)).join('');
+}
+let savedTimer = null;
+function flashSaved() {
+  const el = $('#saved'); if (!el) return;
+  el.textContent = 'შენახულია ✓'; el.classList.add('flash');
+  clearTimeout(savedTimer);
+  savedTimer = setTimeout(() => { el.classList.remove('flash'); el.textContent = 'ავტომატურად ინახება'; }, 1500);
 }
 
-/* --- 6.9 პარამეტრები და სარეზერვო ასლი --- */
+/* --- 8.9 პარამეტრები და სარეზერვო ასლი --- */
 function viewSettings() {
   const perm = 'Notification' in window ? Notification.permission : 'unsupported';
-  return `${nav('settings')}<main>
-    <h1>პარამეტრები</h1>
-    <label class="check"><input type="checkbox" data-bind="setting:wake" ${S.settings.wake ? 'checked' : ''}><span>ეკრანი არ დაიძინოს ხარშვის რეჟიმში</span></label>
-    <label class="check"><input type="checkbox" data-bind="setting:debug" ${S.settings.debug ? 'checked' : ''}><span>Debug: ყველა ტაიმერი 10 წამი (ტესტისთვის)</span></label>
-    <div class="stack" style="margin-top:12px">
-      <button data-act="notifyPerm">🔔 შეტყობინებები: ${perm === 'granted' ? 'ჩართულია' : perm === 'denied' ? 'აკრძალულია' : perm === 'unsupported' ? 'მიუწვდომელია' : 'ჩართვა'}</button>
-      <button data-act="testAlarm">🔊 ხმის ტესტი</button>
-    </div>
-    <h2>სარეზერვო ასლი (JSON)</h2>
-    <div class="stack">
-      <button class="primary" data-act="exportJson">⬇ JSON ფაილის ჩამოტვირთვა</button>
-      <button data-act="copyJson">📋 JSON კოპირება</button>
-      <label class="btn" for="importFile">⬆ იმპორტი ფაილიდან</label>
-      <input type="file" id="importFile" accept="application/json,.json" style="display:none">
-      <textarea id="importText" placeholder="ან ჩასვი JSON აქ"></textarea>
-      <button data-act="importText">⬆ იმპორტი ტექსტიდან</button>
-    </div>
-    <h2>საშიში ზონა</h2>
-    <button class="danger" data-act="resetAll">🗑 ყველა მონაცემის წაშლა</button>
-    <p class="small muted">მონაცემები ინახება მხოლოდ ამ ბრაუზერში (localStorage). რეგულარულად გააკეთე სარეზერვო ასლი.</p>
-  </main>`;
+  const permText = { granted: 'ჩართულია', denied: 'აკრძალულია ბრაუზერში', unsupported: 'ბრაუზერი არ უჭერს მხარს', default: 'ჩართვა' }[perm];
+  return `<main class="wrap">
+    <div class="step-head" style="margin-top:14px"><span class="eyebrow">ხარშვის ასისტენტი</span><h1>პარამეტრები</h1></div>
+    <section class="panel">
+      <label class="switch"><span><b>ეკრანი არ დაიძინოს</b><br><span class="small muted">ხარშვის რეჟიმში</span></span><input type="checkbox" id="s-wake" data-bind="setting:wake" ${S.settings.wake ? 'checked' : ''}></label>
+      <label class="switch"><span><b>Debug რეჟიმი</b><br><span class="small muted">ყველა ახალი ტაიმერი 10 წამი — ტესტისთვის</span></span><input type="checkbox" id="s-debug" data-bind="setting:debug" ${S.settings.debug ? 'checked' : ''}></label>
+    </section>
+    <nav class="list">
+      ${listRow(null, 'bell', 'შეტყობინებები', permText, 'notifyPerm')}
+      ${listRow(null, 'volume', 'ხმის ტესტი', 'სამი სერია ბიპი', 'testAlarm')}
+    </nav>
+    <section class="sec">
+      <h2>სარეზერვო ასლი</h2>
+      <p class="small muted">მონაცემები ინახება მხოლოდ ამ ბრაუზერში. რეგულარულად შეინახე JSON ფაილი.</p>
+      <button class="primary" data-act="exportJson">${ic('download')} JSON ფაილის ჩამოტვირთვა</button>
+      <button data-act="copyJson">${ic('copy')} JSON კოპირება</button>
+      <label class="btn" for="importFile">${ic('upload')} იმპორტი ფაილიდან</label>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+      <textarea id="importText" placeholder="ან ჩასვი JSON ტექსტი აქ"></textarea>
+      <button data-act="importText">${ic('upload')} იმპორტი ტექსტიდან</button>
+    </section>
+    <section class="sec">
+      <h2>მონაცემების წაშლა</h2>
+      <button class="danger" data-act="resetAll">${ic('trash')} ყველა პარტიის და რეცეპტის წაშლა</button>
+    </section>
+  </main>${tabbar('settings')}`;
 }
 
 /* =====================================================================
-   7. რენდერი და მოვლენები
+   9. რენდერი და მოვლენები
    ===================================================================== */
 function render() {
   const rt = route();
-  const app = $('#app');
   let html;
   const b = rt.id ? getBatch(rt.id) : null;
   switch (rt.name) {
@@ -1114,16 +1579,18 @@ function render() {
     case 'export': html = b ? viewExport(b) : null; break;
     case 'recipes': html = viewRecipes(); break;
     case 'recipe': { const r = getRecipe(rt.id); html = r ? viewRecipe(r) : null; break; }
+    case 'brecipe': html = b && b.recipe ? viewRecipe(b.recipe, b) : null; break;
     case 'settings': html = viewSettings(); break;
     default: html = viewHome();
   }
   if (html == null) { location.hash = '#/'; return; }
-  app.innerHTML = html;
+  $('#app').innerHTML = html;
   tick();
   applyWake();
 }
 const go = h => { if (location.hash === h) render(); else location.hash = h; };
 const curBatch = () => getBatch(route().id);
+const goStepTop = () => { render(); scrollTo(0, 0); };
 
 /* ველების შენახვა: data-bind="სახე:გასაღები" */
 function onBind(el, isChange) {
@@ -1136,16 +1603,18 @@ function onBind(el, isChange) {
       if (num(raw) == null) delete b.readings[p[0]];
       else b.readings[p[0]] = { value: num(raw), time: Date.now() };
       save(); refreshBrewLive(b);
-      if ($('#custom') && STEPS[b.cur].custom) $('#custom').innerHTML = STEPS[b.cur].custom(recipeOf(b), b, calc(b, recipeOf(b)));
       break;
-    case 'check':
+    case 'check': {
       b.checks[p[0]] = b.checks[p[0]] || {};
       b.checks[p[0]][p[1]] = raw;
       el.closest('.check').classList.toggle('done', raw);
+      const cnt = $(`#cnt-${p[0]}`);
+      if (cnt) cnt.textContent = `${Object.values(b.checks[p[0]]).filter(Boolean).length}/${cnt.dataset.total}`;
       save(); break;
+    }
     case 'batch':
       b[p[0]] = raw; save();
-      if (isChange && (p[0] === 'status' || p[0] === 'instrument' || p[0] === 'date')) render();
+      if (isChange && ['status', 'instrument', 'date', 'recipeId'].includes(p[0])) render();
       break;
     case 'ferm': {
       const e = ensureFerm(b, +p[0]);
@@ -1156,18 +1625,18 @@ function onBind(el, isChange) {
     case 'bottle':
       b.bottling[p[0]] = v;
       if (p[0] === 'volume') b.bottling.sugar = v ? round1(v * SUGAR_G_PER_L) : null;
-      save(); $('#bottle-live').innerHTML = bottleLiveHtml(b);
+      save(); if (p[0] === 'volume') $('#bottle-live').innerHTML = bottleLiveHtml(b);
       break;
     case 'rec': {
-      const r = getRecipe(route().id);
-      setPath(r, p[0], v ?? (el.dataset.num ? 0 : ''));
+      const r = editTarget();
+      setPath(r, p[0], el.dataset.num ? (v ?? 0) : v);
       if (isChange && el.dataset.rescale) {
         const nt = grainTotal(r);
-        rescaleRecipe(r, recipeBaseTotal, nt);
+        if (rescaleRecipe(r, recipeBaseTotal, nt)) toast(`გადაითვალა: წყალი ${r.mashWaterL} ლ, სვია ×${fmt(nt / recipeBaseTotal, 2)}`);
         recipeBaseTotal = nt;
-        syncRecipeInputs(r);
       }
-      save(); break;
+      if (isChange) syncRecipeInputs(r);
+      save(); flashSaved(); break;
     }
     case 'setting':
       S.settings[p[0]] = raw; save(); applyWake();
@@ -1183,17 +1652,16 @@ document.addEventListener('change', e => {
   const el = e.target;
   if (el.dataset.bind) onBind(el, true);
   if (el.dataset.total) {   // მარცვლის ჯამის ველი
-    const r = getRecipe(route().id), nt = num(el.value), ot = grainTotal(r);
+    const r = editTarget(), nt = num(el.value), ot = grainTotal(r);
     if (nt && ot) {
       r.grains.forEach(g => { g.grams = Math.round(g.grams * nt / ot); });
       const real = grainTotal(r);
-      rescaleRecipe(r, recipeBaseTotal, real); recipeBaseTotal = real;
-      save(); syncRecipeInputs(r);
+      if (rescaleRecipe(r, recipeBaseTotal, real)) toast(`გადაითვალა: წყალი ${r.mashWaterL} ლ`);
+      recipeBaseTotal = real;
+      save(); syncRecipeInputs(r); flashSaved();
     }
   }
-  if (el.id === 'importFile' && el.files[0]) {
-    el.files[0].text().then(importJson);
-  }
+  if (el.id === 'importFile' && el.files[0]) el.files[0].text().then(importJson);
 });
 
 /* ღილაკების მოქმედებები: data-act="სახელი" */
@@ -1210,89 +1678,126 @@ const ACTIONS = {
     save(); ensureAudio(); askNotify(); go(`#/brew/${b.id}`);
   },
   goBatch() { go(`#/batch/${route().id}`); },
+  goFerm() { go(`#/ferm/${route().id}`); },
+  goBottle() { go(`#/bottle/${route().id}`); },
+  goExport() { go(`#/export/${route().id}`); },
   goStep(el) { const b = curBatch(); b.cur = +el.dataset.i; save(); ACTIONS.openBrew(); },
-  stepBack() { const b = curBatch(); if (b.cur > 0) { b.cur--; save(); render(); scrollTo(0, 0); } },
-  stepSkip() { const b = curBatch(); if (b.cur < STEPS.length - 1) { b.cur++; save(); render(); scrollTo(0, 0); } else toast('ბოლო ნაბიჯია'); },
+  stepBack() { const b = curBatch(); if (b.cur > 0) { b.cur--; save(); goStepTop(); } },
+  stepSkip() { const b = curBatch(); if (b.cur < STEPS.length - 1) { b.cur++; save(); goStepTop(); } else toast('ეს ბოლო ნაბიჯია'); },
   stepDone() {
     const b = curBatch(), r = recipeOf(b), st = STEPS[b.cur], c = calc(b, r);
     const gate = st.gate && st.gate(r, b, c);
-    if (gate) { toast(gate + ' (ან „გამოტოვება")'); return; }
+    if (gate) { toast(`${gate} — ან „გამოტოვება"`); return; }
     ensureAudio();
     if (st.autoTimer && !b.timers[st.autoTimer]) startTimer(b, st.autoTimer);
     b.stepsDone[st.key] = Date.now();
-    if (b.cur < STEPS.length - 1) { b.cur++; save(); render(); scrollTo(0, 0); return; }
+    if (b.cur < STEPS.length - 1) { b.cur++; save(); goStepTop(); return; }
     // ბოლო ნაბიჯი: ხარშვა დასრულდა
     b.status = 'fermenting';
     FERM_DAYS.forEach(d => ensureFerm(b, d));
     b.fermentationLog.forEach(e => { e.date = addDays(brewDay(b), e.day); });
-    save(); toast('ხარშვა დასრულდა! 🍺'); go(`#/batch/${b.id}`);
+    save(); toast('ხარშვა დასრულდა!'); go(`#/batch/${b.id}`);
   },
-  toggleWake() { S.settings.wake = !S.settings.wake; save(); render(); },
+  nudge(el) {
+    const b = curBatch(), r = recipeOf(b), st = STEPS[b.cur], c = calc(b, r);
+    const inp = st.inputs.find(x => x.k === el.dataset.k);
+    const cur = val(b, inp.k);
+    const next = cur == null ? inp.start(r, b, c) : Math.round((cur + +el.dataset.d * inp.step) * 100) / 100;
+    b.readings[inp.k] = { value: next, time: Date.now() };
+    $(`#rd-${inp.k}`).value = next;
+    save(); refreshBrewLive(b);
+  },
+  nudgeBottle(el) {
+    const b = curBatch(), cur = b.bottling.volume;
+    const v = cur == null ? round1(val(b, 'finalVol') || 3.5) : Math.max(0, Math.round((cur + +el.dataset.d * 0.1) * 100) / 100);
+    b.bottling.volume = v; b.bottling.sugar = round1(v * SUGAR_G_PER_L);
+    $('#bt-vol').value = v; $('#bottle-live').innerHTML = bottleLiveHtml(b); save();
+  },
+  toggleWake() { S.settings.wake = !S.settings.wake; save(); render(); toast(S.settings.wake ? 'ეკრანი არ დაიძინებს' : 'ეკრანი ჩვეულებრივ დაიძინებს'); },
   timerStart(el) { const b = curBatch(); startTimer(b, el.dataset.t); render(); },
   timerPause(el) { const b = curBatch(); togglePause(b.timers[el.dataset.t]); save(); render(); },
-  timerAdj(el) { const b = curBatch(); adjustTimer(b, el.dataset.t, +el.dataset.d); save(); tick(); },
-  timerReset(el) { if (!confirm('ტაიმერი თავიდან დაიწყოს?')) return; const b = curBatch(); delete b.timers[el.dataset.t]; save(); render(); },
+  timerAdj(el) { const b = curBatch(); adjustTimer(b, el.dataset.t, +el.dataset.d); save(); render(); },
+  async timerReset(el) {
+    if (!await ask('ტაიმერი თავიდან დაიწყოს? მიმდინარე დრო დაიკარგება.', 'თავიდან დაწყება', true)) return;
+    const b = curBatch(); delete b.timers[el.dataset.t]; save(); render();
+  },
   alertMute() { stopAlarm(); alertQueue.shift(); renderOverlay(); },
   alertGo() {
     stopAlarm();
     const a = alertQueue.shift(); renderOverlay();
     const b = getBatch(a.batchId); const i = STEPS.findIndex(s => s.key === a.step);
-    if (b && i >= 0) { b.cur = i; save(); go(`#/brew/${b.id}`); }
+    if (b && i >= 0) { b.cur = i; save(); go(`#/brew/${b.id}`); scrollTo(0, 0); }
   },
-  deleteBatch() {
+  async deleteBatch() {
     const b = curBatch();
-    if (!confirm(`წავშალო „${b.name}"?`)) return;
+    if (!await ask(`წავშალო „${b.name}"? ყველა ჩანაწერი დაიკარგება.`, 'წაშლა', true)) return;
     S.batches = S.batches.filter(x => x !== b); save(); go('#/');
   },
   addFermDay() {
     const b = curBatch();
     const last = Math.max(9, ...b.fermentationLog.map(e => e.day));
-    const e = ensureFerm(b, last + 2); e.fg = e.fg ?? null; save(); render();
+    ensureFerm(b, last + 2); save(); render();
   },
   markBottled() {
     const b = curBatch();
     if (!b.bottling.date) b.bottling.date = todayStr();
     if (b.bottling.fg == null) { const fs = fermStats(b); if (fs.fgBrix != null) b.bottling.fg = fs.fgBrix; }
-    b.status = 'bottled'; save(); toast('ჩამოსხმულია ✓'); render();
+    b.status = 'bottled'; save(); toast('ჩამოსხმულია'); render();
   },
-  markDone() { const b = curBatch(); b.status = 'done'; save(); toast('დასრულდა 🏁'); render(); },
+  markDone() { const b = curBatch(); b.status = 'done'; save(); toast('პარტია დასრულდა'); render(); },
   copyMd() { copyText($('#md').value); },
   newRecipe() {
-    const r = clone(DEFAULT_RECIPES[0]); r.id = uid(); r.name = 'ახალი რეცეპტი';
+    const r = clone(DEFAULT_RECIPES[0]); r.id = uid(); r.name = 'ახალი რეცეპტი'; r.style = '';
     S.recipes.push(r); save(); go(`#/recipe/${r.id}`);
   },
   dupRecipe() {
-    const r = clone(getRecipe(route().id)); r.id = uid(); r.name += ' (ასლი)';
-    S.recipes.push(r); save(); go(`#/recipe/${r.id}`);
+    const r = clone(editTarget()); r.id = uid(); r.name += ' (ასლი)';
+    S.recipes.push(r); save(); toast('დუბლირებულია'); go(`#/recipe/${r.id}`);
   },
-  delRecipe() {
+  async delRecipe() {
     if (S.recipes.length < 2) { toast('ბოლო რეცეპტს ვერ წაშლი'); return; }
-    if (!confirm('წავშალო რეცეპტი?')) return;
-    S.recipes = S.recipes.filter(r => r.id !== route().id); save(); go('#/recipes');
+    const r = editTarget();
+    const used = S.batches.filter(b => !b.recipe && b.recipeId === r.id).length;
+    if (!await ask(`წავშალო „${r.name}"?${used ? ` ${used} დაგეგმილი პარტია პირველ რეცეპტზე გადავა.` : ''}`, 'წაშლა', true)) return;
+    S.recipes = S.recipes.filter(x => x !== r); save(); go('#/recipes');
   },
-  restoreRecipes() {
+  async restoreRecipes() {
+    if (!await ask('ჩაშენებული რეცეპტები დაბრუნდეს საწყის მნიშვნელობებზე? შენი სხვა რეცეპტები არ შეიცვლება.', 'აღდგენა')) return;
     DEFAULT_RECIPES.forEach(d => {
       const i = S.recipes.findIndex(r => r.id === d.id);
-      if (i >= 0) { if (confirm(`„${d.name}" — დავაბრუნო საწყის მნიშვნელობებზე?`)) S.recipes[i] = clone(d); }
-      else S.recipes.push(clone(d));
+      if (i >= 0) S.recipes[i] = clone(d); else S.recipes.push(clone(d));
     });
-    save(); render();
+    save(); toast('აღდგენილია'); render();
+  },
+  saveBatchRecipeToLib() {
+    const r = clone(editTarget()); r.id = uid();
+    S.recipes.push(r); save(); toast(`„${r.name}" ბიბლიოთეკაში დაემატა`);
+  },
+  async resetBatchRecipe() {
+    const b = curBatch();
+    if (!await ask('პარტიის რეცეპტი ჩანაცვლდეს ბიბლიოთეკის ვერსიით?', 'ჩანაცვლება', true)) return;
+    b.recipe = clone(getRecipe(b.recipeId)); save(); render();
   },
   addRow(el) {
-    const r = getRecipe(route().id);
-    if (el.dataset.list === 'grains') r.grains.push({ name: '', grams: 0 });
+    const r = editTarget();
+    if (el.dataset.list === 'grains') r.grains.push({ name: '', grams: 0, minute: 0 });
     else r.hops.push({ name: '', grams: 0, minute: 0 });
     save(); render();
+    const ix = r[el.dataset.list].length - 1;
+    const inp = $(`#r-${el.dataset.list === 'grains' ? 'g' : 'h'}${ix}-n`); if (inp) inp.focus();
   },
-  rmRow(el) {
-    const r = getRecipe(route().id);
-    r[el.dataset.list].splice(+el.dataset.i, 1); save(); render();
+  async rmRow(el) {
+    const r = editTarget(), item = r[el.dataset.list][+el.dataset.i];
+    if (!await ask(`წავშალო „${item.name || 'ეს რიგი'}"?`, 'წაშლა', true)) return;
+    r[el.dataset.list].splice(+el.dataset.i, 1);
+    if (el.dataset.list === 'grains') rescaleRecipe(r, recipeBaseTotal, grainTotal(r));
+    save(); render();
   },
   notifyPerm() {
     if (!('Notification' in window)) { toast('ბრაუზერი არ უჭერს მხარს'); return; }
     Notification.requestPermission().then(render);
   },
-  testAlarm() { ensureAudio(); playAlarm(); },
+  testAlarm() { ensureAudio(); playAlarm(); toast('ხმა უნდა ისმოდეს'); },
   exportJson() {
     const blob = new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
@@ -1302,33 +1807,33 @@ const ACTIONS = {
   },
   copyJson() { copyText(JSON.stringify(S)); },
   importText() { importJson($('#importText').value); },
-  resetAll() {
-    if (!confirm('ყველა პარტია და რეცეპტი წაიშლება. დარწმუნებული ხარ?')) return;
+  async resetAll() {
+    if (!await ask('ყველა პარტია და რეცეპტი წაიშლება. ჯერ სარეზერვო ასლი გააკეთე.', 'ყველაფრის წაშლა', true)) return;
     S = freshState(); save(); go('#/');
   }
 };
 
-function importJson(text) {
+async function importJson(text) {
   let obj;
-  try { obj = JSON.parse(text); } catch (e) { toast('JSON არასწორია'); return; }
-  if (!obj || !Array.isArray(obj.batches) || !Array.isArray(obj.recipes)) { toast('ფაილი არ არის სარეზერვო ასლი'); return; }
-  if (!confirm(`იმპორტი: ${obj.batches.length} პარტია, ${obj.recipes.length} რეცეპტი. არსებული მონაცემები შეიცვლება.`)) return;
-  S = migrate(obj); save(); toast('იმპორტი დასრულდა ✓'); go('#/');
+  try { obj = JSON.parse(text); } catch (e) { toast('JSON ვერ წავიკითხე — შეამოწმე ტექსტი'); return; }
+  if (!obj || !Array.isArray(obj.batches) || !Array.isArray(obj.recipes)) { toast('ეს არ არის ამ აპის სარეზერვო ასლი'); return; }
+  if (!await ask(`იმპორტი: ${obj.batches.length} პარტია, ${obj.recipes.length} რეცეპტი. არსებული მონაცემები ჩანაცვლდება.`, 'იმპორტი', true)) return;
+  S = migrate(obj); save(); toast('იმპორტი დასრულდა'); go('#/');
 }
 
 async function copyText(text) {
-  try { await navigator.clipboard.writeText(text); toast('დაკოპირდა ✓'); return; } catch (e) { /* fallback ქვემოთ */ }
+  try { await navigator.clipboard.writeText(text); toast('დაკოპირდა'); return; } catch (e) { /* fallback ქვემოთ */ }
   const ta = document.createElement('textarea');
   ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
   document.body.appendChild(ta); ta.select();
-  try { document.execCommand('copy'); toast('დაკოპირდა ✓'); } catch (e) { toast('მონიშნე და დააკოპირე ხელით'); }
+  try { document.execCommand('copy'); toast('დაკოპირდა'); } catch (e) { toast('მონიშნე ტექსტი და დააკოპირე ხელით'); }
   ta.remove();
 }
 
 document.addEventListener('click', e => {
   ensureAudio();   // ბრაუზერს ხმისთვის მომხმარებლის შეხება სჭირდება
   const el = e.target.closest('[data-act]');
-  if (!el) return;
+  if (!el || el.disabled) return;
   const fn = ACTIONS[el.dataset.act];
   if (fn) { e.preventDefault(); fn(el, e); }
 });
