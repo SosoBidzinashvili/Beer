@@ -1399,7 +1399,7 @@ function lessonBody(L) {
 function inlineLesson(id, title = 'რა ხდება ახლა?') {
   const L = LESSONS.find(l => l.id === id); if (!L) return '';
   const i = LESSONS.indexOf(L);
-  return `<details class="paper lesson" data-lesson-id="${L.id}"><summary>${ic('school')} ${esc(title)}<span class="muted small" style="margin-left:auto;margin-right:8px">გაკვეთილი ${i + 1}</span>${ic('chev', 'chev')}</summary>
+  return `<details class="paper lesson" data-lesson-id="${L.id}"><summary><span style="flex:1;min-width:0">${ic('school')} ${esc(title)}</span>${ic('chev', 'chev')}</summary>
     <div class="inner" style="gap:12px"><div class="sec" style="gap:2px"><h2 style="font-size:1.5rem">${esc(L.title)}</h2><p class="muted small">${esc(L.sub)}</p></div>${lessonBody(L)}
     <a class="learn-link" href="#/learn/${L.id}">${ic('book')} სკოლაში ნახვა</a></div></details>`;
 }
@@ -2298,6 +2298,7 @@ function draftBack() { return draft && draft.kind === 'batch' ? `#/batch/${draft
 function markDirty() {
   const el = $('#saved'); if (!el) return;
   const d = draftDirty();
+  if (draft.kind === 'new') { el.hidden = true; return; }
   el.textContent = d ? 'შეუნახავი ცვლილებები' : 'ცვლილება არ არის';
   el.classList.toggle('flash', d);
   const b = $('#saveBtn'); if (b) b.classList.toggle('gated', !d && draft.kind !== 'new');
@@ -2311,7 +2312,7 @@ function viewRecipe(r, batch) {
   return `<header class="appbar"><div class="wrap">
     <button class="icon-btn" data-act="recipeCancel" aria-label="უკან">${ic('back')}</button>
     <div class="ttl">${isNew ? 'ახალი რეცეპტი' : batch ? 'პარტიის რეცეპტი' : 'რეცეპტი'}</div>
-    <span class="saved ${draftDirty() ? 'flash' : ''}" id="saved">${draftDirty() ? 'შეუნახავი ცვლილებები' : isNew ? 'ჯერ არ შენახულა' : 'ცვლილება არ არის'}</span>
+    <span class="saved ${draftDirty() ? 'flash' : ''}" id="saved" ${isNew ? 'hidden' : ''}>${draftDirty() ? 'შეუნახავი ცვლილებები' : 'ცვლილება არ არის'}</span>
   </div></header>
   <main class="wrap">
     ${batch ? msgHtml('info', `ეს „${batch.name}"-ის ასლია. ცვლილება შეეხება მხოლოდ ამ პარტიას.`) : ''}
@@ -2459,7 +2460,7 @@ let lastRoute = '';
 function render() {
   const rt = route();
   const key = `${rt.name}/${rt.id || ''}`;
-  if (key !== lastRoute) { lastRoute = key; scrollTo(0, 0); }
+  if (key !== lastRoute) { lastRoute = key; scrollTo(0, 0); document.querySelectorAll('.toast').forEach(t => t.remove()); }
   let html;
   const b = rt.id ? getBatch(rt.id) : null;
   switch (rt.name) {
