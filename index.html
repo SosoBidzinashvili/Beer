@@ -364,7 +364,7 @@
   #overlay .digits { color: var(--white); }
   #overlay button { max-width: 520px; margin: 0 auto; width: 100%; }
   @keyframes pulse { 50% { transform: scale(1.06) rotate(-4deg); } }
-  .toast { position: fixed; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) rotate(-2deg); background: var(--white); color: var(--ink); border: 3px solid var(--ink); box-shadow: var(--shadow); padding: 10px 18px; font-size: var(--t-sm); border-radius: 18px; font-weight: 800; z-index: 60; width: max-content; max-width: calc(100vw - 32px); text-align: center; display: flex; flex-direction: column; gap: 2px; }
+  .toast { pointer-events: none; position: fixed; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) rotate(-2deg); background: var(--white); color: var(--ink); border: 3px solid var(--ink); box-shadow: var(--shadow); padding: 10px 18px; font-size: var(--t-sm); border-radius: 18px; font-weight: 800; z-index: 60; width: max-content; max-width: calc(100vw - 32px); text-align: center; display: flex; flex-direction: column; gap: 2px; }
   .empty { text-align: center; padding: 28px 16px; display: flex; flex-direction: column; gap: 14px; align-items: center; }
   #party { position: fixed; inset: 0; z-index: 55; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; overflow: hidden; background: var(--yellow);
     padding: 24px var(--gutter-r) calc(24px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); }
