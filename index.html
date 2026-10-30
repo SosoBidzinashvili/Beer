@@ -701,7 +701,7 @@ const TIMERS = {
     label: 'გაშაქრება',
     minutes: r => r.mashMin,
     alerts: r => [
-      ...lateGrains(r).map(g => ({ at: r.mashMin - grainMin(g), msg: `ჩაყარე ${g.grams} გ ${g.name} და კარგად მოურიე`, step: mashStepAt(r, grainMin(g)) })),
+      ...lateGrains(r).map((g, k) => ({ at: r.mashMin - grainMin(g), msg: `ჩაყარე ${g.grams} გ ${g.name} და კარგად მოურიე`, step: mashStepAt(r, grainMin(g)), check: ['lateGrains', k] })),
       { at: r.mashMin / 2, msg: 'შუა გაშაქრება: მოურიე და გაზომე ტემპერატურა', step: 's10' },
       ...(r.mashMin > 10 ? [{ at: 10, msg: `ჩამორეცხვის წყალი ${r.spargeWaterL} ლ გააცხელე 77°C-მდე`, step: 's11' }] : []),
       { at: 0, msg: 'გაშაქრება დასრულდა! ტომარა ასწიე', step: 's12' }
@@ -711,8 +711,8 @@ const TIMERS = {
     label: 'ხარშვა',
     minutes: r => r.boilMin,
     alerts: r => [
-      ...r.hops.filter(h => h.minute < r.boilMin && h.minute >= 0)
-        .map(h => ({ at: h.minute, msg: `ჩაყარე ${h.grams} გ ${h.name}`, step: 's15' })),
+      ...r.hops.slice().sort((a, b) => b.minute - a.minute).map((h, k) => ({ h, k })).filter(({ h }) => h.minute < r.boilMin && h.minute >= 0)
+        .map(({ h, k }) => ({ at: h.minute, msg: `ჩაყარე ${h.grams} გ ${h.name}`, step: 's15', check: ['s15', k] })),
       ...(r.boilMin > 15 ? [{ at: 15, msg: 'ბოლომდე 15 წთ: დეზინფექციის დროა', step: 's16' }] : []),
       { at: 0, msg: 'ხარშვა დასრულდა: ცეცხლი გამორთე, თავსახური დაახურე', step: 's17' }
     ].sort((a, b) => b.at - a.at)
@@ -1696,7 +1696,7 @@ function tick() {
         const key = alertKey(a);
         if (!t.fired.includes(key) && rem <= a.at * t.unit) {
           t.fired.push(key); changed = true;
-          pushAlert({ batchId: b.id, msg: a.msg, step: a.step, label: TIMERS[id].label });
+          pushAlert({ batchId: b.id, timerId: id, msg: a.msg, step: a.step, check: a.check, label: TIMERS[id].label });
         }
       }
       if (rem <= 0 && !t.paused) { t.done = true; changed = true; }
@@ -1730,12 +1730,13 @@ function renderOverlay() {
   const o = $('#overlay');
   const a = alertQueue[0];
   if (!a) { o.classList.remove('on'); o.innerHTML = ''; return; }
+  const b = getBatch(a.batchId), t = b && b.timers[a.timerId];
   o.innerHTML = `
     <div class="ring">${ic('timer')}</div>
-    <div class="cap">${esc(a.label)}${alertQueue.length > 1 ? ` · კიდევ ${alertQueue.length - 1} სიგნალი` : ''}</div>
+    <div class="cap">${esc(a.label)}${alertQueue.length > 1 ? `, კიდევ ${alertQueue.length - 1}` : ''}</div>
     <div class="big">${esc(a.msg)}</div>
-    <button class="primary" data-act="alertGo">ნაბიჯზე გადასვლა ${ic('chev')}</button>
-    <button data-act="alertMute">${ic('check')} გასაგებია, გაჩუმება</button>`;
+    ${t ? `<div class="sec" style="align-items:center;gap:2px"><span class="muted small">ტაიმერი გრძელდება</span><span class="digits" style="font-size:3rem" data-timer="${b.id}:${a.timerId}">${fmtMs(remaining(t))}</span></div>` : ''}
+    <button class="primary" data-act="alertDone" style="min-height:68px;font-size:1.2rem">${ic('check')} შესრულდა</button>`;
   o.classList.add('on');
 }
 
@@ -2663,12 +2664,18 @@ const ACTIONS = {
     if (!await ask('ტაიმერი თავიდან დაიწყოს? მიმდინარე დრო დაიკარგება.', 'თავიდან დაწყება', true)) return;
     const b = curBatch(); delete b.timers[el.dataset.t]; save(); render();
   },
-  alertMute() { stopAlarm(); alertQueue.shift(); renderOverlay(); },
-  alertGo() {
+  alertDone() {
     stopAlarm();
     const a = alertQueue.shift(); renderOverlay();
-    const b = getBatch(a.batchId); const i = STEPS.findIndex(s => s.key === a.step);
-    if (b && i >= 0) { b.cur = i; save(); go(`#/brew/${b.id}`); scrollTo(0, 0); }
+    if (!a) return;
+    const b = getBatch(a.batchId); if (!b) return;
+    if (a.check) { b.checks[a.check[0]] = b.checks[a.check[0]] || {}; b.checks[a.check[0]][a.check[1]] = true; }   // სვია/მარცვალი მონიშნულია
+    const i = STEPS.findIndex(s => s.key === a.step);
+    const rt = route();
+    if (i > b.cur) b.cur = i;      // წინ მივყვებით, უკან არასდროს
+    save();
+    if (rt.name === 'brew' && rt.id === b.id) render(); else if (rt.name !== 'brew') go(`#/brew/${b.id}`);
+    if (navigator.vibrate) navigator.vibrate(15);
   },
   async deleteBatch() {
     const b = curBatch();
