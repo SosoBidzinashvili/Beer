@@ -490,6 +490,12 @@
   .opt-n i { font-style: normal; font-family: var(--font-fig); font-size: 1.15rem; font-weight: 600; color: var(--ink); }
   .opt-c { font-size: var(--t-sm); color: var(--ink-3); font-weight: 500; }
 
+  .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; flex: none; background: var(--ok); box-shadow: 0 0 0 2px rgba(255,255,255,.6); }
+  .dot.warn { background: var(--warn); } .dot.bad { background: var(--bad); }
+  .paper .dot.ok { background: var(--hop); } .paper .dot.warn { background: #d9842a; } .paper .dot.bad { background: #c0392b; }
+  .assess.ok { border-color: var(--hop); } .assess.warn { border-color: #d9842a; } .assess.bad { border-color: #c0392b; }
+  .assess.ok::after { border-color: rgba(111,157,74,.6); } .assess.warn::after { border-color: rgba(217,132,42,.6); } .assess.bad::after { border-color: rgba(192,57,43,.6); }
+
   /* ---------- სტიკერი (ბეჯი) ---------- */
   .pill { background: var(--paper); color: var(--ink); border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,.35); transform: rotate(var(--tilt, -2deg)); padding: 4px 11px; font-weight: 800; }
   .pill::before { display: none; }
@@ -1519,8 +1525,9 @@ function migrate(s) {
       readings: {}, stepsDone: {}, checks: {}, timers: {}, cur: 0, fermentationLog: [],
       instrument: 'hydro', notes: '', status: 'planned', created: Date.now()
     }, b));
-    b.bottling = Object.assign({ fg: null, volume: null, sugar: null, bottles: null, date: '', tasting: '' }, b.bottling || {});
+    b.bottling = Object.assign({ fg: null, volume: null, sugar: null, bottles: null, size: 0.5, date: '', tasting: '' }, b.bottling || {});
     if (b.recipe) fixRecipe(b.recipe);
+    b.fermentationLog = (b.fermentationLog || []).filter(e => e && (e.temp != null || e.airlock || e.foam || e.fg != null || e.note));
   });
   return s;
 }
@@ -1583,10 +1590,14 @@ function calc(b, r) {
   const planTb = val(b, 'planBrix');
   const chosen = options.find(o => planTb != null && Math.abs(o.tb - planTb) < 0.01) || rec;
   options.forEach(o => { o.rec = o === rec; o.chosen = o === chosen; });
+  // ფაქტობრივი მოცულობა (ნაბიჯი 22) გეგმას ანაცვლებს: OG/ABV იმაზე ითვლება, რაც ფერმენტერშია
+  const actualL = val(b, 'finalVol');
+  const out = actualL && actualL >= wortL * 0.9 ? opt(brix * wortL / actualL) : chosen;
+  if (out !== chosen) { out.L = actualL; out.finalBrix = brix * wortL / actualL; out.og = sgFromBrix(out.finalBrix); out.abv = (out.og - 1.010) * 131; out.bitter = hopG / actualL; }
   return {
     ready: true, wortL, brix, idealL, hopG, options, chosen, rec, lowEff, belowTarget, allBitter,
-    vol: chosen.L, addL: chosen.add, finalBrix: chosen.finalBrix, og: chosen.og, abv: chosen.abv,
-    bitter: chosen.bitter, bitterHigh: chosen.bitter > BITTER_HIGH_G_PER_L, capped: chosen.capped
+    vol: out.L, addL: chosen.add, finalBrix: out.finalBrix, og: out.og, abv: out.abv,
+    bitter: out.bitter, bitterHigh: out.bitter > BITTER_HIGH_G_PER_L, capped: chosen.capped
   };
 }
 
@@ -1818,8 +1829,10 @@ function batchNext(b) {
     case 'brewing': return { text: `ნაბიჯი ${b.cur + 1}/${STEPS.length}: ${STEPS[b.cur].title}`, pct: (b.cur + 1) / STEPS.length * 100 };
     case 'fermenting': {
       const d = daysBetween(brewDay(b), today);
-      const next = FERM_DAYS.find(x => x >= d);
-      return { text: `დადუღების ${Math.max(d, 0)}-ე დღე${next != null ? `, შემდეგი ჩანაწერი: დღე ${next}` : ', დროა FG-ს'}`, pct: clamp(d / 11 * 100, 0, 100) };
+      const lastDay = Math.max(-1, ...b.fermentationLog.map(e => e.day));
+      const next = FERM_DAYS.find(x => x > lastDay && x >= d) ?? FERM_DAYS.find(x => x > lastDay);
+      const fs = fermStats(b);
+      return { text: fs.finished ? 'დადუღება დასრულდა — cold crash და ჩამოსხმა' : `დადუღების ${Math.max(d, 0)}-ე დღე${next != null ? `, შემდეგი ჩანაწერი: დღე ${next}` : ', დროა FG-ს'}`, pct: clamp(d / 11 * 100, 0, 100) };
     }
     case 'bottled': return { text: b.bottling.date ? `ჩამოსხმულია ${fmtDate(b.bottling.date)}, გასინჯე ${fmtDate(addDays(b.bottling.date, 14))}-ს` : 'ჩამოსხმული', pct: 100 };
     default: return { text: 'დასრულებული', pct: 100 };
@@ -1936,7 +1949,7 @@ function viewBatch(b) {
     <nav class="list paper">
       ${listRow(null, 'flame', 'ხარშვის დღე', started ? `ნაბიჯი ${b.cur + 1} / ${STEPS.length}` : '26 ნაბიჯი, 8 ეტაპი', 'openBrew')}
       ${listRow(`#/ferm/${b.id}`, 'bubbles', 'დადუღების დღიური', fs.finished ? 'FG სტაბილურია' : `დღეები ${FERM_DAYS.join(', ')}`)}
-      ${listRow(`#/bottle/${b.id}`, 'bottle', 'ჩამოსხმა', b.bottling.volume ? `${b.bottling.volume} ლ, შაქარი ${fmt(b.bottling.volume * SUGAR_G_PER_L)} გ` : 'შაქარი, ჩეკლისტი, გემო')}
+      ${listRow(`#/bottle/${b.id}`, 'bottle', 'ჩამოსხმა', b.bottling.volume ? `${b.bottling.volume} ლ, ${Math.floor(b.bottling.volume / (b.bottling.size || 0.5))} × ${b.bottling.size || 0.5} ლ, შაქარი ${fmt(b.bottling.volume * SUGAR_G_PER_L)} გ` : 'შაქარი, ჩეკლისტი, გემო')}
       ${listRow(`#/export/${b.id}`, 'doc', 'ექსპორტი', 'Markdown ტექსტი კოპირებისთვის')}
     </nav>
 
@@ -2163,61 +2176,124 @@ function ensureFerm(b, day) {
   }
   return e;
 }
+/* ჩანაწერის შეფასება: რა არის ნორმალური ამ დღეს და რა — არა */
+function assessFerm(b, e) {
+  const r = recipeOf(b), c = calc(b, r);
+  const pts = []; const add = (cls, text) => pts.push({ cls, text });
+  const earlier = b.fermentationLog.filter(x => x.day < e.day).sort((x, y) => x.day - y.day);
+  const wasActive = earlier.some(x => x.airlock === 'აქტიური' || x.foam);
+  const { tempMin: lo, tempMax: hi, name: yname } = r.yeast;
+  // ტემპერატურა
+  if (e.temp != null) {
+    if (e.temp > hi + 2) add('bad', `${fmt(e.temp)}°C ზედმეტად ცხელია — ${yname}-ს ${lo}–${hi}°C უნდა. გადადგი გრილ ადგილას (ნიჟარაში სველი პირსახოცით შეხვევა 2–3°C-ით აცივებს). ცხელზე საფუარი აცეტონის და მძაფრ ხილის სუნს ქმნის.`);
+    else if (e.temp > hi) add('warn', `${fmt(e.temp)}°C დიაპაზონის ზევითაა (${lo}–${hi}°C). 1–2°C აქტიური დუღილის თვითგაცხელებაა — ოდნავ გრილ ადგილას გადადგი.`);
+    else if (e.temp < lo - 2) add('bad', `${fmt(e.temp)}°C ცივია — ${yname} ${lo}°C-ს ქვემოთ ნელდება და შეიძლება გაჩერდეს. თბილ ოთახში გადაიტანე, ფერმენტერი პირსახოცით შეახვიე.`);
+    else if (e.temp < lo) add('warn', `${fmt(e.temp)}°C დიაპაზონის ქვემოთაა (${lo}–${hi}°C). დუღილი უფრო ნელი და სუფთა იქნება; თუ შეგიძლია, 1–2°C-ით გაათბე.`);
+    else add('ok', `${fmt(e.temp)}°C — ${yname}-ს დიაპაზონშია (${lo}–${hi}°C).`);
+  } else add('info', 'ტემპერატურა არ ჩაგიწერია — ეს ყველაზე მნიშვნელოვანი ციფრია დუღილისას.');
+  // საკეტი და ქაფი დღის მიხედვით
+  const air = e.airlock;
+  if (e.day <= 1) {
+    if (air === 'აქტიური' || e.foam) add('ok', 'უკვე დაიწყო — სწრაფი სტარტი, საფუარი ჯანმრთელია.');
+    else add('ok', 'პირველი დღე: ლაგი-ფაზაა. საფუარი ჟანგბადს იყენებს და მრავლდება; სიჩუმე 24 საათამდე ნორმალურია.');
+  } else if (e.day <= 3) {
+    if (air === 'აქტიური') add('ok', 'აქტიური დუღილი — ზუსტად ის, რაც ამ დღეს უნდა იყოს.');
+    else if (air === 'ნელი') add(wasActive || e.day === 3 ? 'ok' : 'warn', wasActive || e.day === 3 ? 'ნელდება — Kveik-ს ძირითადი სამუშაო 2–3 დღეში უთავდება.' : 'ჯერ ნელია. შეამოწმე ტემპერატურა (ცივია?) და თავსახურის ჰერმეტულობა.');
+    else if (air === 'გაჩერდა') add(wasActive ? 'ok' : 'bad', wasActive ? 'ძირითადი დუღილი დასრულდა. ახლა საფუარი ასუფთავებს და ლექდება — თავსახური არ ახადო.' : 'დუღილი არ ჩანს. ჯერ შეამოწმე, გადის თუ არა გაზი გვერდიდან: თავსახური, grommet, საკეტის წყალი. თუ ქაფია — ყველაფერი რიგზეა და უბრალოდ გაჟონავს. თუ ქაფიც არ არის და ტემპერატურა დიაპაზონშია, 12 საათი კიდევ დაელოდე; მერე საფუარი ხელახლა მოაყარე.');
+    else add('info', 'საკეტის მდგომარეობა მონიშნე — 2–3 დღეს ეს დუღილის მთავარი ნიშანია.');
+    if (!e.foam && air !== 'აქტიური' && e.day >= 2) add('warn', 'ქაფი (krausen) არ ჩანს. 2–3 დღეს ზედაპირზე ქაფის ქუდი უნდა იდგეს.');
+    else if (e.foam) add('ok', `ქაფი: ${e.foam} — საფუარი მუშაობს.`);
+  } else {
+    if (air === 'აქტიური') add('ok', 'ჯერ კიდევ აქტიურია — დაელოდე, FG ჯერ ადრეა.');
+    else if (air === 'ნელი' || air === 'გაჩერდა') add('ok', 'ბოლო ფაზა: დუღილი თითქმის დასრულდა, საფუარი ლექდება. სწორედ ამ დღეებში იზომება FG.');
+    if (e.foam && e.day >= 7) add('info', 'ქაფი ჯერ კიდევ დგას — ბოლომდე ჩამოსვლას 1–2 დღე სჭირდება.');
+  }
+  // FG
+  let finished = false;
+  if (e.fg != null) {
+    const ogB = c.ready ? c.finalBrix : null;
+    const prevFg = [...earlier].reverse().find(x => x.fg != null);
+    if (ogB == null) add('info', `FG ${e.fg} Bx ჩაწერილია, მაგრამ OG არ არის — ABV ვერ დავითვალე.`);
+    else {
+      const ratio = e.fg / ogB;
+      const fgSG = b.instrument === 'refract' ? refractFG(ogB, e.fg) : sgFromBrix(e.fg);
+      const abv = (c.og - fgSG) * 131;
+      if (prevFg && e.fg > prevFg.fg + 0.3) add('warn', `FG გაიზარდა (${prevFg.fg} → ${e.fg})? ეს შეუძლებელია — ალბათ ნიმუში თბილი იყო ან ქაფიანი. გააცივე 20°C-მდე და გაზომე ხელახლა.`);
+      else if (e.day < 5) add('info', `FG ${e.fg} Bx მე-${e.day} დღეს — ადრეა, ციფრი კიდევ დაიწევს. საბოლოო FG მე-7 დღიდან იზომება.`);
+      else if (ratio > 0.6) add('warn', `FG ${e.fg} Bx ჯერ მაღალია (OG ${fmt(ogB)} Bx-ის ${Math.round(ratio * 100)}%). დუღილი შუაშია — შეამოწმე ტემპერატურა და 2 დღეში გაზომე ხელახლა.`);
+      else if (prevFg && Math.abs(prevFg.fg - e.fg) <= 0.2) { finished = true; add('ok', `FG სტაბილურია (${prevFg.fg} → ${e.fg} Bx): დადუღება დასრულდა. ABV ≈ ${fmt(abv)}%. შემდეგი: 2 დღე მაცივარში (cold crash), მერე ჩამოსხმა.`); }
+      else add('info', `FG ${e.fg} Bx — ABV ამ ეტაპზე ≈ ${fmt(abv)}%. ხელახლა გაზომე 2 დღეში: თუ იგივე ციფრია, დასრულებულია და ჩამოსხმა შეგიძლია.`);
+    }
+  } else if (e.day >= 7) add('info', 'მე-7 დღიდან FG-ს გაზომვის დროა: ნიმუში ცილინდრში, 20°C-ზე, Brix ჩაწერე.');
+  const level = pts.some(x => x.cls === 'bad') ? 'bad' : pts.some(x => x.cls === 'warn') ? 'warn' : 'ok';
+  const title = { ok: 'ყველაფერი რიგზეა', warn: 'შეამოწმე', bad: 'ყურადღება' }[level];
+  const nextDay = FERM_DAYS.find(d => d > e.day);
+  const next = finished ? 'შემდეგი: cold crash და ჩამოსხმა.' : nextDay ? `შემდეგი ჩანაწერი: დღე ${nextDay}${nextDay >= 7 ? ' (FG-თი)' : ''}.` : 'შემდეგი: FG ხელახლა 2 დღეში.';
+  return { level, title, pts, next, finished };
+}
+
+/* ფორმის დროებითი მდგომარეობა (შენახვამდე) */
+let fermDraft = null;
+function fermFormDefault(b) {
+  const d = clamp(daysBetween(brewDay(b), todayStr()), 0, 60);
+  const ex = b.fermentationLog.find(x => x.day === d);
+  return ex ? clone(ex) : { day: d, temp: null, airlock: '', foam: '', note: '', fg: null };
+}
 function viewFerm(b) {
-  const days = [...new Set([...FERM_DAYS, ...b.fermentationLog.map(e => e.day)])].sort((a, z) => a - z);
   const today = todayStr();
-  const lastAir = [...b.fermentationLog].reverse().find(e => e.airlock);
+  if (!fermDraft || fermDraft.batchId !== b.id) fermDraft = { batchId: b.id, e: fermFormDefault(b), justSaved: null };
+  const e = fermDraft.e;
   const dayNow = daysBetween(brewDay(b), today);
-  const hasData = e => e && (e.temp != null || e.airlock || e.foam || e.note || e.fg != null);
-  return `${appbar('დადუღება', `#/batch/${b.id}`)}<main class="wrap enter">
+  const log = b.fermentationLog.slice().sort((x, y) => x.day - y.day);
+  const last = log[log.length - 1];
+  const lastA = last ? assessFerm(b, last) : null;
+  const shown = fermDraft.justSaved ? b.fermentationLog.find(x => x.day === fermDraft.justSaved) : null;
+  const shownA = shown ? assessFerm(b, shown) : null;
+  const dot = lv => `<span class="dot ${lv}"></span>`;
+  return `${appbar('დადუღება', `#/batch/${b.id}`)}<main class="wrap">
     <section class="paper label-cut panel airlock-hero">
-      ${airlockSvg(lastAir ? lastAir.airlock : '')}
-      <div class="sec">
+      ${airlockSvg(last ? last.airlock : '')}
+      <div class="sec" style="gap:4px">
         <span class="eyebrow">${esc(b.name)}</span>
-        <h2>${dayNow >= 0 ? `დღე ${dayNow}` : 'ჯერ არ დაწყებულა'}</h2>
-        <p class="muted small">ხარშვის დღე: ${fmtDate(brewDay(b))}${lastAir ? `, საკეტი ${lastAir.airlock.toLowerCase()}` : ''}</p>
+        <h2 style="font-size:1.6rem">${dayNow >= 0 ? `დუღილის ${dayNow}-ე დღე` : 'ჯერ არ დაწყებულა'}</h2>
+        <p class="muted small">ხარშვის დღე: ${fmtDate(brewDay(b))}</p>
+        ${lastA ? `<p class="small" style="display:flex;gap:8px;align-items:center">${dot(lastA.level)}<span>${esc(lastA.title)} — ბოლო ჩანაწერი დღე ${last.day}</span></p>` : '<p class="small muted">ჩანაწერი ჯერ არ არის — პირველი დღეს ჩაწერე.</p>'}
       </div>
     </section>
     ${inlineLesson('ferment', 'რა ხდება ფერმენტერში?')}
-    <div class="days" role="list">${days.map(day => {
-      const e = b.fermentationLog.find(x => x.day === day);
-      return `<button type="button" class="${hasData(e) ? 'has' : ''} ${day === dayNow ? 'now' : ''}" data-act="scrollDay" data-day="${day}">${day}<small>${FG_DAYS[day] ? 'FG' : 'დღე'}</small></button>`;
-    }).join('')}</div>
-    <div id="ferm-live" class="sec">${fermLiveHtml(b)}</div>
+    ${shownA ? `<section class="paper panel assess ${shownA.level}" id="ferm-assess">
+      <h2 style="font-size:1.4rem">${dot(shownA.level)} დღე ${shown.day}: ${esc(shownA.title)}</h2>
+      ${shownA.pts.map(x => msgHtml(x.cls, x.text)).join('')}
+      <p class="why">${esc(shownA.next)}</p>
+      ${shownA.finished ? `<a class="btn primary" href="#/bottle/${b.id}">${ic('bottle')} ჩამოსხმაზე გადასვლა</a>` : ''}
+    </section>` : ''}
+    <section class="paper panel" id="ferm-form">
+      <div class="sec-head" style="margin:0"><h2>${shown ? 'კიდევ ერთი ჩანაწერი' : 'რას ხედავ დღეს?'}</h2><span class="small muted">${b.fermentationLog.some(x => x.day === e.day) ? 'რედაქტირება' : 'ახალი'}</span></div>
+      <div class="reading"><span class="lbl"><span>დღე</span><span class="muted">${fmtDate(addDays(brewDay(b), e.day))}</span></span>
+        <div class="stepper"><button type="button" data-act="fermDay" data-d="-1" aria-label="წინა დღე">${ic('minus')}</button>
+          ${unitInput('id="fd-day" data-fd="day" data-num="1"', e.day, 'დღე')}
+          <button type="button" data-act="fermDay" data-d="1" aria-label="შემდეგი დღე">${ic('plus')}</button></div></div>
+      <label class="field"><span class="lbl">ტემპერატურა</span>${unitInput('id="fd-temp" data-fd="temp" data-num="1" placeholder="მაგ. 24"', e.temp ?? '', '°C')}</label>
+      <div class="field"><span class="lbl small muted" style="font-weight:600">საკეტი</span>
+        <div class="chips" id="fd-air">${AIRLOCK.map((a, k) => `<button type="button" class="${e.airlock === a ? 'on' : ''} ${['', 'slow', 'stop'][k]}" aria-pressed="${e.airlock === a}" data-act="fermAir" data-v="${a}">${ic(['bubbles', 'drop', 'pause'][k])}${a}</button>`).join('')}</div></div>
+      <div class="grid2">
+        <label class="field"><span class="lbl">ქაფი (სადამდე)</span><input id="fd-foam" data-fd="foam" value="${esc(e.foam)}" placeholder="მაგ. 2 სმ"></label>
+        <label class="field"><span class="lbl">FG${e.day >= 7 ? '' : ' (მე-7 დღიდან)'}</span>${unitInput('id="fd-fg" data-fd="fg" data-num="1"', e.fg ?? '', 'Bx')}</label>
+      </div>
+      <label class="field"><span class="lbl">შენიშვნა</span><input id="fd-note" data-fd="note" value="${esc(e.note)}" placeholder="სუნი, ფერი, რამე უცნაური"></label>
+      <button class="primary" data-act="fermSave">${ic('check')} შენახვა და შეფასება</button>
+    </section>
+    ${log.length ? `<section class="paper panel" style="gap:4px"><h3>დღიური</h3>
+      ${log.map(x => { const A = assessFerm(b, x); return `<button type="button" class="list-row" style="min-height:52px;padding:8px 2px" data-act="fermEdit" data-day="${x.day}">
+        ${dot(A.level)}<span class="body"><span class="title">დღე ${x.day} <span class="muted small">${fmtDate(x.date)}</span></span>
+        <span class="sub">${[x.temp != null ? `${x.temp}°C` : '', x.airlock, x.foam ? `ქაფი ${x.foam}` : '', x.fg != null ? `FG ${x.fg} Bx` : '', x.note].filter(Boolean).join(', ') || '—'}</span></span>${ic('edit', 'chev')}</button>`; }).join('')}
+      </section>` : ''}
     <label class="field"><span class="lbl">Brix-ის ინსტრუმენტი</span><select id="f-instr" data-bind="batch:instrument">
       <option value="hydro" ${b.instrument !== 'refract' ? 'selected' : ''}>არეომეტრი — SG = 1 + Brix × 0.004</option>
       <option value="refract" ${b.instrument === 'refract' ? 'selected' : ''}>რეფრაქტომეტრი — ალკოჰოლის კორექციით</option></select></label>
-    ${days.map(day => {
-      const e = b.fermentationLog.find(x => x.day === day) || { day, date: addDays(brewDay(b), day) };
-      const fgLabel = FG_DAYS[day] || (e.fg != null || day > 9 ? 'FG' : null);
-      const isToday = e.date === today;
-      return `<section class="paper panel ${isToday ? 'today' : ''}" id="day-${day}" style="scroll-margin-top:80px">
-        <div class="sec-head" style="margin:0"><h3>დღე ${day}${FG_DAYS[day] ? ` · ${FG_DAYS[day]}` : ''}</h3><span class="small ${isToday ? '' : 'muted'}" ${isToday ? 'style="color:var(--amber);font-weight:700"' : ''}>${isToday ? 'დღეს · ' : ''}${fmtDate(e.date)}</span></div>
-        <label class="field"><span class="lbl">ტემპერატურა</span>${unitInput(`id="f-${day}-t" data-bind="ferm:${day}:temp" data-num="1"`, e.temp ?? '', '°C')}</label>
-        <div class="field"><span class="lbl small muted" style="font-weight:600">საკეტი</span>
-          <div class="chips">${AIRLOCK.map((a, k) => `<button type="button" class="${e.airlock === a ? 'on' : ''} ${['', 'slow', 'stop'][k]}" aria-pressed="${e.airlock === a}" data-act="setAirlock" data-day="${day}" data-v="${a}">${ic(['bubbles', 'drop', 'pause'][k])}${a}</button>`).join('')}</div></div>
-        ${fgLabel ? `<label class="field"><span class="lbl">${fgLabel}</span>${unitInput(`id="f-${day}-fg" data-bind="ferm:${day}:fg" data-num="1"`, e.fg ?? '', 'Bx')}</label>` : ''}
-        <div class="grid2">
-          <label class="field"><span class="lbl">ქაფი (სადამდე)</span><input id="f-${day}-f" data-bind="ferm:${day}:foam" value="${esc(e.foam)}"></label>
-          <label class="field"><span class="lbl">შენიშვნა</span><input id="f-${day}-n" data-bind="ferm:${day}:note" value="${esc(e.note)}"></label>
-        </div>
-      </section>`;
-    }).join('')}
-    <button data-act="addFermDay">${ic('plus')} დამატებითი დღე (FG ხელახლა)</button>
-    <section class="panel"><h3>შემდეგ</h3>
-      <ul style="margin:0;padding-left:20px"><li>FG #1 = FG #2 → დადუღება დასრულდა.</li><li>Cold crash: 2 დღე მაცივარში.</li><li>ჩამოსხმა.</li></ul>
-      <a class="btn" href="#/bottle/${b.id}">${ic('bottle')} ჩამოსხმაზე გადასვლა</a></section>
   </main>${tabbar('home')}`;
 }
-function fermLiveHtml(b) {
-  const st = fermStats(b);
-  return `<div class="tiles paper panel" style="padding:10px;display:grid">
-      <div class="tile"><span class="k">OG</span><span class="v">${st.og ? st.og.toFixed(3) : '—'}</span></div>
-      <div class="tile"><span class="k">FG</span><span class="v">${st.fgSG ? st.fgSG.toFixed(3) : '—'}</span></div>
-      <div class="tile"><span class="k">ABV</span><span class="v">${st.abv != null ? fmt(st.abv) + '%' : '—'}</span></div></div>
-    ${st.finished ? msgHtml('ok', 'დადუღება დასრულდა! FG სტაბილურია. Cold crash: 2 დღე მაცივარში, მერე ჩამოსხმა.')
-      : st.fgCount >= 2 ? msgHtml('warn', 'FG ჯერ იცვლება — დაელოდე 2 დღე და გაზომე ხელახლა.') : ''}`;
-}
+function fermLiveHtml(b) { return ''; }
 
 /* --- 8.6 ჩამოსხმა --- */
 function viewBottle(b) {
@@ -2233,10 +2309,12 @@ function viewBottle(b) {
         ${unitInput('id="bt-vol" data-bind="bottle:volume" data-num="1"', bt.volume ?? '', 'ლ')}
         <button type="button" data-act="nudgeBottle" data-d="1" aria-label="გაზრდა">${ic('plus')}</button>
       </div></div>
+    <div class="field"><span class="lbl small muted" style="font-weight:600">ბოთლის ზომა</span>
+      <div class="chips" id="bt-sizes">${[0.33, 0.5, 0.75].map(sz => `<button type="button" class="${bt.size === sz ? 'on' : ''}" aria-pressed="${bt.size === sz}" data-act="bottleSize" data-size="${sz}">${sz} ლ</button>`).join('')}</div></div>
     <div id="bottle-live">${bottleLiveHtml(b)}</div>
     ${checklistHtml('bottling', BOTTLING_CHECKS, b).replace('class="panel"', 'class="paper panel"')}
     <div class="grid2">
-      <label class="field"><span class="lbl">ბოთლები</span>${unitInput('id="bt-n" data-bind="bottle:bottles" data-num="1"', bt.bottles ?? '', 'ც')}</label>
+      <label class="field"><span class="lbl">ბოთლები (ფაქტობრივი)</span>${unitInput(`id="bt-n" data-bind="bottle:bottles" data-num="1" placeholder="${bt.volume ? Math.floor(bt.volume / (bt.size || 0.5)) : ''}"`, bt.bottles ?? '', 'ც')}</label>
       <label class="field"><span class="lbl">FG</span>${unitInput('id="bt-fg" data-bind="bottle:fg" data-num="1"', bt.fg ?? '', 'Bx')}</label>
     </div>
     <label class="field"><span class="lbl">ჩამოსხმის თარიღი</span><input id="bt-date" type="date" data-bind="bottle:date" value="${esc(bt.date)}"></label>
@@ -2246,13 +2324,19 @@ function viewBottle(b) {
   </main>${tabbar('home')}`;
 }
 function bottleLiveHtml(b) {
-  const v = b.bottling.volume;
-  const n = Math.min(24, b.bottling.bottles || Math.floor(v / 0.5));
+  const v = b.bottling.volume, sz = b.bottling.size || 0.5;
+  const calcN = v ? Math.floor(v / sz) : 0;
+  const n = Math.min(30, b.bottling.bottles || calcN);
   const col = beerColor(recipeOf(b));
-  return v ? `<section class="paper label-cut panel"><div class="stat"><span class="cap">შაქარი, ${SUGAR_G_PER_L} გ/ლ</span><span class="big">${fmt(v * SUGAR_G_PER_L)} გ</span>
-    <span class="cap">≈ ${Math.floor(v / 0.5)} ბოთლი × 0.5 ლ, ან ${Math.floor(v / 0.33)} × 0.33 ლ</span></div>
-    <div class="bottles" aria-hidden="true">${Array.from({ length: n }, (_, i) => bottleSvg(col, i)).join('')}</div></section>`
-    : msgHtml('info', 'შეიყვანე მოცულობა — შაქარს დავითვლი.');
+  return v ? `<section class="paper label-cut panel"><div class="stat"><span class="cap">შაქარი სულ, ${SUGAR_G_PER_L} გ/ლ</span><span class="big">${fmt(v * SUGAR_G_PER_L)} გ</span>
+    <span class="cap">≈ ${calcN} ბოთლი × ${sz} ლ${v - calcN * sz >= 0.1 ? `, რჩება ${fmt(v - calcN * sz, 2)} ლ` : ''}</span></div>
+    <div class="bottles" aria-hidden="true">${Array.from({ length: n }, (_, i) => bottleSvg(col, i)).join('')}</div>
+    <div class="tiles">
+      <div class="tile"><span class="k">შაქარი თითო ბოთლში</span><span class="v">${fmt(sz * SUGAR_G_PER_L, 1)} გ</span></div>
+      <div class="tile"><span class="k">სიროფი (50 მლ წყალი)</span><span class="v">${Math.round(50 / Math.max(calcN, 1))} მლ/ბოთლი</span></div>
+    </div>
+    <p class="hint">შაქარი ერთ ჭურჭელში გახსენი და მთელ ლუდს შეურიე — ასე ყველა ბოთლში თანაბრად მოხვდება. თითო ბოთლში ცალკე ჩაყრა ნაკლებად ზუსტია.</p></section>`
+    : msgHtml('info', 'შეიყვანე მოცულობა — შაქარს და ბოთლებს დავითვლი.');
 }
 
 /* --- 8.7 ექსპორტი (Markdown) --- */
@@ -2279,7 +2363,7 @@ function exportMd(b) {
   if (fs.abv != null) L.push('', `- FG: ${fs.fgSG.toFixed(3)} · ABV: ${fmt(fs.abv)}%${fs.finished ? ' · დადუღება დასრულდა' : ''}`);
   L.push('', '## ჩამოსხმა', '');
   L.push(`- თარიღი: ${fmtDate(bt.date)}`, `- მოცულობა: ${bt.volume ?? '—'} ლ`, `- შაქარი: ${bt.volume ? fmt(bt.volume * SUGAR_G_PER_L) : '—'} გ`,
-    `- ბოთლები: ${bt.bottles ?? '—'}`, `- FG: ${bt.fg ?? '—'} Bx`, `- გემო: ${bt.tasting || '—'}`);
+    `- ბოთლები: ${bt.bottles ?? '—'} × ${bt.size || 0.5} ლ`, `- FG: ${bt.fg ?? '—'} Bx`, `- გემო: ${bt.tasting || '—'}`);
   if (b.notes) L.push('', '## შენიშვნები', '', b.notes);
   return L.join('\n');
 }
@@ -2576,6 +2660,7 @@ function onBind(el, isChange) {
 document.addEventListener('input', e => {
   const el = e.target;
   if (el.dataset.lesson) { updateLesson(el); return; }
+  if (el.dataset.fd && fermDraft) { const k = el.dataset.fd; fermDraft.e[k] = el.dataset.num ? num(el.value) : el.value; if (k === 'day' && fermDraft.e.day == null) fermDraft.e.day = 0; return; }
   if (el.dataset.bind && el.type !== 'checkbox' && el.tagName !== 'SELECT') onBind(el, false);
 });
 document.addEventListener('change', e => {
@@ -2633,7 +2718,7 @@ const ACTIONS = {
     }
     // ბოლო ნაბიჯი: ხარშვა დასრულდა
     b.status = 'fermenting';
-    FERM_DAYS.forEach(d => ensureFerm(b, d));
+    b.fermentationLog = b.fermentationLog.filter(e => e.temp != null || e.airlock || e.foam || e.fg != null || e.note);
     b.fermentationLog.forEach(e => { e.date = addDays(brewDay(b), e.day); });
     save(); go(`#/batch/${b.id}`);
     const c2 = calc(b, r);
@@ -2668,11 +2753,7 @@ const ACTIONS = {
     $('#modal').classList.remove('on'); $('#modal').innerHTML = '';
     goStepTop();
   },
-  setAirlock(el) {
-    const b = curBatch(), e = ensureFerm(b, +el.dataset.day);
-    e.airlock = e.airlock === el.dataset.v ? '' : el.dataset.v; save(); render();
-  },
-  scrollDay(el) { const t = $(`#day-${el.dataset.day}`); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
+
   nudge(el) {
     const b = curBatch(), r = recipeOf(b), st = STEPS[b.cur], c = calc(b, r);
     const inp = st.inputs.find(x => x.k === el.dataset.k);
@@ -2688,6 +2769,12 @@ const ACTIONS = {
     save(); refreshBrewLive(b);
     const r = recipeOf(b), c = calc(b, r);
     toast(c.chosen.asIs ? 'წყალი არ დაემატება' : `ნაბიჯი 22: დაამატე ${mlRound(c.addL)} მლ წყალი`);
+  },
+  bottleSize(el) {
+    const b = curBatch(); b.bottling.size = +el.dataset.size; save();
+    document.querySelectorAll('#bt-sizes button').forEach(x => { const on = x === el; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
+    $('#bottle-live').innerHTML = bottleLiveHtml(b);
+    const n = $('#bt-n'); if (n) n.placeholder = b.bottling.volume ? Math.floor(b.bottling.volume / b.bottling.size) : '';
   },
   nudgeBottle(el) {
     const b = curBatch(), cur = b.bottling.volume;
@@ -2721,17 +2808,41 @@ const ACTIONS = {
     if (!await ask(`წავშალო „${b.name}"? ყველა ჩანაწერი დაიკარგება.`, 'წაშლა', true)) return;
     S.batches = S.batches.filter(x => x !== b); save(); go('#/');
   },
-  addFermDay() {
-    const b = curBatch();
-    const last = Math.max(9, ...b.fermentationLog.map(e => e.day));
-    ensureFerm(b, last + 2); save(); render();
+  fermDay(el) {
+    const b = curBatch(); const d = clamp(fermDraft.e.day + +el.dataset.d, 0, 60);
+    const ex = b.fermentationLog.find(x => x.day === d);
+    fermDraft.e = ex ? clone(ex) : { day: d, temp: null, airlock: '', foam: '', note: '', fg: null };
+    fermDraft.justSaved = null; render();
+  },
+  fermAir(el) {
+    fermDraft.e.airlock = fermDraft.e.airlock === el.dataset.v ? '' : el.dataset.v;
+    document.querySelectorAll('#fd-air button').forEach(x => { const on = x.dataset.v === fermDraft.e.airlock; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
+  },
+  fermEdit(el) {
+    const b = curBatch(); const ex = b.fermentationLog.find(x => x.day === +el.dataset.day);
+    if (ex) { fermDraft.e = clone(ex); fermDraft.justSaved = null; render(); const f = $('#ferm-form'); if (f) f.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  },
+  fermSave() {
+    const b = curBatch(), e = fermDraft.e;
+    if (e.temp == null && !e.airlock && !e.foam && e.fg == null && !e.note) { toast('ჩაწერე მინიმუმ ტემპერატურა ან საკეტი'); return; }
+    e.date = addDays(brewDay(b), e.day);
+    const i = b.fermentationLog.findIndex(x => x.day === e.day);
+    if (i >= 0) b.fermentationLog[i] = clone(e); else b.fermentationLog.push(clone(e));
+    b.fermentationLog.sort((x, y) => x.day - y.day);
+    save();
+    fermDraft.justSaved = e.day;
+    const nd = FERM_DAYS.find(d => d > e.day) ?? e.day + 2;
+    fermDraft.e = { day: nd, temp: null, airlock: '', foam: '', note: '', fg: null };
+    if (navigator.vibrate) navigator.vibrate(15);
+    render();
+    const a = $('#ferm-assess'); if (a) a.scrollIntoView({ behavior: 'smooth', block: 'start' });
   },
   markBottled() {
     const b = curBatch();
     if (!b.bottling.date) b.bottling.date = todayStr();
     if (b.bottling.fg == null) { const fs = fermStats(b); if (fs.fgBrix != null) b.bottling.fg = fs.fgBrix; }
     b.status = 'bottled'; save(); render();
-    const n = b.bottling.bottles || (b.bottling.volume ? Math.floor(b.bottling.volume / 0.5) : null);
+    const n = b.bottling.bottles || (b.bottling.volume ? Math.floor(b.bottling.volume / (b.bottling.size || 0.5)) : null);
     celebrate('ჩამოსხმულია!', `${n ? `${n} ბოთლი. ` : ''}გასინჯე ${fmtDate(addDays(b.bottling.date, 14))}-ს.`,
       beerColor(recipeOf(b)), 'პარტიაზე დაბრუნება', `#/batch/${b.id}`);
   },
