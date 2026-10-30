@@ -3,580 +3,313 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#22150b">
+<meta name="theme-color" content="#fff200">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>ხარშვის ასისტენტი</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wdth,wght@62.5..100,100..900&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Georgian:wdth,wght@62.5..100,100..900&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap">
 <style>
   /* =====================================================================
-     არტ-დირექცია: „ეკრანი — ჭიქაა".
-     ფონზე ლუდი დგას რეცეპტის ნამდვილ ფერში, ბუშტებით და ქაფით; დონე იზრდება
-     პროგრესთან ერთად. შინაარსი — ნამწვარ მინაზე. ტიპოგრაფია — ლუდის ეტიკეტი:
-     კონდენსირებული ქართული სერიფი, მთავრული ასოებით გაშლილი იარლიყები,
-     ბოდონის ციფრები. პალიტრა: მელანი, თითბერი, ქაფის კრემი.
+     დიზაინი H — „სტიკერ-სახარში": ელექტრო-ყვითელი ფონი, მწვანე მენიუ, თეთრი/ფერადი ფილები,
+     შავი კონტურები და მყარი ჩრდილები, ბუშტუკოვანი ციფრები ფერადი ჩრდილით, მასკოტი-ჭიქა.
+     ფერი: ყვითელი #fff200 · მწვანე #16b60d · ვარდისფერი #ff2fb3 · ცისფერი #22c7ff · იისფერი #b06cff · შავი #111
+     ტიპი:  Noto Sans Georgian 900 სათაურებს და ციფრებს; 500/700 ტექსტს; Space Mono პატარა ტექნიკურ სტრიქონებს.
      ===================================================================== */
-  /* დიზაინის გეგმა (2026):
-     ფერი — მელანი #1a120b, ქაღალდი (Pantone 2026 Cloud Dancer) #f3efe6, თითბერი #c8962e,
-             სვიის მწვანე #6f9d4a, სპილენძი #b5562b, ლუდი — რეცეპტიდან.
-     ტიპი  — Noto Serif Georgian (კონდენსირებული, შავი წონა) სათაურებს; Noto Sans Georgian ტექსტს;
-             Bodoni Moda ციფრებს.
-     განლაგება — ბნელი ლუდის ფონი; ინფორმაცია ამოტვიფრულ ქაღალდის ეტიკეტებზე; სტიკერ-ბეჯები ოდნავ დახრილი;
-             მცურავი მინის ტაბ-ზოლი. ერთი თამამი ელემენტი: ეტიკეტი; დანარჩენი წყნარი. */
   :root {
-    color-scheme: dark;
-    --bg: #22150b;              /* ყავისფერი ბოთლის მინა */
-    --ink: #1a120b; --ink-2: #4a3a28; --ink-3: #7d6c55;
-    --paper: #f3efe6;           /* Cloud Dancer */
-    --paper-2: #e9e1cf;
-    --hop: #6f9d4a; --copper: #b5562b;
-    --glass: rgba(20, 12, 6, .78);
-    --glass-2: rgba(38, 25, 13, .86);
-    --line: rgba(244, 231, 197, .14);
-    --line-2: rgba(244, 231, 197, .26);
-    --fg: #f6ecd6;              /* ქაფის კრემი */
-    --muted: #c4b597;
-    --faint: #8e8068;
-    --brass: #d9a441;           /* თითბერი — აქცენტი */
-    --amber: var(--brass);
-    --amber-soft: rgba(217, 164, 65, .16);
-    --on-amber: #1a1206;
-    --cream: #f4e7c5;
-    --ok: #7fd8a0;  --ok-soft: rgba(127, 216, 160, .14);
-    --warn: #ffab6b; --warn-soft: rgba(255, 171, 107, .14);
-    --bad: #ff7b6b; --bad-soft: rgba(255, 123, 107, .15);
-    --info: #a9c8ff; --info-soft: rgba(169, 200, 255, .13);
-    --violet: #d9b8ff;
-    --beer: #f8a600;            /* JS ცვლის რეცეპტის მიხედვით */
+    color-scheme: light;
+    --yellow: #fff200; --green: #16b60d; --green-d: #0a5c05; --pink: #ff2fb3; --blue: #22c7ff; --purple: #b06cff; --coral: #ff4d1f; --amber: #ffb400; --cyan: #7df9ff;
+    --ink: #111111; --ink-2: #3a3a3a; --ink-3: #6b6b6b; --white: #ffffff; --cream: #fffbe6;
+    --bg: var(--yellow); --fg: var(--ink); --muted: var(--ink-3); --faint: #8a8a8a;
+    --paper: var(--white); --paper-2: #f3f3f3; --line: rgba(17,17,17,.14); --line-2: rgba(17,17,17,.3);
+    --brass: var(--ink); --amber-soft: rgba(17,17,17,.08); --on-amber: var(--white);
+    --hop: var(--green); --copper: var(--coral);
+    --ok: #0e8a07; --ok-soft: #d9f7d3; --warn: #b85b00; --warn-soft: #ffe7c2; --bad: #c0190f; --bad-soft: #ffd8d3; --info: #0b5f8a; --info-soft: #d9f3ff; --violet: var(--purple);
+    --beer: #f8a600;
     --font-ui: "Noto Sans Georgian", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    --font-display: "Noto Serif Georgian", "Noto Sans Georgian", Georgia, serif;
-    --font-fig: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
-    --font-num: var(--font-ui);
-    --t-xs: .78rem; --t-sm: .92rem; --t-md: 1.0625rem; --t-lg: 1.3rem; --t-xl: 2rem;
-    --r: 18px; --r-sm: 12px; --tap: 56px;
-    --gutter-l: max(16px, env(safe-area-inset-left, 0px));
-    --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+    --font-display: var(--font-ui); --font-fig: var(--font-ui); --font-num: var(--font-ui); --font-mono: "Space Mono", ui-monospace, monospace;
+    --t-xs: .8rem; --t-sm: .93rem; --t-md: 1.05rem; --t-lg: 1.3rem; --t-xl: 2.1rem;
+    --r: 28px; --r-sm: 16px; --tap: 56px;
+    --gutter-l: max(16px, env(safe-area-inset-left, 0px)); --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+    --side: 0px;            /* დესკტოპზე გვერდითი პანელის სიგანე */
+    --shadow: 5px 5px 0 var(--ink);
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--fg); }
-  body { font-family: var(--font-ui); font-size: var(--t-md); line-height: 1.5; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent;
+  body { font-family: var(--font-ui); font-size: var(--t-md); line-height: 1.5; font-weight: 500; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent;
     padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px)); min-height: 100vh; }
   body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
   #app { position: relative; z-index: 1; }
+  #beer { display: none; }
 
-  /* ---------- ლუდი ფონზე ---------- */
-  #beer { position: fixed; left: 0; right: 0; bottom: 0; height: 40vh; z-index: 0; pointer-events: none; transition: height 1.4s cubic-bezier(.2,.8,.2,1); }
-  #beer .liq { position: absolute; inset: 14px 0 0; transition: background 1.2s;
-    background: linear-gradient(180deg, color-mix(in srgb, var(--beer) 92%, #fff 8%) 0%, var(--beer) 30%, color-mix(in srgb, var(--beer) 55%, #000) 100%); }
-  #beer::after { content: ""; position: absolute; inset: 14px 0 0; background: linear-gradient(180deg, rgba(20,11,4,0) 0%, rgba(20,11,4,.35) 45%, rgba(20,11,4,.7) 100%); }
-  main.wrap > .sec-head, main.wrap > .hint, main.wrap > .muted, .reading .lbl, main.wrap > label.field > .lbl, .step-head, .stage-row { text-shadow: 0 1px 2px rgba(0,0,0,.7), 0 0 16px rgba(0,0,0,.55); }
-  .taplist { display: flex; flex-direction: column; border-radius: 22px; overflow: hidden; padding: 4px 0; }
-  .taplist .tl-head { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 18px 8px; }
-  .tap { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; padding: 12px 18px; color: var(--fg); text-decoration: none; border-top: 1px solid var(--line); }
-  .tap .nm { font-family: var(--font-display); font-stretch: 75%; font-weight: 800; font-size: 1.35rem; line-height: 1.1; overflow-wrap: anywhere; }
-  .tap .meta { font-size: var(--t-sm); color: var(--muted); }
-  .tap .now { font-size: var(--t-sm); color: var(--fg); }
-  .tap .side { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-  .tap .abv { font-family: var(--font-fig); font-size: 1.35rem; font-weight: 600; color: var(--cream); line-height: 1; }
-  .tap .abv small { font-family: var(--font-ui); font-size: var(--t-xs); color: var(--faint); font-weight: 500; margin-left: 2px; }
-  #beer .liq::after { content: ""; position: absolute; inset: 0; background: radial-gradient(70% 50% at 30% 20%, rgba(255,255,255,.18), transparent 70%); }
-  #beer .foam { position: absolute; left: -2%; right: -2%; top: 0; height: 34px; }
-  #beer .foam svg { width: 100%; height: 100%; display: block; }
-  #beer .b { position: absolute; bottom: -10px; border-radius: 50%; background: rgba(255, 248, 228, .55); box-shadow: inset -1px -1px 0 rgba(255,255,255,.5);
-    animation: up linear infinite; }
-  @keyframes up { 0% { transform: translate(0, 0); opacity: 0; } 10% { opacity: .9; } 90% { opacity: .7; } 100% { transform: translate(var(--sway, 6px), calc(-1 * var(--h, 40vh))); opacity: 0; } }
-  #beer .foam path { animation: slosh 7s ease-in-out infinite alternate; }
-  @keyframes slosh { to { transform: translateX(-3%); } }
+  .wrap { max-width: 760px; margin: 0 auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+  main.wrap { padding-block: 12px 28px; display: flex; flex-direction: column; gap: 16px; }
+  h1, h2, h3 { margin: 0; line-height: 1.08; letter-spacing: -.02em; font-weight: 900; text-wrap: balance; }
+  h1 { font-size: var(--t-xl); } h2 { font-size: var(--t-lg); display: flex; align-items: center; gap: 10px; } h3 { font-size: var(--t-md); }
+  p { margin: 0; } a { color: var(--ink); }
+  .eyebrow { font-size: var(--t-sm); font-weight: 800; color: var(--ink); }
+  .muted { color: var(--ink-3); } .small { font-size: var(--t-sm); }
+  .num, .fig { font-variant-numeric: tabular-nums; }
+  .mono { font-family: var(--font-mono); font-size: .9em; }
+  .ic { width: 1.3em; height: 1.3em; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .sec { display: flex; flex-direction: column; gap: 10px; } .sec:empty { display: none; }
+  .sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 8px; }
+  .rule, .rule-ink { height: 3px; background: var(--ink); border: 0; margin: 4px 0; border-radius: 2px; }
+  /* ბუშტუკოვანი ციფრები ფერადი ჩრდილით */
+  .bub { font-weight: 900; letter-spacing: -.02em; -webkit-text-stroke: 1.5px var(--ink); paint-order: stroke fill; color: var(--white); text-shadow: 3px 3px 0 var(--pink), 6px 6px 0 var(--blue), 9px 9px 0 var(--green); }
 
-  /* ---------- სტრუქტურა ---------- */
-  .wrap { max-width: 620px; margin: 0 auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
-  main.wrap { padding-block: 10px 28px; display: flex; flex-direction: column; gap: 16px; }
-  h1, h2, h3 { font-family: var(--font-display); font-stretch: 72%; text-wrap: balance; margin: 0; line-height: 1.08; letter-spacing: -.005em; }
-  h1 { font-size: var(--t-xl); font-weight: 800; }
-  h2 { font-size: var(--t-lg); font-weight: 750; display: flex; align-items: center; gap: 10px; }
-  h2 .ic { color: var(--brass); }
-  h3 { font-size: var(--t-md); font-weight: 750; }
-  p { margin: 0; }
-  a { color: var(--brass); }
-  /* მთავრული: ქართული „დიდი ასოები" ეტიკეტისთვის */
-  .eyebrow { font-size: var(--t-sm); font-weight: 600; color: var(--brass); }
-  .muted { color: var(--muted); } .small { font-size: var(--t-sm); }
-  .num { font-variant-numeric: tabular-nums lining-nums; }
-  .fig { font-family: var(--font-fig); font-variant-numeric: lining-nums; }
-  .ic { width: 1.3em; height: 1.3em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
-  .sec { display: flex; flex-direction: column; gap: 10px; }
-  .sec:empty { display: none; }
-  .sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 10px; }
-  .rule { height: 1px; background: linear-gradient(90deg, transparent, var(--line-2), transparent); border: 0; margin: 4px 0; }
-
-  /* ---------- ნამწვარი მინა ---------- */
-  .panel, .batch, .list, details, .item, .tile, .pick {
-    background: var(--glass); -webkit-backdrop-filter: blur(16px) saturate(1.2); backdrop-filter: blur(16px) saturate(1.2);
-    border: 1px solid var(--line); box-shadow: inset 0 1px 0 rgba(255, 248, 228, .07), 0 10px 30px rgba(0,0,0,.25);
-  }
-  .panel { border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-  .panel.hl { border-color: color-mix(in srgb, var(--brass) 55%, transparent); }
+  /* ---------- ფილები ---------- */
+  .panel, .paper, .batch, .list, details, .tile, .pick, .item, .taplist { background: var(--white); color: var(--ink); border: 3px solid var(--ink); border-radius: var(--r); box-shadow: var(--shadow); }
+  .panel { padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .panel.hl { background: var(--cream); }
+  .paper { position: relative; } .paper::before, .paper::after { display: none; }
+  .paper > * { position: relative; z-index: 1; }
+  .label-cut { border-radius: var(--r); }
+  .tile { border-radius: var(--r-sm); border-width: 2px; box-shadow: none; padding: 10px 12px; display: flex; flex-direction: column; gap: 0; min-width: 0; background: var(--cream); }
+  .tile .k { font-size: var(--t-xs); color: var(--ink-3); font-weight: 700; } .tile .v { font-size: 1.5rem; font-weight: 900; line-height: 1.2; }
+  .tile.warn .v { color: var(--coral); }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+  .spec { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: var(--t-sm); color: var(--ink-3); } .spec b { color: var(--ink); font-weight: 900; margin-left: 4px; }
+  .kv { display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; align-items: baseline; } .kv > b { text-align: right; font-weight: 900; }
+  .stat { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0; }
+  .stat .big { font-size: 3.6rem; font-weight: 900; line-height: 1; } .stat .cap { font-size: var(--t-sm); color: var(--ink-3); text-align: center; font-weight: 700; }
 
   /* ---------- ღილაკები ---------- */
-  button, .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: var(--tap); padding: 10px 18px; border-radius: 999px;
-    border: 1px solid var(--line-2); background: var(--glass-2); color: var(--fg); font: inherit; font-weight: 700; cursor: pointer; width: 100%;
-    text-decoration: none; text-align: center; touch-action: manipulation; transition: transform .1s, background .2s, box-shadow .2s; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
-  button:active, .btn:active { transform: scale(.97); }
-  :focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
-  .primary { background: linear-gradient(180deg, #fff6df, var(--cream)); border-color: #fff3d6; color: #1b1308;
-    box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 8px 24px rgba(244, 231, 197, .18); }
-  .ghost { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
-  .danger { background: transparent; border-color: rgba(255,123,107,.35); color: var(--bad); }
+  button, .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: var(--tap); padding: 10px 20px; border-radius: 999px;
+    border: 3px solid var(--ink); background: var(--white); color: var(--ink); font: inherit; font-weight: 800; cursor: pointer; width: 100%; text-decoration: none; text-align: center;
+    touch-action: manipulation; box-shadow: var(--shadow); transition: transform .08s, box-shadow .08s; }
+  button:active, .btn:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink); }
+  :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+  .primary { background: var(--ink); color: var(--white); border-color: var(--ink); }
+  .ghost { background: transparent; box-shadow: none; }
+  .danger { background: var(--white); color: var(--coral); border-color: var(--coral); box-shadow: 5px 5px 0 var(--coral); }
   .icon-btn { width: var(--tap); min-width: var(--tap); padding: 0; flex: none; }
-  button:disabled { opacity: .35; } .gated { opacity: .5; }
-  .btn-row { display: flex; gap: 10px; } .btn-row > * { flex: 1; min-width: 0; }
+  button:disabled { opacity: .35; box-shadow: none; } .gated { opacity: .5; }
+  .btn-row { display: flex; gap: 12px; } .btn-row > * { flex: 1; min-width: 0; }
+  .paper button, .paper .btn { box-shadow: 4px 4px 0 var(--ink); }
+  .paper .ghost { box-shadow: none; }
 
   /* ---------- ველები ---------- */
   label.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-  label.field > .lbl, .reading .lbl { font-size: var(--t-sm); color: var(--muted); font-weight: 600; }
-  input, select, textarea { font: inherit; color: var(--fg); background: rgba(8, 6, 4, .72); border: 1px solid var(--line-2); border-radius: var(--r-sm);
-    padding: 12px 14px; width: 100%; min-height: var(--tap); min-width: 0; }
+  label.field > .lbl, .reading .lbl { font-size: var(--t-sm); color: var(--ink-2); font-weight: 800; }
+  input, select, textarea { font: inherit; font-weight: 600; color: var(--ink); background: var(--white); border: 3px solid var(--ink); border-radius: var(--r-sm); padding: 12px 16px; width: 100%; min-height: var(--tap); min-width: 0; }
   textarea { min-height: 104px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { outline: none; box-shadow: 0 0 0 4px var(--blue); }
   input[type=date] { cursor: pointer; -webkit-appearance: none; appearance: none; }
-  input[type=date]::-webkit-calendar-picker-indicator { opacity: 1; cursor: pointer; width: 26px; height: 26px; padding: 0; filter: invert(.85) sepia(.4); }
-  .paper input[type=date]::-webkit-calendar-picker-indicator { filter: none; }
+  input[type=date]::-webkit-calendar-picker-indicator { opacity: 1; cursor: pointer; width: 26px; height: 26px; padding: 0; }
   input[type=date]::-webkit-date-and-time-value { text-align: left; min-height: 1.4em; }
-  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brass); box-shadow: 0 0 0 3px var(--amber-soft); }
   .unit-in { position: relative; display: block; min-width: 0; }
-  .unit-in input { padding-right: 2.6em; font-variant-numeric: tabular-nums; font-weight: 650; }
-  .unit-in > span { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--faint); pointer-events: none; font-size: var(--t-sm); }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-  .reading { display: flex; flex-direction: column; gap: 8px; }
-  .reading .lbl { display: flex; justify-content: space-between; gap: 8px; }
-  .stepper { display: grid; grid-template-columns: 66px 1fr 66px; gap: 8px; align-items: stretch; }
-  .stepper button { min-height: 76px; padding: 0; border-radius: 22px; }
-  .stepper .unit-in input { min-height: 76px; font-family: var(--font-fig); font-size: 2.3rem; font-weight: 600; text-align: center; padding: 6px 1.5em 6px .7em; border-radius: 22px; }
-  .stepper .unit-in > span { right: 10px; }
-
-  /* ---------- ჩეკლისტი ---------- */
+  .unit-in input { padding-right: 2.6em; font-variant-numeric: tabular-nums; font-weight: 800; }
+  .unit-in > span { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-3); pointer-events: none; font-size: var(--t-sm); font-weight: 700; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .reading { display: flex; flex-direction: column; gap: 8px; } .reading .lbl { display: flex; justify-content: space-between; gap: 8px; }
+  .stepper { display: grid; grid-template-columns: 66px 1fr 66px; gap: 10px; align-items: stretch; }
+  .stepper button { min-height: 76px; padding: 0; border-radius: 22px; font-size: 1.6rem; }
+  .stepper .unit-in input { min-height: 76px; font-size: 2.3rem; font-weight: 900; text-align: center; padding: 6px 1.5em 6px .7em; border-radius: 22px; }
+  .stepper .unit-in > span { right: 12px; }
   .checks { display: flex; flex-direction: column; }
-  .check { display: flex; align-items: center; gap: 14px; min-height: 54px; padding: 8px 2px; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .check { display: flex; align-items: center; gap: 14px; min-height: 54px; padding: 8px 2px; border-bottom: 2px solid var(--line); cursor: pointer; font-weight: 600; }
   .check:last-child { border-bottom: 0; }
-  .check input { appearance: none; -webkit-appearance: none; width: 28px; height: 28px; min-height: 0; padding: 0; flex: none; border: 1.5px solid var(--muted); border-radius: 50%; background: transparent; display: grid; place-items: center; }
-  .check input:checked { background: var(--cream); border-color: var(--cream); animation: pop .25s ease-out; }
-  .check input:checked::after { content: ""; width: 7px; height: 12px; border: solid #1b1308; border-width: 0 2.5px 2.5px 0; transform: translateY(-1px) rotate(45deg); }
-  .check.done > span { color: var(--faint); text-decoration: line-through; text-decoration-color: var(--line-2); }
+  .check input { appearance: none; -webkit-appearance: none; width: 30px; height: 30px; min-height: 0; padding: 0; flex: none; border: 3px solid var(--ink); border-radius: 50%; background: var(--white); display: grid; place-items: center; }
+  .check input:checked { background: var(--green); animation: pop .25s ease-out; }
+  .check input:checked::after { content: ""; width: 7px; height: 12px; border: solid var(--ink); border-width: 0 3px 3px 0; transform: translateY(-1px) rotate(45deg); }
+  .check.done > span { color: var(--ink-3); text-decoration: line-through; }
   @keyframes pop { 50% { transform: scale(1.2); } }
   .switch { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 60px; cursor: pointer; }
-  .switch input { appearance: none; -webkit-appearance: none; width: 54px; height: 32px; min-height: 0; padding: 0; border-radius: 99px; background: rgba(255,255,255,.08); border: 1px solid var(--line-2); position: relative; flex: none; transition: background .2s; }
-  .switch input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: var(--muted); transition: transform .2s; }
-  .switch input:checked { background: var(--brass); border-color: var(--brass); }
-  .switch input:checked::after { transform: translateX(22px); background: var(--cream); }
+  .switch input { appearance: none; -webkit-appearance: none; width: 58px; height: 34px; min-height: 0; padding: 0; border-radius: 99px; background: var(--white); border: 3px solid var(--ink); position: relative; flex: none; }
+  .switch input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); transition: transform .15s; }
+  .switch input:checked { background: var(--green); } .switch input:checked::after { transform: translateX(24px); }
 
-  /* ---------- სტატუსები / შეტყობინებები ---------- */
-  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 99px; font-size: var(--t-xs); font-weight: 700; white-space: nowrap; border: 1px solid currentColor; }
-  .pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-  .pill.planned { color: var(--info); } .pill.brewing { color: var(--brass); } .pill.fermenting { color: var(--ok); } .pill.bottled { color: var(--violet); } .pill.done { color: var(--faint); }
-  .tag { display: inline-block; padding: 1px 8px; border-radius: 6px; background: var(--amber-soft); color: var(--brass); font-size: var(--t-xs); font-weight: 700; white-space: nowrap; }
-  .msg { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: var(--r-sm); font-weight: 600; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border: 1px solid transparent; }
+  /* ---------- სტიკერები, ტეგები, შეტყობინებები ---------- */
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 99px; font-size: var(--t-xs); font-weight: 900; white-space: nowrap; background: var(--white); color: var(--ink); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); transform: rotate(var(--tilt, -2deg)); }
+  .pill.planned { --tilt: 2deg; background: var(--blue); } .pill.brewing { --tilt: -3deg; background: var(--amber); } .pill.fermenting { --tilt: 2.5deg; background: var(--green); color: var(--white); }
+  .pill.bottled { --tilt: -2deg; background: var(--purple); } .pill.done { --tilt: 1.5deg; background: var(--ink); color: var(--yellow); }
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 99px; background: var(--ink); color: var(--yellow); font-size: var(--t-xs); font-weight: 800; white-space: nowrap; }
+  .debug { display: inline-block; background: var(--coral); color: var(--white); font-size: 10px; padding: 2px 8px; border-radius: 6px; font-weight: 900; vertical-align: middle; letter-spacing: .1em; border: 2px solid var(--ink); transform: rotate(3deg); }
+  .msg { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: var(--r-sm); font-weight: 700; border: 2px solid var(--ink); }
   .msg .ic { margin-top: 2px; }
-  .msg.ok { background: rgba(14, 40, 26, .85); color: var(--ok); border-color: rgba(127,216,160,.25); }
-  .msg.warn { background: rgba(48, 26, 10, .88); color: var(--warn); border-color: rgba(255,171,107,.25); }
-  .msg.bad { background: rgba(52, 16, 12, .88); color: var(--bad); border-color: rgba(255,123,107,.3); }
-  .msg.info { background: rgba(18, 26, 44, .86); color: var(--info); border-color: rgba(169,200,255,.22); }
+  .msg.ok { background: var(--ok-soft); color: var(--ok); } .msg.warn { background: var(--warn-soft); color: var(--warn); } .msg.bad { background: var(--bad-soft); color: var(--bad); } .msg.info { background: var(--info-soft); color: var(--info); }
+  .dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; flex: none; background: var(--green); border: 2px solid var(--ink); }
+  .dot.warn { background: var(--amber); } .dot.bad { background: var(--coral); }
+  .assess.ok { background: var(--ok-soft); } .assess.warn { background: var(--warn-soft); } .assess.bad { background: var(--bad-soft); }
 
   /* ---------- სიები და ბარათები ---------- */
-  .list { display: flex; flex-direction: column; border-radius: var(--r); overflow: hidden; }
-  .list-row { display: flex; align-items: center; gap: 14px; padding: 14px 16px; min-height: 70px; color: var(--fg); text-decoration: none; background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; text-align: left; font-weight: 400; justify-content: flex-start; -webkit-backdrop-filter: none; backdrop-filter: none; }
-  .list-row:last-child { border-bottom: 0; }
-  .list-row .ic.lead { color: var(--brass); width: 1.5em; height: 1.5em; }
-  .list-row .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-  .list-row .title { font-weight: 700; }
-  .list-row .sub { font-size: var(--t-sm); color: var(--muted); }
-  .list-row .chev { color: var(--faint); }
-  .batch { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: var(--r); color: var(--fg); text-decoration: none; }
-  .batch .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-  .batch .top .ic { color: var(--faint); }
-  .batch .name { font-family: var(--font-display); font-stretch: 75%; font-weight: 800; font-size: 1.45rem; line-height: 1.1; min-width: 0; overflow-wrap: anywhere; }
-  .meter { height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; }
-  .meter > div { height: 100%; background: var(--cream); }
+  .list { display: flex; flex-direction: column; overflow: hidden; }
+  .list-row, .paper button.list-row { display: flex; align-items: center; gap: 14px; padding: 14px 18px; min-height: 70px; color: var(--ink); text-decoration: none; background: none; border: 0; border-bottom: 2px solid var(--line); border-radius: 0; text-align: left; font-weight: 600; justify-content: flex-start; box-shadow: none; width: 100%; }
+  .list-row:last-child, .paper button.list-row:last-child { border-bottom: 0; }
+  .list-row .ic.lead { color: var(--ink); width: 1.6em; height: 1.6em; } .list-row .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .list-row .title { font-weight: 900; } .list-row .sub { font-size: var(--t-sm); color: var(--ink-3); } .list-row .chev { color: var(--ink-3); }
+  .batch { display: flex; flex-direction: column; gap: 8px; padding: 18px 20px; color: var(--ink); text-decoration: none; }
+  .batch .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; } .batch .top .ic { color: var(--ink-3); }
+  .batch .name { font-weight: 900; font-size: 1.45rem; line-height: 1.1; min-width: 0; overflow-wrap: anywhere; letter-spacing: -.02em; }
+  .meter { height: 10px; background: var(--white); border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; } .meter > div { height: 100%; background: var(--green); }
+  .card-glass { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; } .card-glass .body { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .art { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 14px; border: 3px solid var(--ink); }
+  .artbox { width: 64px; height: 64px; flex: none; } .artbox.lg { width: 96px; height: 96px; } .tap .artbox { width: 56px; height: 56px; }
+  .beer-strip { height: 12px; border-radius: 6px; background: var(--c); border: 2px solid var(--ink); }
+  .taplist { display: flex; flex-direction: column; overflow: hidden; padding: 4px 0; }
+  .taplist .tl-head { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 20px 8px; }
+  .tap { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; padding: 12px 20px; color: var(--ink); text-decoration: none; border-top: 2px solid var(--line); }
+  .tap .nm { font-weight: 900; font-size: 1.3rem; line-height: 1.1; overflow-wrap: anywhere; letter-spacing: -.02em; } .tap .meta { font-size: var(--t-sm); color: var(--ink-3); } .tap .now { font-size: var(--t-sm); font-weight: 600; }
+  .tap .side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; } .tap .abv { font-size: 1.4rem; font-weight: 900; line-height: 1; } .tap .abv small { font-size: var(--t-xs); color: var(--ink-3); margin-left: 2px; }
+  .picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .pick { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 10px; color: var(--ink); text-align: center; font-weight: 800; min-height: 0; box-shadow: none; border-width: 3px; }
+  .pick span { font-size: 1.1rem; font-weight: 900; } .pick small { color: var(--ink-3); font-weight: 600; } .pick.on { background: var(--blue); box-shadow: var(--shadow); }
+  .paper .pick { background: var(--white); } .paper .pick.on { background: var(--blue); }
 
   /* ---------- ზოლები ---------- */
-  .appbar, .brewbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: rgba(13, 10, 7, .82); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); border-bottom: 1px solid var(--line); }
-  .appbar .wrap { display: flex; align-items: center; gap: 10px; padding-block: 8px; min-height: 64px; }
-  .appbar .ttl { flex: 1; min-width: 0; font-family: var(--font-display); font-weight: 800; font-stretch: 75%; font-size: 1.35rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .appbar .icon-btn, .brewbar .icon-btn { min-height: 46px; width: 46px; min-width: 46px; }
-  .saved { font-size: var(--t-xs); color: var(--faint); white-space: nowrap; transition: color .3s; }
-  .saved.flash { color: var(--ok); }
-  .tabbar, .actionbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: rgba(13, 10, 7, .78); -webkit-backdrop-filter: blur(20px) saturate(1.3); backdrop-filter: blur(20px) saturate(1.3); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); }
-  .tabbar .wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding-block: 8px; }
-  .tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 56px; border-radius: 16px; color: var(--faint); text-decoration: none; font-size: var(--t-xs); font-weight: 650; }
-  .tabbar a.on { color: var(--cream); }
-  .tabbar a.on .ic { color: var(--brass); }
-  .actionbar .wrap { display: grid; grid-template-columns: 56px 1fr 2fr; gap: 8px; padding-block: 10px; }
-  .actionbar button { white-space: nowrap; padding: 8px 10px; }
+  .appbar, .brewbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--yellow); border-bottom: 3px solid var(--ink); }
+  .appbar .wrap { display: flex; align-items: center; gap: 12px; padding-block: 10px; min-height: 68px; }
+  .appbar .ttl { flex: 1; min-width: 0; font-weight: 900; font-size: 1.4rem; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .appbar .icon-btn, .brewbar .icon-btn { min-height: 48px; width: 48px; min-width: 48px; box-shadow: 3px 3px 0 var(--ink); }
+  .saved { font-size: var(--t-xs); color: var(--ink-3); white-space: nowrap; font-weight: 700; } .saved.flash { color: var(--ok); }
+  /* ტაბ-ზოლი: ტელეფონზე ქვევით, დესკტოპზე — მარცხენა მწვანე მენიუ ყვითელ რელსზე */
+  .tabbar { position: fixed; left: var(--gutter-l); right: var(--gutter-r); bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 6; background: var(--green); border: 3px solid var(--ink); border-radius: 24px; box-shadow: var(--shadow); max-width: 760px; margin: 0 auto; }
+  .tabbar .rail { display: none; }
+  .tabbar .wrap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 6px; }
+  .tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 54px; border-radius: 16px; color: var(--ink); text-decoration: none; font-size: 11px; font-weight: 800; }
+  .tabbar a.on { background: var(--ink); color: var(--yellow); }
+  .actionbar { position: fixed; left: var(--gutter-l); right: var(--gutter-r); bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 6; background: var(--white); border: 3px solid var(--ink); border-radius: 999px; box-shadow: var(--shadow); max-width: 760px; margin: 0 auto; }
+  .actionbar .wrap { display: grid; grid-template-columns: 54px 1fr 2fr; gap: 8px; padding: 8px; }
+  .actionbar button { min-height: 52px; white-space: nowrap; padding: 8px 10px; box-shadow: none; }
+  .actionbar .icon-btn { width: 54px; min-width: 54px; }
 
   /* ---------- ხარშვის რეჟიმი ---------- */
-  .brewbar .wrap { padding-block: 8px 10px; display: flex; flex-direction: column; gap: 8px; }
+  .brewbar .wrap { padding-block: 10px 12px; display: flex; flex-direction: column; gap: 10px; }
   .brewbar .row1 { display: flex; align-items: center; gap: 10px; }
-  .brewbar .icon-btn.on { color: var(--brass); }
+  .brewbar .icon-btn.on { background: var(--ink); color: var(--yellow); }
   .segs { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; cursor: pointer; }
-  .segs > div { height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
-  .segs > div > i { display: block; height: 100%; }
-  .where-btn { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 0; min-height: 46px; padding: 2px 4px; background: none; border: 0; text-align: left; line-height: 1.25; font-weight: 400; border-radius: 10px; -webkit-backdrop-filter: none; backdrop-filter: none; }
-  .where-btn .eyebrow { color: var(--stage); display: flex; align-items: center; gap: 6px; }
-  .where-btn b { font-family: var(--font-display); font-stretch: 78%; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-  .tchip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 99px; background: var(--amber-soft); border: 1px solid rgba(217,164,65,.4); color: var(--brass); font-weight: 700; font-size: var(--t-sm); white-space: nowrap; min-height: 38px; }
+  .segs > div { height: 10px; border-radius: 5px; background: var(--white); border: 2px solid var(--ink); overflow: hidden; } .segs > div > i { display: block; height: 100%; }
+  .where-btn { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 0; min-height: 46px; padding: 2px 4px; background: none; border: 0; box-shadow: none; text-align: left; line-height: 1.25; font-weight: 400; border-radius: 10px; }
+  .where-btn .eyebrow { display: flex; align-items: center; gap: 6px; } .where-btn b { font-weight: 900; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .tchip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 99px; background: var(--white); border: 3px solid var(--ink); color: var(--ink); font-weight: 900; font-size: var(--t-sm); white-space: nowrap; min-height: 40px; }
   .step-head { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
-  .stage-row { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; margin-top: 6px; }
+  .stage-row { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; margin-top: 6px; padding: 18px 20px; border-radius: var(--r); background: var(--stage, var(--white)); border: 3px solid var(--ink); box-shadow: var(--shadow); }
   .stage-row .txt { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-  .stage-row .eyebrow { color: var(--stage); }
-  .stage-row h1 { font-size: 2.25rem; font-weight: 850; font-stretch: 68%; }
+  .stage-row h1 { font-size: 2.3rem; }
   .seal { width: 84px; height: 84px; flex: none; display: block; }
-  .seal .ring { fill: none; stroke: var(--stage, var(--brass)); }
-  .seal text { fill: var(--stage, var(--brass)); }
-  .seal .lt { font-family: var(--font-display); font-weight: 800; }
-  .seal .arc { font-family: var(--font-ui); font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
-  .intro { color: var(--muted); font-family: var(--font-display); font-style: italic; font-size: var(--t-sm); }
-  .instr { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 1.25rem; line-height: 1.42; counter-reset: ln; }
-  .instr li { display: grid; grid-template-columns: 26px 1fr; gap: 12px; counter-increment: ln; }
-  .instr li::before { content: counter(ln); font-family: var(--font-fig); font-weight: 600; font-size: 1.05rem; color: var(--stage, var(--brass)); text-align: right; line-height: 1.6; }
-  .instr li.later { color: var(--muted); }
-  .instr li.later::before { content: "◦"; }
-  .stamp { display: inline-flex; align-self: flex-start; gap: 8px; align-items: center; color: var(--ok); font-weight: 700; font-size: var(--t-sm); letter-spacing: .04em; }
-  .nextup { display: flex; align-items: center; gap: 8px; color: var(--faint); font-size: var(--t-sm); padding: 10px 14px; border-radius: 99px; background: rgba(13,10,7,.6); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); align-self: flex-start; }
-  .nextup b { color: var(--muted); font-weight: 600; }
-  .enter { }
-  @keyframes enter { from { opacity: 0; transform: translateY(14px); } }
-
-  /* სკალა */
+  .seal .ring { fill: none; stroke: var(--ink); } .seal text { fill: var(--ink); }
+  .seal .lt { font-weight: 900; } .seal .arc { font-weight: 800; letter-spacing: .14em; }
+  .intro { color: var(--ink-2); font-weight: 600; font-size: var(--t-sm); }
+  .instr { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 1.25rem; line-height: 1.4; counter-reset: ln; font-weight: 600; }
+  .instr li { display: grid; grid-template-columns: 34px 1fr; gap: 12px; counter-increment: ln; }
+  .instr li::before { content: counter(ln); width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--yellow); font-weight: 900; font-size: .95rem; display: grid; place-items: center; margin-top: .2em; }
+  .instr li.later { color: var(--ink-3); } .instr li.later::before { background: var(--white); color: var(--ink); border: 2px solid var(--ink); content: "◦"; }
+  .stamp { display: inline-flex; align-self: flex-start; gap: 8px; align-items: center; color: var(--ok); font-weight: 800; font-size: var(--t-sm); }
+  .nextup { display: flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: var(--t-sm); font-weight: 700; padding: 10px 16px; border-radius: 99px; background: var(--white); border: 2px solid var(--ink); align-self: flex-start; }
+  .nextup b { font-weight: 900; }
+  .learn-link { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 800; font-size: var(--t-sm); text-decoration: underline; }
   .gauge { display: flex; flex-direction: column; gap: 6px; padding: 6px 2px 0; }
-  .gauge .track { position: relative; height: 10px; border-radius: 5px; background: rgba(255,255,255,.08); }
-  .gauge .band { position: absolute; top: 0; bottom: 0; background: rgba(127,216,160,.32); border-radius: 5px; box-shadow: 0 0 0 1px rgba(127,216,160,.5) inset; }
-  .gauge .mark { position: absolute; top: -9px; width: 4px; height: 28px; margin-left: -2px; border-radius: 2px; background: var(--cream); box-shadow: 0 0 0 3px rgba(13,10,7,.8); }
-  .gauge .mark.out { background: var(--warn); }
-  .gauge .scale { position: relative; height: 18px; font-size: var(--t-xs); color: var(--faint); font-variant-numeric: tabular-nums; }
-  .gauge .scale span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
-  .gauge .scale span.end { transform: translateX(-100%); } .gauge .scale span.start { transform: none; }
-
+  .gauge .track { position: relative; height: 14px; border-radius: 7px; background: var(--white); border: 2px solid var(--ink); }
+  .gauge .band { position: absolute; top: -2px; bottom: -2px; background: var(--green); border: 2px solid var(--ink); border-radius: 7px; }
+  .gauge .mark { position: absolute; top: -9px; width: 6px; height: 28px; margin-left: -3px; border-radius: 3px; background: var(--ink); } .gauge .mark.out { background: var(--coral); }
+  .gauge .scale { position: relative; height: 18px; font-size: var(--t-xs); color: var(--ink-3); font-weight: 700; }
+  .gauge .scale span { position: absolute; transform: translateX(-50%); white-space: nowrap; } .gauge .scale span.end { transform: translateX(-100%); } .gauge .scale span.start { transform: none; }
   /* ტაიმერი */
   .timer { display: flex; flex-direction: column; gap: 12px; }
   .timer .head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-  .timer .head .lbl { display: flex; align-items: center; gap: 8px; font-weight: 650; color: var(--brass); font-size: var(--t-sm); }
-  .digits { font-family: var(--font-fig); font-weight: 600; font-variant-numeric: lining-nums tabular-nums; font-size: 5.2rem; line-height: .95; text-align: center; letter-spacing: -.01em; color: var(--cream); }
-  .digits.paused { color: var(--faint); } .digits.over { color: var(--brass); }
-  .digits.mini { font-size: 1.8rem; text-align: right; }
-  .digits.chip-d { font-size: var(--t-md); color: var(--brass); }
-  .tbar { position: relative; height: 4px; border-radius: 2px; background: var(--line); margin: 6px 0; }
-  .tbar > i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--cream); border-radius: 2px; }
-  .tbar > b { position: absolute; top: -6px; width: 12px; height: 12px; margin-left: -6px; background: var(--bg); border: 2px solid var(--brass); border-radius: 50%; }
-  .tbar > b.fired { background: var(--brass); }
+  .timer .head .lbl { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: var(--t-sm); }
+  .digits { font-weight: 900; font-variant-numeric: tabular-nums; font-size: 5rem; line-height: 1; text-align: center; letter-spacing: -.03em; -webkit-text-stroke: 1.5px var(--ink); paint-order: stroke fill; color: var(--yellow); text-shadow: 4px 4px 0 var(--pink), 8px 8px 0 var(--blue); transform: rotate(-2deg); }
+  .digits.paused { color: var(--white); text-shadow: 4px 4px 0 var(--ink-3); } .digits.over { color: var(--coral); }
+  .digits.mini { font-size: 1.8rem; text-align: right; text-shadow: 2px 2px 0 var(--pink); transform: none; -webkit-text-stroke: 1px var(--ink); }
+  .digits.chip-d { font-size: var(--t-md); color: var(--ink); text-shadow: none; -webkit-text-stroke: 0; transform: none; }
+  .tbar { position: relative; height: 12px; border-radius: 6px; background: var(--white); border: 2px solid var(--ink); margin: 10px 0 6px; }
+  .tbar > i { position: absolute; left: -2px; top: -2px; bottom: -2px; background: var(--green); border-radius: 6px; border: 2px solid var(--ink); }
+  .tbar > b { position: absolute; top: -8px; width: 16px; height: 16px; margin-left: -8px; background: var(--white); border: 3px solid var(--ink); border-radius: 50%; } .tbar > b.fired { background: var(--ink); }
   .alerts { display: flex; flex-direction: column; }
-  .alerts div { display: grid; grid-template-columns: 4.4em 1fr; gap: 10px; padding: 8px 0; font-size: var(--t-sm); border-top: 1px solid var(--line); }
-  .alerts div .num { font-family: var(--font-fig); color: var(--brass); font-weight: 600; font-size: 1rem; }
-  .alerts div.fired { color: var(--faint); } .alerts div.fired .num { color: var(--faint); text-decoration: line-through; }
-
-  /* მაჩვენებლები */
-  .kv { display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; align-items: baseline; }
-  .kv > b { font-variant-numeric: tabular-nums; text-align: right; }
-  .stat { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0; }
-  .stat .big { font-family: var(--font-fig); font-weight: 600; font-size: 3.6rem; line-height: 1; color: var(--cream); }
-  .stat .cap { font-size: var(--t-sm); color: var(--muted); text-align: center; }
-  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; }
-  .tile { border-radius: var(--r-sm); padding: 10px 12px; display: flex; flex-direction: column; gap: 0; min-width: 0; }
-  .tile .k { font-size: var(--t-xs); color: var(--muted); font-weight: 600; }
-  .tile .v { font-family: var(--font-fig); font-weight: 600; font-size: 1.55rem; line-height: 1.2; color: var(--cream); }
-  .tile.warn .v { color: var(--warn); }
-  .spec { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: var(--t-sm); color: var(--muted); }
-  .spec b { font-family: var(--font-fig); font-size: 1rem; letter-spacing: 0; color: var(--cream); font-weight: 600; margin-left: 4px; }
+  .alerts div { display: grid; grid-template-columns: 4.4em 1fr; gap: 10px; padding: 8px 0; font-size: var(--t-sm); border-top: 2px solid var(--line); font-weight: 600; }
+  .alerts div .num { font-weight: 900; } .alerts div.fired { color: var(--ink-3); } .alerts div.fired .num { text-decoration: line-through; }
 
   .tablewrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: var(--t-sm); }
-  td, th { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align: left; vertical-align: top; }
-  th { color: var(--muted); font-weight: 600; font-size: var(--t-xs); }
-  td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td, th { border-bottom: 2px solid var(--line); padding: 8px 6px; text-align: left; vertical-align: top; } th { color: var(--ink-3); font-weight: 800; font-size: var(--t-xs); }
+  td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 800; }
   details { border-radius: var(--r); }
-  details > summary { min-height: 56px; display: flex; align-items: center; gap: 10px; padding: 0 16px; font-weight: 700; cursor: pointer; list-style: none; }
+  details > summary { min-height: 58px; display: flex; align-items: center; gap: 10px; padding: 0 18px; font-weight: 900; cursor: pointer; list-style: none; }
   details > summary::-webkit-details-marker { display: none; }
-  details > summary .chev { margin-left: auto; transition: transform .2s; color: var(--faint); }
-  details[open] > summary .chev { transform: rotate(90deg); }
-  details.trouble > summary { color: var(--warn); }
-  details > .inner { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 8px; }
-  details ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+  details > summary .chev { margin-left: auto; transition: transform .2s; } details[open] > summary .chev { transform: rotate(90deg); }
+  details.trouble { background: var(--amber); } details.paper > summary { color: var(--ink); }
+  details > .inner { padding: 0 18px 18px; display: flex; flex-direction: column; gap: 8px; } details ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+  .paper details { box-shadow: none; }
 
   /* რეცეპტის რედაქტორი */
-  .items { display: flex; flex-direction: column; gap: 8px; }
-  .item { display: grid; grid-template-columns: 1fr 1fr 5.5rem; gap: 8px; align-items: end; border-radius: var(--r-sm); padding: 12px; }
+  .items { display: flex; flex-direction: column; gap: 10px; }
+  .item { display: grid; grid-template-columns: 1fr 1fr 5.5rem; gap: 8px; align-items: end; border-radius: var(--r-sm); padding: 12px; box-shadow: none; border-width: 2px; background: var(--cream); }
   .item .nm { grid-column: 1 / -1; } .item .nm2 { grid-column: 1 / 3; }
-  .item .icon-btn { width: 100%; min-width: 0; color: var(--faint); background: transparent; border-radius: var(--r-sm); }
-  .hint { font-size: var(--t-sm); color: var(--muted); }
-  .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: -1px; margin-right: 6px; border: 1px solid rgba(255,255,255,.35); }
+  .item .icon-btn { width: 100%; min-width: 0; border-radius: var(--r-sm); box-shadow: none; }
+  .hint { font-size: var(--t-sm); color: var(--ink-3); }
+  .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 50%; vertical-align: -2px; margin-right: 6px; border: 2px solid var(--ink); }
   .beer-hero { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; }
 
-  /* ---------- ეტიკეტის სათაური (მთავარი) ---------- */
-  .label-hero { position: relative; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 26px 4px 6px; }
-  .label-hero .hi { font-size: var(--t-sm); color: var(--brass); font-weight: 600; }
-  .label-hero h1 { font-size: 3.1rem; font-weight: 900; font-stretch: 62.5%; line-height: .95; margin-top: 6px; }
-  .label-hero .seal { width: 112px; height: 112px; }
-  .label-hero .seal .ring { stroke: var(--brass); }
-  .label-hero .seal text { fill: var(--brass); }
+  /* მთავარი: ეტიკეტის ნაცვლად — მასკოტი */
+  .masthead { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; padding: 22px 24px; background: var(--white); }
+  .masthead .lockup { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .masthead .hopmark { display: none; }
+  .masthead h1 { font-size: 2.8rem; line-height: .95; }
+  .masthead .est { font-size: var(--t-sm); color: var(--ink-3); font-weight: 700; margin-top: 6px; }
+  .masthead .seal { display: none; }
+  .mascot { width: 150px; height: 165px; flex: none; transform: rotate(-6deg); filter: drop-shadow(5px 5px 0 var(--ink)); }
+  .mascot.sm { width: 96px; height: 106px; }
+  .star { position: absolute; width: 56px; height: 56px; pointer-events: none; }
+  .star path { stroke: var(--ink); stroke-width: 1.3; }
+  .sticker { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 99px; background: var(--white); border: 3px solid var(--ink); font-weight: 900; transform: rotate(-4deg); box-shadow: 3px 3px 0 var(--ink); align-self: flex-start; }
+  .label { display: inline-block; background: var(--ink); color: var(--white); font-weight: 800; padding: 6px 12px; font-size: var(--t-sm); align-self: flex-start; }
 
-  .card-glass { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; }
-  .card-glass .body { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
-  .picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-  .pick { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 10px; border-radius: var(--r); color: var(--fg); text-align: center; font-weight: 700; min-height: 0; }
-  .pick span { font-family: var(--font-display); font-stretch: 78%; font-size: 1.1rem; }
-  .pick.on { border-color: var(--cream); box-shadow: 0 0 0 1px var(--cream) inset, 0 10px 30px rgba(0,0,0,.3); }
-  .pick small { color: var(--muted); font-weight: 500; }
+  /* დადუღება, ჩამოსხმა */
+  .airlock-hero { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; background: var(--pink); }
+  .airlock-hero .muted { color: var(--ink-2); }
+    .airlock { color: var(--ink); } .airlock .ab { opacity: 0; }
+  .airlock.fast .ab { animation: bloop 1.2s ease-in infinite; } .airlock.slow .ab { animation: bloop 3.2s ease-in infinite; }
+  @keyframes bloop { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: .9; } 100% { transform: translateY(-26px); opacity: 0; } }
+  .chips { display: flex; gap: 8px; }
+  .chips button { flex: 1; min-height: 48px; padding: 6px 4px; font-size: var(--t-sm); font-weight: 800; gap: 6px; box-shadow: none; }
+  .chips button.on { background: var(--green); color: var(--white); } .chips button.on.slow { background: var(--amber); color: var(--ink); } .chips button.on.stop { background: var(--ink); color: var(--white); }
+  .days { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 6px; }
+  .days button { flex: 1 0 50px; min-height: 60px; padding: 4px; flex-direction: column; gap: 0; border-radius: 16px; font-size: 1.3rem; font-weight: 900; box-shadow: none; position: relative; }
+  .days button small { font-size: 10px; color: var(--ink-3); font-weight: 800; }
+  .days button.has { background: var(--ok-soft); } .days button.now { box-shadow: 3px 3px 0 var(--ink); } .days button.future { opacity: .55; }
+  .days button.add { flex: 0 0 56px; border-style: dashed; }
+  .days button.sel { background: var(--ink); color: var(--white); opacity: 1; } .days button.sel small { color: var(--yellow); }
+  .days button .dot { position: absolute; top: 5px; right: 5px; width: 9px; height: 9px; border-width: 1.5px; }
+  .bottles { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
+  .bottles svg { width: 22px; height: 44px; } .bottles svg.pop { animation: pop .3s ease-out backwards; }
+  .opts { display: flex; flex-direction: column; gap: 10px; }
+  .opt { display: flex; flex-direction: column; align-items: stretch; gap: 6px; text-align: left; padding: 12px 16px; border-radius: var(--r-sm); min-height: 0; box-shadow: none; background: var(--cream); }
+  .opt.on { background: var(--blue); box-shadow: 4px 4px 0 var(--ink); }
+  .opt-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .opt-n { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--t-sm); font-weight: 600; } .opt-n i { font-style: normal; font-size: 1.15rem; font-weight: 900; }
+  .opt-c { font-size: var(--t-sm); color: var(--ink-2); font-weight: 600; }
 
-  /* ჭიქა (SVG) */
-  .glass { display: block; flex: none; overflow: visible; filter: drop-shadow(0 8px 14px rgba(0,0,0,.35)); }
+  /* ჭიქა, ბოთლი, მასკოტი */
+    .glass { display: block; flex: none; overflow: visible; filter: drop-shadow(3px 3px 0 var(--ink)); }
   .glass .bub { animation: rise 2.6s ease-in infinite; transform-box: fill-box; }
   .glass .foam circle, .glass .foam rect { fill: #fff4dc; }
-  .glass .outline { fill: none; stroke: rgba(246,236,214,.75); stroke-width: 2; stroke-linejoin: round; }
+  .glass .outline { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
   .glass .shine { fill: none; stroke: rgba(255,255,255,.3); stroke-width: 2.5; stroke-linecap: round; }
   @keyframes rise { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: .85; } 100% { transform: translateY(-58px); opacity: 0; } }
 
-  /* ნაბიჯების რუკა / დიალოგი */
-  #overlay, #modal { position: fixed; inset: 0; z-index: 50; display: none; }
-  #overlay.on, #modal.on { display: flex; }
-  #modal { background: rgba(0,0,0,.6); align-items: flex-end; justify-content: center; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
-  #modal .sheet { width: 100%; max-width: 620px; background: rgba(22, 17, 11, .96); border-top: 1px solid var(--line-2); border-radius: 26px 26px 0 0; padding: 22px var(--gutter-r) calc(22px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); display: flex; flex-direction: column; gap: 14px; animation: enter .3s cubic-bezier(.2,.8,.2,1); }
-  #modal .sheet p { font-family: var(--font-display); font-stretch: 80%; font-size: 1.35rem; font-weight: 700; }
-  .map { display: flex; flex-direction: column; gap: 14px; max-height: 68vh; overflow-y: auto; }
-  .map .grp { display: flex; flex-direction: column; gap: 2px; }
-  .map .grp-h { display: flex; align-items: center; gap: 8px; color: var(--stage); font-family: var(--font-display); font-stretch: 78%; font-weight: 800; font-size: 1.05rem; padding: 4px 0; }
-  .map button { justify-content: flex-start; min-height: 46px; padding: 6px 12px; background: transparent; border: 0; font-weight: 500; text-align: left; gap: 10px; border-radius: 12px; -webkit-backdrop-filter: none; backdrop-filter: none; }
-  .map button.cur { background: rgba(255,255,255,.07); font-weight: 800; }
-  .map button .ic { color: var(--faint); } .map button.ok .ic { color: var(--ok); }
-
-  /* სიგნალი */
-  #overlay { background: radial-gradient(80% 60% at 50% 35%, #2a1d0c, var(--bg)); flex-direction: column; justify-content: center; gap: 18px; padding: calc(24px + env(safe-area-inset-top, 0px)) var(--gutter-r) calc(24px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); }
-  #overlay .ring { width: 104px; height: 104px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center; border: 1.5px solid var(--brass); color: var(--brass); animation: pulse 1.1s ease-in-out infinite; }
-  #overlay .ring .ic { width: 46px; height: 46px; }
-  #overlay .big { font-family: var(--font-display); font-size: 2.3rem; font-weight: 850; font-stretch: 70%; text-align: center; line-height: 1.12; text-wrap: balance; }
-  #overlay .cap { text-align: center; color: var(--brass); font-size: var(--t-sm); font-weight: 600; }
-  @keyframes pulse { 50% { transform: scale(1.06); box-shadow: 0 0 0 18px rgba(217,164,65,.08); } }
-
-  .toast { position: fixed; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: rgba(246,236,214,.97); color: #1b1308; padding: 10px 18px; font-size: var(--t-sm); border-radius: 18px; font-weight: 700; z-index: 60; width: max-content; max-width: calc(100vw - 32px); text-align: center; box-shadow: 0 12px 30px rgba(0,0,0,.45); display: flex; flex-direction: column; gap: 2px; animation: enter .25s ease-out; }
-  .debug { display: inline-block; background: var(--bad); color: #fff; font-size: 10px; padding: 1px 7px; border-radius: 6px; font-weight: 700; vertical-align: middle; letter-spacing: .1em; }
-  .empty { text-align: center; padding: 28px 16px; display: flex; flex-direction: column; gap: 14px; align-items: center; color: var(--muted); }
-  .today { border-color: color-mix(in srgb, var(--brass) 60%, transparent); }
-
-  /* დადუღება */
-  .airlock-hero { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; }
-  .airlock { color: var(--ink); } .airlock .ab { opacity: 0; }
-  .airlock.fast .ab { animation: bloop 1.2s ease-in infinite; } .airlock.slow .ab { animation: bloop 3.2s ease-in infinite; }
-  @keyframes bloop { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: .9; } 100% { transform: translateY(-26px); opacity: 0; } }
-  .chips { display: flex; gap: 6px; }
-  .chips button { flex: 1; min-height: 48px; padding: 6px 4px; font-size: var(--t-sm); font-weight: 700; gap: 6px; }
-  .chips button.on { background: rgba(14,40,26,.85); border-color: var(--ok); color: var(--ok); }
-  .chips button.on.slow { background: rgba(48,34,10,.85); border-color: var(--brass); color: var(--brass); }
-  .chips button.on.stop { border-color: var(--muted); color: var(--fg); }
-  .days { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
-  .days button { flex: 1 0 46px; min-height: 58px; padding: 4px; flex-direction: column; gap: 0; border-radius: 16px; font-family: var(--font-fig); font-size: 1.3rem; }
-  .days button small { font-family: var(--font-ui); font-size: 10px; color: var(--faint); font-weight: 600; }
-  .days button.has { border-color: rgba(127,216,160,.5); color: var(--ok); }
-  .days button.now { border-color: var(--cream); box-shadow: 0 0 0 2px rgba(244,231,197,.25); }
-  .days button { position: relative; }
-  .days button .dot { position: absolute; top: 5px; right: 5px; width: 8px; height: 8px; box-shadow: none; }
-  .days button.future { opacity: .6; }
-  .days button.add { flex: 0 0 52px; border-style: dashed; }
-  .paper .days button.sel { background: var(--ink); color: var(--paper); border-color: var(--ink); opacity: 1; }
-  .paper .days button.sel small { color: var(--paper-2); }
-  .bottles { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
-  .bottles svg { width: 22px; height: 44px; filter: drop-shadow(0 3px 4px rgba(0,0,0,.4)); }
-  .bottles svg.pop { animation: pop .3s ease-out backwards; }
-
-  /* ზეიმი */
-  #party { position: fixed; inset: 0; z-index: 55; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; overflow: hidden;
-    background: radial-gradient(90% 60% at 50% 38%, #3a2810, var(--bg)); padding: 24px var(--gutter-r) calc(24px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); }
-  #party.on { display: flex; }
-  #party h1 { font-size: 3.6rem; font-weight: 900; font-stretch: 62.5%; color: var(--cream); }
-  #party p { color: var(--muted); font-size: var(--t-lg); font-family: var(--font-display); font-style: italic; }
-  #party > *:not(.conf) { position: relative; z-index: 1; }
-  #party .conf { position: absolute; bottom: -30px; border-radius: 50%; background: rgba(255,244,220,.7); animation: float linear forwards; }
-  #party button { max-width: 420px; }
-  .fillup .liquid { transform-box: fill-box; transform-origin: 50% 100%; animation: fillup 1.6s .2s cubic-bezier(.3,.7,.2,1) backwards; }
-  .fillup .foam { animation: foamin .5s 1.6s ease-out backwards; transform-box: fill-box; transform-origin: 50% 100%; }
-  @keyframes fillup { from { transform: scaleY(0); } }
-  @keyframes foamin { from { opacity: 0; transform: scaleY(0); } }
-  @keyframes float { to { transform: translateY(-115vh) translateX(var(--dx, 0)); opacity: 0; } }
-
-  /* ---------- ქაღალდის ეტიკეტი ---------- */
-  .paper { background: var(--paper); color: var(--ink); border: 1px solid #d8cfb8; border-radius: 10px; position: relative;
-    box-shadow: 0 1px 0 #fff inset, 0 14px 30px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.25); -webkit-backdrop-filter: none; backdrop-filter: none; }
-  .paper::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: .5; mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .28 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"); }
-  .paper::after { content: ""; position: absolute; inset: 7px; border: 1px solid rgba(26,18,11,.28); border-radius: 5px; pointer-events: none; }
-  .paper > * { position: relative; z-index: 1; }
-  .paper .reading .lbl, .paper label.field > .lbl, .paper .sec-head, .paper .hint { text-shadow: none; }
-  .paper .muted, .paper .hint { color: var(--ink-3); }
-  .paper h1, .paper h2, .paper h3 { color: var(--ink); }
-  .paper .eyebrow { color: var(--copper); }
-  .paper .meter { background: rgba(26,18,11,.12); } .paper .meter > div { background: var(--ink); }
-  .paper .rule-ink { height: 1px; background: var(--ink); opacity: .55; margin: 6px 0; }
-  .paper .spec { color: var(--ink-3); } .paper .spec b { color: var(--ink); }
-  .paper .tile { background: rgba(26,18,11,.05); border-color: rgba(26,18,11,.18); box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
-  .paper .tile .k { color: var(--ink-3); } .paper .tile .v { color: var(--ink); }
-  .paper .instr li::before { color: var(--copper); }
-  .paper .instr li.later { color: var(--ink-3); }
-  .paper .stat .big { color: var(--ink); } .paper .stat .cap { color: var(--ink-3); }
-  .paper .kv > b { color: var(--ink); }
-  .paper table td, .paper table th { border-color: rgba(26,18,11,.15); } .paper th { color: var(--ink-3); }
-  .paper .seal .ring { stroke: var(--ink); } .paper .seal text { fill: var(--ink); }
-  .paper .glass .outline { stroke: var(--ink); }
-  .paper .check { border-color: rgba(26,18,11,.14); }
-  .paper .check input { border-color: var(--ink-2); }
-  .paper .check input:checked { background: var(--ink); border-color: var(--ink); }
-  .paper .check input:checked::after { border-color: var(--paper); }
-  .paper .check.done > span { color: var(--ink-3); }
-  .paper .sec-head { margin: 0; }
-  .paper button, .paper .btn { background: var(--ink); border-color: var(--ink); color: var(--paper); -webkit-backdrop-filter: none; backdrop-filter: none; }
-  .paper button.ghost, .paper .btn.ghost { background: transparent; color: var(--ink); border-color: rgba(26,18,11,.35); }
-  .paper .primary { background: var(--ink); color: var(--paper); border-color: var(--ink); box-shadow: none; }
-  .paper .danger { background: transparent; color: var(--copper); border-color: rgba(181,86,43,.4); }
-  .paper input, .paper select, .paper textarea { background: #fffdf7; color: var(--ink); border-color: rgba(26,18,11,.28); }
-  .paper .unit-in > span { color: var(--ink-3); }
-  .paper .switch input { background: rgba(26,18,11,.12); border-color: rgba(26,18,11,.25); } .paper .switch input::after { background: var(--ink-2); }
-  .paper .switch input:checked { background: var(--ink); } .paper .switch input:checked::after { background: var(--paper); }
-  .paper .chips button { background: transparent; color: var(--ink); border-color: rgba(26,18,11,.3); }
-  .paper .chips button.on { background: var(--hop); border-color: var(--hop); color: #fff; }
-  .paper .chips button.on.slow { background: var(--brass); border-color: var(--brass); color: var(--ink); }
-  .paper .chips button.on.stop { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-  .paper .gauge .track { background: rgba(26,18,11,.12); } .paper .gauge .band { background: rgba(111,157,74,.35); box-shadow: 0 0 0 1px var(--hop) inset; }
-  .paper .gauge .mark { background: var(--ink); box-shadow: 0 0 0 3px var(--paper); } .paper .gauge .scale { color: var(--ink-3); }
-  .paper .msg.ok { background: rgba(111,157,74,.16); color: #2f5e1c; border-color: rgba(111,157,74,.4); }
-  .paper .msg.warn { background: rgba(181,86,43,.14); color: #8a3a16; border-color: rgba(181,86,43,.35); }
-  .paper .msg.bad { background: rgba(181,40,30,.14); color: #8c1d14; border-color: rgba(181,40,30,.35); }
-  .paper .msg.info { background: rgba(26,18,11,.08); color: var(--ink-2); border-color: rgba(26,18,11,.2); }
-  .paper .tchip { background: rgba(26,18,11,.08); border-color: rgba(26,18,11,.25); color: var(--ink); }
-  .paper .digits { color: var(--ink); } .paper .digits.paused { color: var(--ink-3); } .paper .digits.over { color: var(--copper); }
-  .paper .timer .head .lbl { color: var(--copper); }
-  .paper .tbar { background: rgba(26,18,11,.15); } .paper .tbar > i { background: var(--ink); }
-  .paper .tbar > b { background: var(--paper); border-color: var(--ink); } .paper .tbar > b.fired { background: var(--ink); }
-  .paper .alerts div { border-color: rgba(26,18,11,.15); } .paper .alerts div .num { color: var(--copper); }
-  .paper .alerts div.fired, .paper .alerts div.fired .num { color: var(--ink-3); }
-  .paper .stamp { color: #2f5e1c; }
-  .paper .list-row, .paper button.list-row { background: transparent; color: var(--ink); border: 0; border-bottom: 1px solid rgba(26,18,11,.14); border-radius: 0; }
-  .paper .list-row:last-child { border-bottom: 0; }
-  .paper h2 .ic { color: var(--copper); } .paper .list-row .sub { color: var(--ink-3); } .paper .list-row .ic.lead { color: var(--copper); }
-  .paper details { background: transparent; border-color: rgba(26,18,11,.25); box-shadow: none; }
-  details.paper > summary { color: var(--copper); }
-  details.paper .learn-link { color: var(--copper); } .paper details.trouble > summary { color: var(--copper); }
-  .paper .saved { color: var(--ink-3); } .paper .saved.flash { color: #2f5e1c; }
-  .paper .tap { color: var(--ink); border-color: rgba(26,18,11,.14); } .paper .tap .meta { color: var(--ink-3); } .paper .tap .now { color: var(--ink-2); }
-  .paper .tap .abv { color: var(--ink); } .paper .tap .abv small { color: var(--ink-3); }
-  .paper .taplist .tl-head .muted { color: var(--ink-3); }
-  .paper .days button { background: transparent; color: var(--ink); border-color: rgba(26,18,11,.25); }
-  .paper .days button.has { border-color: var(--hop); color: #2f5e1c; }
-  .paper .days button.now { border-color: var(--ink); box-shadow: 0 0 0 2px rgba(26,18,11,.15); }
-  .paper.today { border-color: var(--copper); } .paper.today::after { border-color: rgba(181,86,43,.6); }
-  .paper .days button small { color: var(--ink-3); }
-  .paper .item { background: #fffdf7; border-color: rgba(26,18,11,.18); box-shadow: none; } .paper .item .icon-btn { color: var(--ink-3); background: transparent; border-color: rgba(26,18,11,.25); }
-  .paper .swatch { border-color: rgba(26,18,11,.3); }
-  .paper .bottles svg { filter: drop-shadow(0 2px 2px rgba(0,0,0,.25)); }
-  .paper .tag { background: rgba(26,18,11,.08); color: var(--ink); }
-  .paper .pick { background: #fffdf7; color: var(--ink); border-color: rgba(26,18,11,.2); box-shadow: none; } .paper .pick.on { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink) inset; }
-  .paper .pick small { color: var(--ink-3); }
-  .paper .map button { color: var(--ink); } .paper .map button.cur { background: rgba(26,18,11,.08); }
-  .paper .map button .ic { color: var(--ink-3); } .paper .map button.ok .ic { color: #2f5e1c; }
-  .paper .nextup { background: rgba(26,18,11,.07); color: var(--ink-3); } .paper .nextup b { color: var(--ink-2); }
-
-  /* ეტიკეტის „ფორმა": ზედა-ქვედა ლილვაკის ნაჭდევები */
-  .label-cut { border-radius: 14px; }
-  .label-cut::after { inset: 8px; border-radius: 8px; border-width: 1.5px; }
-
-  /* გეგმის არჩევა (კალკულატორი) */
-  .opts { display: flex; flex-direction: column; gap: 8px; }
-  .opt { display: flex; flex-direction: column; align-items: stretch; gap: 6px; text-align: left; padding: 12px 14px; border-radius: var(--r-sm); min-height: 0; }
-  .paper .opt { background: #fffdf7; color: var(--ink); border: 1.5px solid rgba(26,18,11,.25); }
-  .paper .opt.on { border-color: var(--ink); box-shadow: 0 0 0 1.5px var(--ink) inset; }
-  .opt-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-  .opt-n { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--t-sm); font-weight: 500; color: var(--ink-2); }
-  .opt-n i { font-style: normal; font-family: var(--font-fig); font-size: 1.15rem; font-weight: 600; color: var(--ink); }
-  .opt-c { font-size: var(--t-sm); color: var(--ink-3); font-weight: 500; }
-
-  .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; flex: none; background: var(--ok); box-shadow: 0 0 0 2px rgba(255,255,255,.6); }
-  .dot.warn { background: var(--warn); } .dot.bad { background: var(--bad); }
-  .paper .dot.ok { background: var(--hop); } .paper .dot.warn { background: #d9842a; } .paper .dot.bad { background: #c0392b; }
-  .assess.ok { border-color: var(--hop); } .assess.warn { border-color: #d9842a; } .assess.bad { border-color: #c0392b; }
-  .assess.ok::after { border-color: rgba(111,157,74,.6); } .assess.warn::after { border-color: rgba(217,132,42,.6); } .assess.bad::after { border-color: rgba(192,57,43,.6); }
-
-  /* ---------- სტიკერი (ბეჯი) ---------- */
-  .pill { background: var(--paper); color: var(--ink); border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,.35); transform: rotate(var(--tilt, -2deg)); padding: 4px 11px; font-weight: 800; }
-  .pill::before { display: none; }
-  .pill.planned { --tilt: 2deg; background: #e7eefb; color: #27467a; }
-  .pill.brewing { --tilt: -3deg; background: var(--brass); color: var(--ink); }
-  .pill.fermenting { --tilt: 2.5deg; background: var(--hop); color: #fff; }
-  .pill.bottled { --tilt: -2deg; background: var(--copper); color: #fff; }
-  .pill.done { --tilt: 1.5deg; background: var(--ink); color: var(--paper); }
-  .debug { transform: rotate(3deg); border: 2px solid #fff; }
-
-  /* ---------- მცურავი მინის ზოლები (Liquid Glass) ---------- */
-  .tabbar, .actionbar { left: var(--gutter-l); right: var(--gutter-r); bottom: calc(12px + env(safe-area-inset-bottom, 0px)); padding-bottom: 0; border-radius: 999px;
-    border: 1px solid rgba(255,250,236,.22); background: rgba(34,21,11,.55); -webkit-backdrop-filter: blur(24px) saturate(1.6); backdrop-filter: blur(24px) saturate(1.6);
-    box-shadow: 0 1px 0 rgba(255,255,255,.22) inset, 0 -1px 0 rgba(0,0,0,.35) inset, 0 18px 40px rgba(0,0,0,.45); max-width: 620px; margin: 0 auto; overflow: hidden; }
-  .tabbar::before, .actionbar::before { content: ""; position: absolute; inset: 0 0 50%; background: linear-gradient(180deg, rgba(255,255,255,.12), transparent); pointer-events: none; }
-  .tabbar .wrap { padding: 6px; gap: 4px; }
-  .tabbar a { min-height: 54px; border-radius: 999px; }
-  .tabbar a.on { background: rgba(243,239,230,.14); color: var(--paper); }
-  .actionbar .wrap { padding: 8px; gap: 6px; grid-template-columns: 54px 1fr 2fr; }
-  .actionbar button { min-height: 52px; }
-  .actionbar .icon-btn { width: 54px; min-width: 54px; }
-
-  /* ---------- სვიის ნიშანი (ილუსტრაცია) ---------- */
-  .hopmark { width: 72px; height: 88px; display: block; }
-  .hopmark path, .hopmark line { stroke: var(--ink); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-  .hopmark .leaf { fill: rgba(111,157,74,.22); }
-  .masthead { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; padding: 18px 18px 16px; }
-  .masthead .lockup { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-  .masthead .hopmark { width: 46px; height: 56px; }
-  .masthead h1 { font-size: 2.6rem; font-weight: 900; font-stretch: 62.5%; line-height: .94; }
-  .masthead .est { font-size: var(--t-xs); color: var(--ink-3); margin-top: 6px; }
-  .masthead .seal { width: 84px; height: 84px; }
-  .art { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid rgba(26,18,11,.25); }
-  .artbox { width: 64px; height: 64px; flex: none; }
-  .artbox.lg { width: 96px; height: 96px; }
-  .tap .artbox { width: 56px; height: 56px; }
-  .ink-wash { position: absolute; left: 0; right: 0; bottom: 0; height: 36%; pointer-events: none; z-index: 0; background: linear-gradient(180deg, transparent, rgba(26,18,11,.06)); }
-  .beer-strip { height: 10px; border-radius: 3px; background: var(--c); box-shadow: 0 0 0 1px rgba(26,18,11,.3) inset; }
-
   /* ---------- ლუდის სკოლა ---------- */
-  .tabbar .wrap { grid-template-columns: repeat(4, 1fr); }
-  .tabbar a { font-size: 11px; }
   .lesson-card { display: grid; grid-template-columns: 84px 1fr auto; gap: 12px; align-items: center; text-decoration: none; }
-  .lesson-card .no { font-family: var(--font-fig); font-size: 2.2rem; font-weight: 600; color: var(--copper); line-height: 1; text-align: center; }
-  .lesson-card .no small { display: block; font-family: var(--font-ui); font-size: 10px; color: var(--ink-3); font-weight: 600; }
-  .lesson-card .ttl { font-family: var(--font-display); font-stretch: 78%; font-weight: 800; font-size: 1.25rem; line-height: 1.1; }
-  .lesson-card .sub { font-size: var(--t-sm); color: var(--ink-3); }
-  .lesson-card .read { color: var(--hop); }
-  .fig { width: 100%; height: auto; display: block; border-radius: 8px; background: #fbf8f0; border: 1px solid rgba(26,18,11,.2); }
-  .fig text { font-family: var(--font-ui); font-size: 10.5px; fill: var(--ink-2); }
-  .fig .num { font-family: var(--font-fig); font-size: 13px; }
-  .fig .ink { stroke: var(--ink); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-  .fig .thin { stroke: var(--ink-3); fill: none; stroke-width: 1; stroke-dasharray: 3 3; }
-  .lesson p { line-height: 1.6; }
-  .lesson .lead { font-family: var(--font-display); font-style: italic; font-size: 1.15rem; color: var(--ink-2); }
-  .lesson h3 { margin-top: 6px; color: var(--copper); }
-  .lesson .why { padding-left: 14px; border-left: 3px solid var(--brass); color: var(--ink-2); }
+  .lesson-card .no { font-size: 2.2rem; font-weight: 900; line-height: 1; text-align: center; } .lesson-card .no small { display: block; font-size: 10px; color: var(--ink-3); font-weight: 800; }
+  .lesson-card .ttl { font-weight: 900; font-size: 1.25rem; line-height: 1.1; } .lesson-card .sub { font-size: var(--t-sm); color: var(--ink-3); } .lesson-card .read { color: var(--ok); }
+  .fig { width: 100%; height: auto; display: block; border-radius: var(--r-sm); background: var(--cream); border: 2px solid var(--ink); }
+  .fig text { font-family: var(--font-ui); font-size: 10.5px; fill: var(--ink-2); font-weight: 600; } .fig .num { font-size: 13px; }
+  .fig .ink { stroke: var(--ink); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; } .fig .thin { stroke: var(--ink-3); fill: none; stroke-width: 1; stroke-dasharray: 3 3; }
+  .lesson p { line-height: 1.6; } .lesson .lead { font-weight: 700; font-size: 1.15rem; }
+  .lesson h3 { margin-top: 6px; } .lesson .why { padding-left: 14px; border-left: 4px solid var(--ink); color: var(--ink-2); font-weight: 600; }
   .lesson ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
   .slider { display: flex; flex-direction: column; gap: 8px; }
-  .slider input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 36px; background: transparent; border: 0; padding: 0; min-height: 0; }
-  .slider input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: rgba(26,18,11,.18); }
-  .slider input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ink); border: 3px solid var(--paper); box-shadow: 0 2px 6px rgba(0,0,0,.3); }
-  .slider input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: rgba(26,18,11,.18); }
-  .slider input[type=range]::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: var(--ink); border: 3px solid var(--paper); }
-  .slider .val { font-family: var(--font-fig); font-size: 1.6rem; font-weight: 600; text-align: center; }
-  .bars { display: grid; grid-template-columns: 7em 1fr 3em; gap: 8px 10px; align-items: center; font-size: var(--t-sm); }
-  .bars .bar { height: 12px; border-radius: 6px; background: rgba(26,18,11,.12); overflow: hidden; }
-  .bars .bar > i { display: block; height: 100%; background: var(--copper); border-radius: 6px; transition: width .3s; }
-  .bars .bar.g > i { background: var(--hop); }
-  .bars .bar.b > i { background: var(--brass); }
-  .bars b { font-family: var(--font-fig); text-align: right; }
-  .learn-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brass); font-weight: 700; font-size: var(--t-sm); text-decoration: none; margin-top: 2px; }
-  .paper .learn-link { color: var(--copper); }
-
+  .slider input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 40px; background: transparent; border: 0; padding: 0; min-height: 0; }
+  .slider input[type=range]::-webkit-slider-runnable-track { height: 10px; border-radius: 5px; background: var(--white); border: 2px solid var(--ink); }
+  .slider input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; margin-top: -12px; border-radius: 50%; background: var(--pink); border: 3px solid var(--ink); }
+  .slider input[type=range]::-moz-range-track { height: 10px; border-radius: 5px; background: var(--white); border: 2px solid var(--ink); }
+  .slider input[type=range]::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: var(--pink); border: 3px solid var(--ink); }
+  .slider .val { font-size: 1.8rem; font-weight: 900; text-align: center; }
+  .bars { display: grid; grid-template-columns: 7em 1fr 3em; gap: 8px 10px; align-items: center; font-size: var(--t-sm); font-weight: 700; }
+  .bars .bar { height: 14px; border-radius: 7px; background: var(--white); border: 2px solid var(--ink); overflow: hidden; } .bars .bar > i { display: block; height: 100%; background: var(--coral); transition: width .3s; }
+  .bars .bar.g > i { background: var(--green); } .bars .bar.b > i { background: var(--amber); } .bars b { text-align: right; font-weight: 900; }
   /* ანიმაციები დიაგრამებისთვის */
   .fig .sweep { animation: sweep 4s ease-in-out infinite; }
   @keyframes sweep { 0%, 15% { transform: translateX(-60px); } 70%, 100% { transform: translateX(300px); } }
@@ -613,8 +346,69 @@
   .fig .krausen { animation: krausen 8s ease-in-out infinite; transform-box: fill-box; transform-origin: bottom; }
   @keyframes krausen { 0%, 10% { transform: scaleY(0); } 40% { transform: scaleY(1); } 70%, 100% { transform: scaleY(.15); } }
 
+  /* ---------- სიგნალი, დიალოგი, ზეიმი, ტოსტი ---------- */
+  #overlay, #modal { position: fixed; inset: 0; z-index: 50; display: none; }
+  #overlay.on, #modal.on { display: flex; }
+  #modal { background: rgba(17,17,17,.55); align-items: flex-end; justify-content: center; }
+  #modal .sheet { width: 100%; max-width: 760px; background: var(--white); border: 3px solid var(--ink); border-bottom: 0; border-radius: 30px 30px 0 0; padding: 22px var(--gutter-r) calc(22px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); display: flex; flex-direction: column; gap: 14px; }
+  #modal .sheet p { font-size: 1.3rem; font-weight: 900; }
+  .map { display: flex; flex-direction: column; gap: 14px; max-height: 68vh; overflow-y: auto; }
+  .map .grp { display: flex; flex-direction: column; gap: 2px; } .map .grp-h { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 1.05rem; padding: 4px 0; }
+  .map button { justify-content: flex-start; min-height: 46px; padding: 6px 12px; background: transparent; border: 0; box-shadow: none; font-weight: 600; text-align: left; gap: 10px; border-radius: 12px; }
+  .map button.cur { background: var(--yellow); font-weight: 900; } .map button .ic { color: var(--ink-3); } .map button.ok .ic { color: var(--ok); }
+  #overlay { background: var(--pink); flex-direction: column; justify-content: center; gap: 18px; padding: calc(24px + env(safe-area-inset-top, 0px)) var(--gutter-r) calc(24px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); }
+  #overlay .ring { width: 110px; height: 110px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center; background: var(--yellow); border: 3px solid var(--ink); box-shadow: var(--shadow); animation: pulse 1.1s ease-in-out infinite; }
+  #overlay .ring .ic { width: 50px; height: 50px; }
+  #overlay .big { font-size: 2.4rem; font-weight: 900; text-align: center; line-height: 1.1; text-wrap: balance; letter-spacing: -.02em; }
+  #overlay .cap { text-align: center; font-weight: 800; }
+  #overlay .digits { color: var(--white); }
+  #overlay button { max-width: 520px; margin: 0 auto; width: 100%; }
+  @keyframes pulse { 50% { transform: scale(1.06) rotate(-4deg); } }
+  .toast { position: fixed; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) rotate(-2deg); background: var(--white); color: var(--ink); border: 3px solid var(--ink); box-shadow: var(--shadow); padding: 10px 18px; font-size: var(--t-sm); border-radius: 18px; font-weight: 800; z-index: 60; width: max-content; max-width: calc(100vw - 32px); text-align: center; display: flex; flex-direction: column; gap: 2px; }
+  .empty { text-align: center; padding: 28px 16px; display: flex; flex-direction: column; gap: 14px; align-items: center; }
+  #party { position: fixed; inset: 0; z-index: 55; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; overflow: hidden; background: var(--yellow);
+    padding: 24px var(--gutter-r) calc(24px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); }
+  #party.on { display: flex; }
+  #party h1 { font-size: 3.8rem; font-weight: 900; -webkit-text-stroke: 1.5px var(--ink); paint-order: stroke fill; color: var(--white); text-shadow: 4px 4px 0 var(--pink), 8px 8px 0 var(--blue), 12px 12px 0 var(--green); transform: rotate(-3deg); }
+  #party p { font-weight: 700; font-size: var(--t-lg); max-width: 32ch; }
+  #party > *:not(.conf) { position: relative; z-index: 1; }
+  #party .conf { position: absolute; bottom: -30px; border-radius: 50%; background: var(--pink); border: 2px solid var(--ink); animation: float linear forwards; }
+  #party .conf:nth-child(2n) { background: var(--blue); } #party .conf:nth-child(3n) { background: var(--green); }
+  #party button { max-width: 420px; }
+    .fillup .liquid { transform-box: fill-box; transform-origin: 50% 100%; animation: fillup 1.6s .2s cubic-bezier(.3,.7,.2,1) backwards; }
+  .fillup .foam { animation: foamin .5s 1.6s ease-out backwards; transform-box: fill-box; transform-origin: 50% 100%; }
+  @keyframes fillup { from { transform: scaleY(0); } }
+  @keyframes foamin { from { opacity: 0; transform: scaleY(0); } }
+  @keyframes float { to { transform: translateY(-115vh) translateX(var(--dx, 0)); opacity: 0; } }
+
+  /* ---------- დესკტოპი: გვერდითი რელსი და მენიუ ---------- */
+  @media (min-width: 1000px) {
+    :root { --side: 290px; }
+    body { padding-left: var(--side); padding-bottom: 40px; }
+    .wrap { max-width: 860px; }
+    .tabbar { left: 0; right: auto; top: 0; bottom: 0; width: var(--side); max-width: none; margin: 0; border-radius: 0; border: 0; border-right: 3px solid var(--ink); background: var(--yellow); box-shadow: none; display: grid; grid-template-columns: 84px 1fr; }
+    .tabbar .rail { display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 24px 0; border-right: 3px solid var(--ink); }
+    .tabbar .rail .mark { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 900; font-size: 2.6rem; letter-spacing: .02em; line-height: 1; }
+    .tabbar .wrap { display: flex; flex-direction: column; gap: 0; padding: 18px 14px; background: var(--green); margin: 14px 14px 14px 0; border-radius: 26px; border: 3px solid var(--ink); justify-content: flex-start; max-width: none; }
+    .tabbar a { flex-direction: row; justify-content: flex-start; gap: 14px; font-size: 1.15rem; min-height: 64px; padding: 0 12px; border-radius: 0; border-bottom: 2px solid var(--green-d); }
+    .tabbar a:last-child { border-bottom: 0; } .tabbar a .ic { width: 1.6em; height: 1.6em; }
+    .tabbar a.on { background: transparent; color: var(--ink); text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; }
+    .actionbar { left: calc(var(--side) + 24px); right: 24px; }
+    .appbar .wrap, .brewbar .wrap { max-width: 860px; }
+    main.wrap.home { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+    main.wrap.home > .span2 { grid-column: 1 / -1; }
+    .masthead h1 { font-size: 3.4rem; } .mascot { width: 190px; height: 210px; }
+    .digits { font-size: 6rem; }
+  }
+  @media (max-width: 999px) {
+    .tabbar.desk-only { display: none; }
+    .masthead { grid-template-columns: 1fr 112px; padding: 18px 18px; }
+    .masthead h1 { font-size: 2.2rem; }
+    .mascot { width: 112px; height: 124px; }
+    .star { width: 40px; height: 40px; }
+  }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
-  @media (max-width: 360px) { .grid3 { grid-template-columns: 1fr 1fr; } .digits { font-size: 4rem; } .label-hero h1 { font-size: 2.5rem; } }
+  @media (max-width: 360px) { .grid3 { grid-template-columns: 1fr 1fr; } .digits { font-size: 4rem; } .masthead h1 { font-size: 1.9rem; } }
 </style>
 </head>
 <body>
@@ -701,14 +495,14 @@ const BOTTLING_CHECKS = [
 
 /* ეტაპები: თითოს თავისი ფერი, ხატულა და მოკლე შესავალი */
 const STAGES = [
-  { letter: 'ა', name: 'მომზადება', icon: 'scale', color: '#c3a6ff', intro: 'ყველაფერი ხელთ გქონდეს — და დავიწყოთ.' },
-  { letter: 'ბ', name: 'გაშაქრება', icon: 'pot', color: '#f6a823', intro: 'სახამებელი შაქრად იქცევა.' },
-  { letter: 'გ', name: 'ჩამორეცხვა', icon: 'drop', color: '#4fd1c5', intro: 'ბოლო ტკბილ წვეთამდე.' },
-  { letter: 'დ', name: 'ხარშვა', icon: 'flame', color: '#ff6b4a', intro: 'სვიის დრო!' },
-  { letter: 'ე', name: 'გაცივება', icon: 'snow', color: '#67d4ff', intro: 'სწრაფად და სუფთად.' },
-  { letter: 'ვ', name: 'გაზომვა და განზავება', icon: 'hydro', color: '#ff9ec7', intro: 'ციფრები, რომლებიც ლუდის ხასიათს წყვეტს.' },
-  { letter: 'ზ', name: 'საფუარი', icon: 'yeast', color: '#8fe07a', intro: 'საფუარი სამუშაოდ ემზადება.' },
-  { letter: 'თ', name: 'დასრულება', icon: 'glass', color: '#ffd34d', intro: 'თითქმის ლუდია!' }
+  { letter: 'ა', name: 'მომზადება', icon: 'scale', color: '#b06cff', intro: 'ყველაფერი ხელთ გქონდეს — და დავიწყოთ.' },
+  { letter: 'ბ', name: 'გაშაქრება', icon: 'pot', color: '#ffb400', intro: 'სახამებელი შაქრად იქცევა.' },
+  { letter: 'გ', name: 'ჩამორეცხვა', icon: 'drop', color: '#22c7ff', intro: 'ბოლო ტკბილ წვეთამდე.' },
+  { letter: 'დ', name: 'ხარშვა', icon: 'flame', color: '#ff4d1f', intro: 'სვიის დრო!' },
+  { letter: 'ე', name: 'გაცივება', icon: 'snow', color: '#7df9ff', intro: 'სწრაფად და სუფთად.' },
+  { letter: 'ვ', name: 'გაზომვა და განზავება', icon: 'hydro', color: '#ff2fb3', intro: 'ციფრები, რომლებიც ლუდის ხასიათს წყვეტს.' },
+  { letter: 'ზ', name: 'საფუარი', icon: 'yeast', color: '#16b60d', intro: 'საფუარი სამუშაოდ ემზადება.' },
+  { letter: 'თ', name: 'დასრულება', icon: 'glass', color: '#ffffff', intro: 'თითქმის ლუდია!' }
 ];
 
 /* მარცვალი: თავიდან ჩასაყრელი და გვიანი დამატებები (მაგ. Black 45-ე წუთზე) */
@@ -1450,6 +1244,20 @@ function viewLesson(id) {
 const bottleSvg = (color, i) => `<svg class="pop" style="animation-delay:${i * 40}ms" viewBox="0 0 22 44" aria-hidden="true">
   <path d="M8.5 2h5v7l3.5 5v26a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V14l3.5-5z" fill="${color}" stroke="rgba(255,244,220,.6)" stroke-width="1.2"/>
   <rect x="8" y="1" width="6" height="3" rx="1" fill="#d9c6a5"/><rect x="5.6" y="20" width="10.8" height="10" rx="1" fill="rgba(255,244,220,.75)"/></svg>`;
+/* მასკოტი: ჭიქა ვარსკვლავა თვალებით და ქაფით; ფერი — ლუდის */
+function mascotSvg(color = '#ffb400', cls = '') {
+  const star = (cx, cy) => `<path d="M${cx} ${cy - 10}l3.5 7 7.5 1-5.5 5 1.5 7.5-7-3.8-7 3.8 1.5-7.5-5.5-5 7.5-1z" fill="#111"/>`;
+  return `<svg class="mascot ${cls}" viewBox="0 0 120 130" aria-hidden="true">
+    <path d="M26 18h68l-8 98a6 6 0 0 1-6 6H40a6 6 0 0 1-6-6z" fill="${color}" stroke="#111" stroke-width="4"/>
+    <path d="M22 30h76" stroke="#111" stroke-width="4"/>
+    <path d="M28 14c6-12 18-12 24-6 6-8 20-8 24 2 8-6 20 0 16 12H26c-4-4-2-8 2-8z" fill="#fff" stroke="#111" stroke-width="4"/>
+    ${star(44, 68)}${star(76, 68)}
+    <path d="M44 92q16 14 32 0" stroke="#111" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <circle cx="40" cy="104" r="4" fill="#fff" stroke="#111" stroke-width="2"/><circle cx="82" cy="110" r="3" fill="#fff" stroke="#111" stroke-width="2"/>
+  </svg>`;
+}
+const starSvg = (color, style) => `<svg class="star" style="${style}" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z" fill="${color}"/></svg>`;
+
 /* საკეტი (airlock) ბუშტებით */
 function airlockSvg(state) {
   const cls = state === 'აქტიური' ? 'fast' : state === 'ნელი' ? 'slow' : '';
@@ -1487,7 +1295,7 @@ function celebrate(title, sub, color, btnLabel, href) {
     const s = 6 + (i * 7) % 16;
     return `<i class="conf" style="left:${(i * 37) % 100}%;width:${s}px;height:${s}px;--dx:${((i % 5) - 2) * 18}px;animation-duration:${3 + (i % 4) * 0.8}s;animation-delay:${(i % 7) * 0.15}s;${i % 3 === 0 ? 'background:var(--amber)' : ''}"></i>`;
   }).join('');
-  p.innerHTML = `${conf}<div class="fillup">${glassSvg(color, 0.9, 120)}</div><h1>${esc(title)}</h1><p>${esc(sub)}</p>
+  p.innerHTML = `${conf}<div>${mascotSvg(color)}</div><h1>${esc(title)}</h1><p>${esc(sub)}</p>
     <button class="primary" id="partyGo">${esc(btnLabel)}</button><button class="ghost" id="partyClose">დახურვა</button>`;
   p.classList.add('on');
   if (navigator.vibrate) navigator.vibrate([60, 40, 60, 40, 120]);
@@ -1799,9 +1607,10 @@ function route() {
 const pill = s => `<span class="pill ${s}">${STATUS[s] || s}</span>`;
 const debugTag = () => S.settings.debug ? ' <span class="debug">DEBUG</span>' : '';
 
-function tabbar(on) {
+function tabbar(on, extra = '') {
   const t = (h, n, icon, l) => `<a href="${h}" class="${on === n ? 'on' : ''}" ${on === n ? 'aria-current="page"' : ''}>${ic(icon)}<span>${l}</span></a>`;
-  return `<nav class="tabbar" aria-label="მთავარი"><div class="wrap">
+  return `<nav class="tabbar ${extra}" aria-label="მთავარი"><div class="rail"><span class="mark">სახარში</span>
+    <svg width="60" height="50" viewBox="0 0 70 60" aria-hidden="true"><path d="M10 14l4-8 4 8-8-2zM52 14l4-8 4 8-8-2z" fill="#111"/><path d="M14 36c10 14 32 14 42 0" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/></svg></div><div class="wrap">
     ${t('#/', 'home', 'mug', 'პარტიები')}${t('#/recipes', 'recipes', 'book', 'რეცეპტები')}${t('#/learn', 'learn', 'school', 'სკოლა')}${t('#/settings', 'settings', 'sliders', 'პარამეტრები')}
   </div></nav>`;
 }
@@ -1865,24 +1674,25 @@ function viewHome() {
   const liters = S.batches.reduce((s, b) => s + (val(b, 'finalVol') || 0), 0);
   // ABV ან სავარაუდო ABV ონკანის სიისთვის
   const abvOf = b => { const fs = fermStats(b); if (fs.abv != null) return fs.abv; const c = calc(b, recipeOf(b)); return c.ready ? c.abv : null; };
-  return `<main class="wrap">
-    <section class="paper label-cut masthead" style="margin-top:14px">
+  const heroB = active || list.find(b => b.status === 'fermenting') || list[0];
+  return `<main class="wrap home">
+    <section class="paper masthead span2" style="margin-top:14px;position:relative;overflow:hidden">
       <div class="lockup">
-        ${hopMark()}
         <span class="eyebrow">${hello}${debugTag()}</span>
         <h1>შინაური<br>სახარში</h1>
         <div class="est">${S.batches.length ? `${S.batches.length} პარტია, ${fmt(liters)} ლ მოხარშული` : 'პირველი პარტია წინაა'}</div>
       </div>
-      ${sealSvg(`№${S.batches.length + 1}`, 'ხელნაკეთი ლუდი ✦ BIAB ✦ ხუთლიტრიანი ქვაბი ✦ ', { fs: 30, fig: true })}
+      ${mascotSvg(heroB ? beerColor(recipeOf(heroB)) : '#ffb400')}
+      ${starSvg('#ff2fb3', 'left:54%;top:12px;transform:rotate(-15deg)')}${starSvg('#22c7ff', 'right:12px;bottom:14px;width:40px;height:40px;transform:rotate(20deg)')}
     </section>
-    ${active ? `<section class="paper panel">
-      <div class="sec-head" style="margin:0"><span class="eyebrow">ახლა იხარშება</span>${pill('brewing')}</div>
+    ${active ? `<section class="paper panel span2" style="background:var(--amber)">
+      <div class="sec-head" style="margin:0"><span class="label">ახლა იხარშება</span>${pill('brewing')}</div>
       <h2 style="font-size:1.7rem">${esc(active.name)}</h2>
       <p class="muted small">${esc(batchNext(active).text)}</p>
       ${timers.map(id => `<div class="btn-row" style="align-items:center"><span class="muted" style="display:flex;gap:8px;align-items:center">${ic('timer')} ${TIMERS[id].label}</span><span class="digits mini" data-timer="${active.id}:${id}">--:--</span></div>`).join('')}
       <a class="btn primary" href="#/brew/${active.id}">${ic('flame')} ხარშვის გაგრძელება</a>
     </section>` : ''}
-    ${list.length ? `<section class="paper taplist" style="padding:4px 0;gap:0">
+    ${list.length ? `<section class="paper taplist span2" style="padding:4px 0;gap:0">
       <div class="tl-head"><h2>ონკანზე</h2><span class="muted small">${list.length} პარტია</span></div>
       ${list.map(b => { const r = recipeOf(b), abv = abvOf(b); return `
       <a class="tap" href="#/batch/${b.id}">
@@ -1895,8 +1705,8 @@ function viewHome() {
         <span class="side">${abv != null ? `<span class="abv">${fmt(abv)}<small>%</small></span>` : ''}${pill(b.status)}</span>
       </a>`; }).join('')}
     </section>
-    <a class="btn ${active ? '' : 'primary'}" href="#/new">${ic('plus')} ახალი პარტია</a>`
-    : `<section class="paper empty" style="padding:28px 16px">${glassSvg(srmHex(5), 0.85, 84)}<h2 style="justify-content:center">ჭიქა ჯერ ცარიელია</h2>
+    <a class="btn ${active ? '' : 'primary'} span2" href="#/new">${ic('plus')} ახალი პარტია</a>`
+    : `<section class="paper empty span2" style="padding:28px 16px">${mascotSvg('#ffb400', 'sm')}<h2 style="justify-content:center">ჭიქა ჯერ ცარიელია</h2>
         <p>აირჩიე რეცეპტი, და ხარშვის დღეს აპი ნაბიჯ-ნაბიჯ გაგიძღვება: ტაიმერებით, ჩეკლისტებით და განზავების კალკულატორით.</p>
         <a class="btn primary" href="#/new">${ic('plus')} პირველი პარტია</a></section>`}
   </main>${tabbar('home')}`;
@@ -2045,7 +1855,7 @@ function viewBrew(b) {
     <button class="icon-btn" data-act="stepBack" ${i === 0 ? 'disabled' : ''} aria-label="წინა ნაბიჯი">${ic('back')}</button>
     <button data-act="stepSkip">გამოტოვება</button>
     <button class="primary ${st.gate && st.gate(r, b, c) ? 'gated' : ''}" id="doneBtn" data-act="stepDone">${ic('check')} ${st.doneLabel || 'შესრულდა'}</button>
-  </div></div>`;
+  </div></div>${tabbar('home', 'desk-only')}`;
 }
 
 function readingHtml(b, inp) {
@@ -2515,7 +2325,7 @@ function viewRecipe(r, batch) {
   <div class="actionbar"><div class="wrap" style="grid-template-columns:1fr 1.6fr">
     <button data-act="recipeCancel">გაუქმება</button>
     <button class="primary ${draftDirty() || isNew ? '' : 'gated'}" id="saveBtn" data-act="recipeSave">${ic('check')} შენახვა</button>
-  </div></div>`;
+  </div></div>${tabbar('recipes', 'desk-only')}`;
 }
 function getPath(o, path) { return path.split('.').reduce((x, k) => x == null ? x : x[k], o) ?? ''; }
 function setPath(o, path, v) {
