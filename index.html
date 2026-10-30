@@ -480,6 +480,16 @@
   .label-cut { border-radius: 14px; }
   .label-cut::after { inset: 8px; border-radius: 8px; border-width: 1.5px; }
 
+  /* გეგმის არჩევა (კალკულატორი) */
+  .opts { display: flex; flex-direction: column; gap: 8px; }
+  .opt { display: flex; flex-direction: column; align-items: stretch; gap: 6px; text-align: left; padding: 12px 14px; border-radius: var(--r-sm); min-height: 0; }
+  .paper .opt { background: #fffdf7; color: var(--ink); border: 1.5px solid rgba(26,18,11,.25); }
+  .paper .opt.on { border-color: var(--ink); box-shadow: 0 0 0 1.5px var(--ink) inset; }
+  .opt-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .opt-n { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--t-sm); font-weight: 500; color: var(--ink-2); }
+  .opt-n i { font-style: normal; font-family: var(--font-fig); font-size: 1.15rem; font-weight: 600; color: var(--ink); }
+  .opt-c { font-size: var(--t-sm); color: var(--ink-3); font-weight: 500; }
+
   /* ---------- სტიკერი (ბეჯი) ---------- */
   .pill { background: var(--paper); color: var(--ink); border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,.35); transform: rotate(var(--tilt, -2deg)); padding: 4px 11px; font-weight: 800; }
   .pill::before { display: none; }
@@ -868,7 +878,7 @@ const STEPS = [
     trouble: ['ციფრები არ ჩანს? დაბრუნდი და შეიყვანე მოცულობა და Brix.', 'Brix სამიზნეზე დაბალია? წყალს ნუ დაამატებ — ლუდი ცოტა მსუბუქი იქნება.'] },
   { key: 's22', stage: 5, title: 'ფერმენტერში გადატანა',
     lines: (r, b, c) => ['ტკბილი ფერმენტერში ძაბრით და საცერით.', 'ძირში 1 სმ ნალექი დატოვე.',
-      c.ready ? `დაამატე ${mlRound(c.addL)} მლ ცივი წყალი (სამიზნე: ${fmt(c.vol, 2)} ლ).` : 'წყლის რაოდენობა: ჯერ შეავსე კალკულატორი.'],
+      c.ready ? (c.chosen.asIs ? `წყალი არ დაამატო — არჩეული გეგმა: ${fmt(c.vol, 2)} ლ, ${fmt(c.finalBrix)} Brix.` : `დაამატე ${mlRound(c.addL)} მლ ცივი წყალი — ფერმენტერში ${fmt(c.vol, 2)} ლ ხაზამდე (${fmt(c.finalBrix)} Brix).`) : 'წყლის რაოდენობა: ჯერ შეავსე კალკულატორი (ნაბიჯი 21).'],
     inputs: [{ k: 'finalVol', label: 'ფაქტობრივი საბოლოო მოცულობა', unit: 'ლ', step: 0.1, start: (r, b, c) => c.ready ? round1(c.vol) : 3.5 }],
     trouble: ['საცერი გაიჭედა? კოვზით გაწმინდე (დეზინფიცირებული).', 'ფერმენტერის ხაზებით გაზომე.'] },
 
@@ -1551,23 +1561,30 @@ function calc(b, r) {
   if (pot == null || brix == null || brix <= 0) return c;
   const wortL = pot - ml / 1000;
   if (wortL <= 0) return c;
-  const idealL = wortL * brix / r.targetBrix;
-  const finalL = Math.min(idealL, r.maxVolumeL);
-  const vol = Math.max(finalL, wortL);              // Brix სამიზნეზე დაბალია → არ ვაზავებთ
-  const addL = vol - wortL;
-  const finalBrix = brix * wortL / vol;
-  const og = sgFromBrix(finalBrix);
   const hopG = r.hops.reduce((s, h) => s + (+h.grams || 0), 0);
-  const bitter = hopG / vol;
-  const alts = [1, 2, 3].map(d => {
-    const tb = r.targetBrix - d;
-    const L = wortL * brix / tb;
-    return { tb, L, add: L - wortL, og: sgFromBrix(tb), abv: (sgFromBrix(tb) - 1.010) * 131, over: L > r.maxVolumeL };
-  }).filter(a => a.tb > 0 && a.add > 0);
+  // ერთი ვარიანტი: სამიზნე Brix → მოცულობა, წყალი, OG, ABV, სიმწარე
+  const opt = tb => {
+    const L = Math.max(Math.min(wortL * brix / tb, r.maxVolumeL), wortL);
+    const fb = brix * wortL / L, og = sgFromBrix(fb);
+    return { tb, L, add: L - wortL, finalBrix: fb, og, abv: (og - 1.010) * 131, bitter: hopG / L, capped: wortL * brix / tb > r.maxVolumeL, asIs: L === wortL };
+  };
+  const idealL = wortL * brix / r.targetBrix;
+  const lowEff = (idealL - wortL) < 0.3, belowTarget = brix < r.targetBrix;
+  // ვარიანტები: ასე დატოვება + სამიზნე და 1–3 Brix-ით ნაკლები (მხოლოდ თუ რეალური განზავებაა)
+  const cands = [brix, r.targetBrix, r.targetBrix - 1, r.targetBrix - 2, r.targetBrix - 3].filter(tb => tb > 0 && tb <= brix);
+  const seen = new Set(); const options = [];
+  cands.forEach(tb => { const o = opt(tb); const k = o.L.toFixed(2); if (!seen.has(k)) { seen.add(k); options.push(o); } });
+  options.forEach(o => { o.ok = o.bitter <= BITTER_HIGH_G_PER_L && o.abv >= 4; });
+  // რეკომენდაცია: ნორმალური სიმწარე და ≥4% ABV, სამიზნესთან ყველაზე ახლოს; თუ არაა — ყველაზე რბილი
+  const good = options.filter(o => o.ok).sort((a, z) => Math.abs(a.finalBrix - r.targetBrix) - Math.abs(z.finalBrix - r.targetBrix));
+  const rec = good[0] || options.slice().sort((a, z) => a.bitter - z.bitter)[0];
+  const planTb = val(b, 'planBrix');
+  const chosen = options.find(o => planTb != null && Math.abs(o.tb - planTb) < 0.01) || rec;
+  options.forEach(o => { o.rec = o === rec; o.chosen = o === chosen; });
   return {
-    ready: true, wortL, brix, idealL, finalL, vol, addL, finalBrix, og,
-    abv: (og - 1.010) * 131, hopG, bitter, bitterHigh: bitter > BITTER_HIGH_G_PER_L,
-    capped: idealL > r.maxVolumeL, lowEff: (idealL - wortL) < 0.3, belowTarget: brix < r.targetBrix, alts
+    ready: true, wortL, brix, idealL, hopG, options, chosen, rec, lowEff, belowTarget,
+    vol: chosen.L, addL: chosen.add, finalBrix: chosen.finalBrix, og: chosen.og, abv: chosen.abv,
+    bitter: chosen.bitter, bitterHigh: chosen.bitter > BITTER_HIGH_G_PER_L, capped: chosen.capped
   };
 }
 
@@ -2087,23 +2104,34 @@ function timerHtml(b, id) {
 
 function renderCalc(r, b, c) {
   if (!c.ready) return msgHtml('warn', 'შეიყვანე მოცულობა ქვაბში და Brix (ნაბიჯები 19–20).');
-  return `<section class="panel" style="background:rgba(26,18,11,.05);border-color:rgba(26,18,11,.18);box-shadow:none">
-    <div class="stat"><span class="cap">დაამატე წყალი</span><span class="big">${mlRound(c.addL)} მლ</span><span class="cap">საბოლოო მოცულობა ${fmt(c.vol, 2)} ლ</span></div>
-    <div class="tiles">
-      <div class="tile"><span class="k">OG</span><span class="v">${c.og.toFixed(3)}</span></div>
-      <div class="tile"><span class="k">ABV ~</span><span class="v">${fmt(c.abv)}%</span></div>
-      <div class="tile"><span class="k">საბოლოო Brix</span><span class="v">${fmt(c.finalBrix)}</span></div>
-      <div class="tile ${c.bitterHigh ? 'warn' : ''}"><span class="k">სიმწარე, გ/ლ</span><span class="v">${fmt(c.bitter, 2)}${c.bitterHigh ? ' ↑' : ''}</span></div>
-    </div>
-    <div class="kv small muted"><span>ტკბილი ნიმუშის გარეშე</span><b>${fmt(c.wortL, 2)} ლ</b><span>Brix / სამიზნე</span><b>${fmt(c.brix)} / ${r.targetBrix}</b></div>
-  </section>
-  ${c.belowTarget ? msgHtml('warn', 'Brix სამიზნეზე დაბალია — წყალს ნუ დაამატებ.') : ''}
-  ${c.capped ? msgHtml('info', `მოცულობა შეზღუდულია ${r.maxVolumeL} ლ-ით — Brix სამიზნეზე მაღალი დარჩება (${fmt(c.finalBrix)}).`) : ''}
-  ${c.bitterHigh ? msgHtml('warn', `სიმწარე მაღალია (> ${BITTER_HIGH_G_PER_L} გ/ლ).`) : ''}
-  ${c.lowEff ? msgHtml('bad', 'ეფექტურობა დაბალია, ალბათ დაფქვა. ალტერნატივა: ნაკლები Brix-ით მეტი მოცულობა.')
-    + (c.alts.length ? `<div class="panel tablewrap"><table><tr><th>Brix</th><th>მოცულობა</th><th>წყალი</th><th>ABV</th></tr>
-      ${c.alts.map(a => `<tr><td class="n">${a.tb}</td><td class="n">${fmt(a.L, 2)} ლ${a.over ? ' ⚠' : ''}</td><td class="n">${mlRound(a.add)} მლ</td><td class="n">~${fmt(a.abv)}%</td></tr>`).join('')}
-      </table>${c.alts.some(a => a.over) ? `<p class="small muted">⚠ მეტია ${r.maxVolumeL} ლ-ზე</p>` : ''}</div>` : '') : ''}`;
+  const ch = c.chosen;
+  // 1. რა მოხდა — ერთი აბზაცი
+  let verdict;
+  if (c.belowTarget) verdict = `${fmt(c.wortL, 2)} ლ ტკბილი გამოვიდა ${fmt(c.brix)} Brix-ით — სამიზნე ${r.targetBrix}-ზე ნაკლები. შაქარი ცოტაა, წყალი არ დაამატო: ლუდი უფრო მსუბუქი გამოვა (~${fmt(c.abv)}%), მაგრამ კარგი.`;
+  else if (c.lowEff) verdict = `${fmt(c.wortL, 2)} ლ ტკბილი გამოვიდა ${fmt(c.brix)} Brix-ით. რეცეპტი ${r.maxVolumeL} ლ-ს ითვალისწინებდა — მარცვლიდან მოსალოდნელზე ნაკლები შაქარი ამოვიდა (ალბათ უხეში დაფქვა ან დაბალი ტემპერატურა გაშაქრებისას). ახლა არჩევანია: ნაკლები ლუდი სავსე გემოთი, თუ მეტი ლუდი — მსუბუქი.`;
+  else verdict = `${fmt(c.wortL, 2)} ლ ტკბილი ${fmt(c.brix)} Brix-ით — გეგმისამებრ. წყლით ${fmt(ch.L, 2)} ლ-მდე გავაზავებთ და ${fmt(ch.finalBrix)} Brix დარჩება.`;
+  const bitterNote = ch.bitter > BITTER_HIGH_G_PER_L
+    ? `სიმწარე: ${fmt(c.hopG)} გ სვია ${fmt(ch.L, 2)} ლ-ზე = ${fmt(ch.bitter, 2)} გ/ლ — ლუდი მოსალოდნელზე უფრო მწარე იქნება. ეს ხარვეზი არ არის; მეტი წყალი არბილებს.`
+    : `სიმწარე ${fmt(ch.bitter, 2)} გ/ლ — ნორმაშია.`;
+  // 2. ვარიანტები
+  const cards = c.options.map(o => {
+    const title = o.asIs ? 'ასე დავტოვოთ' : `განზავება ${o.tb} Brix-მდე`;
+    const ch2 = o.tb >= r.targetBrix + 1 ? 'მაგარი და სავსე' : o.tb === r.targetBrix ? 'რეცეპტის მიხედვით' : 'მსუბუქი, მეტი ლუდი';
+    return `<button type="button" class="opt ${o.chosen ? 'on' : ''}" data-act="pickPlan" data-tb="${o.tb}" aria-pressed="${o.chosen}">
+      <span class="opt-h"><b>${title}</b>${o.rec ? '<span class="tag">რეკომენდაცია</span>' : ''}</span>
+      <span class="opt-n"><span><i>${fmt(o.L, 2)}</i> ლ</span><span><i>${o.add > 0.004 ? '+' + mlRound(o.add) : '0'}</i> მლ წყალი</span><span><i>~${fmt(o.abv)}</i>% ABV</span><span><i>${fmt(o.bitter, 2)}</i> გ/ლ ${o.bitter > BITTER_HIGH_G_PER_L ? '↑' : ''}</span></span>
+      <span class="opt-c">${ch2}${o.capped ? ', ფერმენტერი სავსეა' : ''}${o.bitter > BITTER_HIGH_G_PER_L ? ', მწარე' : ''}</span></button>`;
+  }).join('');
+  return `<p>${esc(verdict)}</p><p class="muted small">${esc(bitterNote)}</p>
+    ${c.options.length > 1 ? `<h3>აირჩიე გეგმა</h3><div class="opts">${cards}</div>` : ''}
+    <section class="panel" style="background:rgba(26,18,11,.05);border-color:rgba(26,18,11,.18);box-shadow:none">
+      <div class="stat"><span class="cap">არჩეული გეგმა: ${ch.asIs ? 'წყლის გარეშე' : `დაამატე წყალი`}</span><span class="big">${mlRound(ch.add)} მლ</span><span class="cap">საბოლოო მოცულობა ${fmt(ch.L, 2)} ლ, ${fmt(ch.finalBrix)} Brix</span></div>
+      <div class="tiles">
+        <div class="tile"><span class="k">OG</span><span class="v">${ch.og.toFixed(3)}</span></div>
+        <div class="tile"><span class="k">ABV ~</span><span class="v">${fmt(ch.abv)}%</span></div>
+        <div class="tile ${ch.bitter > BITTER_HIGH_G_PER_L ? 'warn' : ''}"><span class="k">სიმწარე, გ/ლ</span><span class="v">${fmt(ch.bitter, 2)}</span></div>
+      </div></section>
+    ${ch.capped ? msgHtml('info', `მოცულობა ${r.maxVolumeL} ლ-ზე შეზღუდულია — ფერმენტერში მეტი არ ეტევა, ამიტომ Brix სამიზნეზე მაღალი რჩება.`) : ''}`;
 }
 
 /* ხარშვის დღის შეჯამება: ნაბიჯები, დრო, ციფრები */
@@ -2649,6 +2677,13 @@ const ACTIONS = {
     b.readings[inp.k] = { value: next, time: Date.now() };
     $(`#rd-${inp.k}`).value = next;
     save(); refreshBrewLive(b);
+  },
+  pickPlan(el) {
+    const b = curBatch();
+    b.readings.planBrix = { value: +el.dataset.tb, time: Date.now() };
+    save(); refreshBrewLive(b);
+    const r = recipeOf(b), c = calc(b, r);
+    toast(c.chosen.asIs ? 'წყალი არ დაემატება' : `ნაბიჯი 22: დაამატე ${mlRound(c.addL)} მლ წყალი`);
   },
   nudgeBottle(el) {
     const b = curBatch(), cur = b.bottling.volume;
