@@ -141,6 +141,10 @@
   input, select, textarea { font: inherit; color: var(--fg); background: rgba(8, 6, 4, .72); border: 1px solid var(--line-2); border-radius: var(--r-sm);
     padding: 12px 14px; width: 100%; min-height: var(--tap); min-width: 0; }
   textarea { min-height: 104px; resize: vertical; }
+  input[type=date] { cursor: pointer; -webkit-appearance: none; appearance: none; }
+  input[type=date]::-webkit-calendar-picker-indicator { opacity: 1; cursor: pointer; width: 26px; height: 26px; padding: 0; filter: invert(.85) sepia(.4); }
+  .paper input[type=date]::-webkit-calendar-picker-indicator { filter: none; }
+  input[type=date]::-webkit-date-and-time-value { text-align: left; min-height: 1.4em; }
   input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brass); box-shadow: 0 0 0 3px var(--amber-soft); }
   .unit-in { position: relative; display: block; min-width: 0; }
   .unit-in input { padding-right: 2.6em; font-variant-numeric: tabular-nums; font-weight: 650; }
@@ -450,7 +454,9 @@
   .paper .list-row, .paper button.list-row { background: transparent; color: var(--ink); border: 0; border-bottom: 1px solid rgba(26,18,11,.14); border-radius: 0; }
   .paper .list-row:last-child { border-bottom: 0; }
   .paper h2 .ic { color: var(--copper); } .paper .list-row .sub { color: var(--ink-3); } .paper .list-row .ic.lead { color: var(--copper); }
-  .paper details { background: transparent; border-color: rgba(26,18,11,.25); box-shadow: none; } .paper details.trouble > summary { color: var(--copper); }
+  .paper details { background: transparent; border-color: rgba(26,18,11,.25); box-shadow: none; }
+  details.paper > summary { color: var(--copper); }
+  details.paper .learn-link { color: var(--copper); } .paper details.trouble > summary { color: var(--copper); }
   .paper .saved { color: var(--ink-3); } .paper .saved.flash { color: #2f5e1c; }
   .paper .tap { color: var(--ink); border-color: rgba(26,18,11,.14); } .paper .tap .meta { color: var(--ink-3); } .paper .tap .now { color: var(--ink-2); }
   .paper .tap .abv { color: var(--ink); } .paper .tap .abv small { color: var(--ink-3); }
@@ -1070,8 +1076,7 @@ function beerFor(rt) {
     case 'ferm': return [beerColor(recipeOf(b)), 0.45];
     case 'bottle': return [beerColor(recipeOf(b)), 0.4];
     case 'export': return [beerColor(recipeOf(b)), 0.16];
-    case 'recipe': { const r = getRecipe(rt.id); return [r ? beerColor(r) : gold, 0.4]; }
-    case 'brecipe': return [b && b.recipe ? beerColor(b.recipe) : gold, 0.4];
+    case 'recipe': case 'brecipe': return [draft && draft.r ? beerColor(draft.r) : gold, 0.4];
     case 'recipes': return [gold, 0.3];
     case 'settings': return [srmHex(3), 0.18];
     case 'learn': { const L = LESSONS.find(l => l.id === rt.id); return [L ? L.beer : srmHex(8), rt.id ? 0.22 : 0.3]; }
@@ -1377,6 +1382,27 @@ function viewLearn() {
       ${read.includes(L.id) ? ic('check', 'read') : ic('chev', 'chev')}</a>`).join('')}</div>
   </main>${tabbar('learn')}`;
 }
+/* გაკვეთილის სხეული: დიაგრამა, ტექსტი, სლაიდერი, ციფრები, შეცდომები */
+function lessonBody(L) {
+  return `<div class="sec" style="gap:12px">
+    ${FIG[L.id] ? FIG[L.id]() : ''}
+    <p class="lead">${esc(L.lead)}</p>
+    ${L.sections.map(([h, t]) => `<h3>${esc(h)}</h3><p>${esc(t)}</p>`).join('')}
+    ${L.interactive ? `<h3>სცადე</h3>${interactiveHtml(L.interactive)}` : ''}
+    <div class="tiles">${L.numbers.map(([v, k]) => `<div class="tile"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')}</div>
+    <p class="why">${esc(L.why)}</p>
+    <h3>ხშირი შეცდომები</h3>
+    <ul>${L.mistakes.map(m => `<li>${esc(m)}</li>`).join('')}</ul>
+  </div>`;
+}
+/* ჩაშენებული გაკვეთილი ნაბიჯზე: გაშლადი ბლოკი, რომ აპში სიარული არ დაგჭირდეს */
+function inlineLesson(id, title = 'რა ხდება ახლა?') {
+  const L = LESSONS.find(l => l.id === id); if (!L) return '';
+  const i = LESSONS.indexOf(L);
+  return `<details class="paper lesson" data-lesson-id="${L.id}"><summary>${ic('school')} ${esc(title)}<span class="muted small" style="margin-left:auto;margin-right:8px">გაკვეთილი ${i + 1}</span>${ic('chev', 'chev')}</summary>
+    <div class="inner" style="gap:12px"><div class="sec" style="gap:2px"><h2 style="font-size:1.5rem">${esc(L.title)}</h2><p class="muted small">${esc(L.sub)}</p></div>${lessonBody(L)}
+    <a class="learn-link" href="#/learn/${L.id}">${ic('book')} სკოლაში ნახვა</a></div></details>`;
+}
 function viewLesson(id) {
   const i = LESSONS.findIndex(l => l.id === id); const L = LESSONS[i];
   if (!L) return null;
@@ -1388,18 +1414,7 @@ function viewLesson(id) {
         ${sealSvg(L.n, `${L.title} ✦ ლუდის სკოლა ✦ გაკვეთილი ${i + 1} ✦ `, { fs: 46 })}
         <div class="sec" style="gap:4px"><h1 style="font-size:2rem">${esc(L.title)}</h1><p class="muted small">${esc(L.sub)}</p></div>
       </div>
-      ${FIG[L.id] ? FIG[L.id]() : ''}
-      <p class="lead">${esc(L.lead)}</p>
-    </section>
-    <section class="paper panel" style="gap:12px">
-      ${L.sections.map(([h, t]) => `<h3>${esc(h)}</h3><p>${esc(t)}</p>`).join('')}
-    </section>
-    ${L.interactive ? `<section class="paper panel"><h3 style="margin:0">სცადე</h3>${interactiveHtml(L.interactive)}</section>` : ''}
-    <section class="paper panel" style="gap:12px">
-      <div class="tiles">${L.numbers.map(([v, k]) => `<div class="tile"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')}</div>
-      <p class="why">${esc(L.why)}</p>
-      <h3>ხშირი შეცდომები</h3>
-      <ul>${L.mistakes.map(m => `<li>${esc(m)}</li>`).join('')}</ul>
+      ${lessonBody(L)}
     </section>
     <div class="btn-row">
       ${prev ? `<a class="btn" href="#/learn/${prev.id}">${ic('back')} ${esc(prev.title)}</a>` : ''}
@@ -1971,7 +1986,6 @@ function viewBrew(b) {
         <span class="eyebrow num">ნაბიჯი ${i + 1} / ${STEPS.length}</span>
         <h1>${st.title}</h1>
         ${STEPS.findIndex(s => s.stage === st.stage) === i ? `<span class="intro">${esc(stage.intro)}</span>` : ''}
-        ${STAGE_LESSON[st.stage] ? `<a class="learn-link" href="#/learn/${STAGE_LESSON[st.stage]}">${ic('school')} რა ხდება ახლა?</a>` : ''}
       </div>
     </div>
     <section class="paper label-cut panel" style="gap:14px"><ul class="instr">${st.lines(r, b, c).map(l => typeof l === 'string'
@@ -1983,6 +1997,7 @@ function viewBrew(b) {
     ${checks.length ? checklistHtml(st.checklistKey || st.key, checks, b, st.checklistTitle).replace('class="panel"', 'class="paper panel"') : ''}
     ${st.timer ? timerHtml(b, st.timer).replace('class="panel hl timer"', 'class="paper panel timer"') : ''}
     ${st.trouble ? `<details class="trouble"><summary>${ic('alert')} თუ რამე ისე არ არის${ic('chev', 'chev')}</summary><div class="inner"><ul>${st.trouble.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div></details>` : ''}
+    ${STAGE_LESSON[st.stage] ? inlineLesson(STAGE_LESSON[st.stage]) : ''}
     ${done ? `<span class="stamp">${ic('check')} შესრულდა ${fmtTime(done)}</span>` : ''}
     ${next ? `<div class="nextup">${ic('chev')} შემდეგი: <b>${i + 2}. ${next.title}</b></div>` : ''}
   </main>
@@ -2128,9 +2143,9 @@ function viewFerm(b) {
         <span class="eyebrow">${esc(b.name)}</span>
         <h2>${dayNow >= 0 ? `დღე ${dayNow}` : 'ჯერ არ დაწყებულა'}</h2>
         <p class="muted small">ხარშვის დღე: ${fmtDate(brewDay(b))}${lastAir ? `, საკეტი ${lastAir.airlock.toLowerCase()}` : ''}</p>
-        <a class="learn-link" href="#/learn/ferment">${ic('school')} რა ხდება ფერმენტერში?</a>
       </div>
     </section>
+    ${inlineLesson('ferment', 'რა ხდება ფერმენტერში?')}
     <div class="days" role="list">${days.map(day => {
       const e = b.fermentationLog.find(x => x.day === day);
       return `<button type="button" class="${hasData(e) ? 'has' : ''} ${day === dayNow ? 'now' : ''}" data-act="scrollDay" data-day="${day}">${day}<small>${FG_DAYS[day] ? 'FG' : 'დღე'}</small></button>`;
@@ -2176,7 +2191,8 @@ function viewBottle(b) {
   const bt = b.bottling;
   const tasteDate = bt.date ? addDays(bt.date, 14) : null;
   return `${appbar('ჩამოსხმა', `#/batch/${b.id}`)}<main class="wrap">
-    <div class="step-head"><span class="eyebrow">${esc(b.name)}</span><div>${pill(b.status)}</div><a class="learn-link" href="#/learn/bottle">${ic('school')} როგორ ჩნდება გაზი ბოთლში?</a></div>
+    <div class="step-head"><span class="eyebrow">${esc(b.name)}</span><div>${pill(b.status)}</div></div>
+    ${inlineLesson('bottle', 'როგორ ჩნდება გაზი ბოთლში?')}
     <div class="reading">
       <label class="lbl" for="bt-vol"><span>მოცულობა</span></label>
       <div class="stepper">
@@ -2261,24 +2277,47 @@ function viewRecipes() {
   </main>${tabbar('recipes')}`;
 }
 
-/* რედაქტირებადი რეცეპტი: ბიბლიოთეკიდან (#/recipe/id) ან პარტიის ასლი (#/brecipe/batchId) */
-function editTarget() {
-  const rt = route();
-  if (rt.name === 'recipe') return getRecipe(rt.id);
-  if (rt.name === 'brecipe') { const b = getBatch(rt.id); return b && b.recipe; }
-  return null;
+/* რედაქტირება სამუშაო ასლზე (draft): ინახება მხოლოდ „შენახვა"-ზე.
+   kind: 'lib' (#/recipe/id), 'new' (#/recipe/new), 'batch' (#/brecipe/batchId) */
+let draft = null;
+function openDraft(rt) {
+  const key = `${rt.name}/${rt.id}`;
+  if (draft && draft.key === key) return draft;
+  let r = null, kind = null;
+  if (rt.name === 'recipe' && rt.id === 'new') { if (draft && draft.kind === 'new') return draft; return null; }
+  if (rt.name === 'recipe') { const x = getRecipe(rt.id); if (x) { r = clone(x); kind = 'lib'; } }
+  if (rt.name === 'brecipe') { const b = getBatch(rt.id); if (b && b.recipe) { r = clone(b.recipe); kind = 'batch'; } }
+  if (!r) return null;
+  draft = { key, kind, id: rt.id, r, orig: JSON.stringify(r) };
+  return draft;
+}
+function newDraft(r) { draft = { key: 'recipe/new', kind: 'new', id: 'new', r, orig: JSON.stringify(r) }; }
+const editTarget = () => draft && draft.r;
+const draftDirty = () => !!draft && JSON.stringify(draft.r) !== draft.orig;
+function draftBack() { return draft && draft.kind === 'batch' ? `#/batch/${draft.id}` : '#/recipes'; }
+function markDirty() {
+  const el = $('#saved'); if (!el) return;
+  const d = draftDirty();
+  el.textContent = d ? 'შეუნახავი ცვლილებები' : 'ცვლილება არ არის';
+  el.classList.toggle('flash', d);
+  const b = $('#saveBtn'); if (b) b.classList.toggle('gated', !d && draft.kind !== 'new');
 }
 let recipeBaseTotal = 0;   // მარცვლის ჯამი ბოლო გადათვლისას
 function viewRecipe(r, batch) {
   recipeBaseTotal = grainTotal(r);
+  const isNew = draft && draft.kind === 'new';
   const f = (path, label, unit) => `<label class="field"><span class="lbl">${label}</span>
     ${unitInput(`id="r-${path.replace('.', '-')}" data-num="1" data-bind="rec:${path}"`, getPath(r, path), unit)}</label>`;
-  return `${appbar(batch ? 'პარტიის რეცეპტი' : 'რეცეპტი', batch ? `#/batch/${batch.id}` : '#/recipes', '<span class="saved" id="saved">ავტომატურად ინახება</span>')}
+  return `<header class="appbar"><div class="wrap">
+    <button class="icon-btn" data-act="recipeCancel" aria-label="უკან">${ic('back')}</button>
+    <div class="ttl">${isNew ? 'ახალი რეცეპტი' : batch ? 'პარტიის რეცეპტი' : 'რეცეპტი'}</div>
+    <span class="saved ${draftDirty() ? 'flash' : ''}" id="saved">${draftDirty() ? 'შეუნახავი ცვლილებები' : isNew ? 'ჯერ არ შენახულა' : 'ცვლილება არ არის'}</span>
+  </div></header>
   <main class="wrap">
     ${batch ? msgHtml('info', `ეს „${batch.name}"-ის ასლია. ცვლილება შეეხება მხოლოდ ამ პარტიას.`) : ''}
     <section class="paper label-cut panel beer-hero" id="beerHero">${beerHeroHtml(r)}</section>
     <section class="paper panel">
-      <label class="field"><span class="lbl">სახელი</span><input id="r-name" data-bind="rec:name" value="${esc(r.name)}"></label>
+      <label class="field"><span class="lbl">სახელი</span><input id="r-name" data-bind="rec:name" value="${esc(r.name)}" placeholder="მაგ. ზამთრის პორტერი"></label>
       <label class="field"><span class="lbl">სტილი</span><input id="r-style" data-bind="rec:style" value="${esc(r.style)}"></label>
     </section>
 
@@ -2329,13 +2368,17 @@ function viewRecipe(r, batch) {
 
     <div id="issues" class="sec">${recipeIssues(r).map(t => msgHtml('warn', t)).join('')}</div>
 
-    <section class="paper panel">
+    ${isNew ? '' : `<section class="paper panel">
       ${batch ? `<button data-act="saveBatchRecipeToLib">${ic('book')} ბიბლიოთეკაში შენახვა ახალ რეცეპტად</button>
         ${getRecipe(batch.recipeId) ? `<button class="ghost" data-act="resetBatchRecipe">${ic('reset')} ბიბლიოთეკის ვერსიით ჩანაცვლება</button>` : ''}`
       : `<button data-act="dupRecipe">${ic('copy')} დუბლირება</button>
         <button class="danger" data-act="delRecipe">${ic('trash')} რეცეპტის წაშლა</button>`}
-    </section>
-  </main>${tabbar('recipes')}`;
+    </section>`}
+  </main>
+  <div class="actionbar"><div class="wrap" style="grid-template-columns:1fr 1.6fr">
+    <button data-act="recipeCancel">გაუქმება</button>
+    <button class="primary ${draftDirty() || isNew ? '' : 'gated'}" id="saveBtn" data-act="recipeSave">${ic('check')} შენახვა</button>
+  </div></div>`;
 }
 function getPath(o, path) { return path.split('.').reduce((x, k) => x == null ? x : x[k], o) ?? ''; }
 function setPath(o, path, v) {
@@ -2427,8 +2470,8 @@ function render() {
     case 'bottle': html = b ? viewBottle(b) : null; break;
     case 'export': html = b ? viewExport(b) : null; break;
     case 'recipes': html = viewRecipes(); break;
-    case 'recipe': { const r = getRecipe(rt.id); html = r ? viewRecipe(r) : null; break; }
-    case 'brecipe': html = b && b.recipe ? viewRecipe(b.recipe, b) : null; break;
+    case 'recipe': { const d = openDraft(rt); html = d ? viewRecipe(d.r) : null; break; }
+    case 'brecipe': { const d = openDraft(rt); html = d ? viewRecipe(d.r, b) : null; break; }
     case 'settings': html = viewSettings(); break;
     case 'learn': html = rt.id ? viewLesson(rt.id) : viewLearn(); break;
     default: html = viewHome();
@@ -2488,7 +2531,7 @@ function onBind(el, isChange) {
         recipeBaseTotal = nt;
       }
       if (isChange) syncRecipeInputs(r);
-      save(); flashSaved(); break;
+      markDirty(); break;
     }
     case 'setting':
       S.settings[p[0]] = raw; save(); applyWake();
@@ -2511,7 +2554,7 @@ document.addEventListener('change', e => {
       const real = grainTotal(r);
       if (rescaleRecipe(r, recipeBaseTotal, real)) toast(`გადაითვალა: წყალი ${r.mashWaterL} ლ`);
       recipeBaseTotal = real;
-      save(); syncRecipeInputs(r); flashSaved();
+      syncRecipeInputs(r); markDirty();
     }
   }
   if (el.id === 'importFile' && el.files[0]) el.files[0].text().then(importJson);
@@ -2648,19 +2691,37 @@ const ACTIONS = {
   markDone() { const b = curBatch(); b.status = 'done'; save(); toast('პარტია დასრულდა'); render(); },
   copyMd() { copyText($('#md').value); },
   newRecipe() {
-    const r = clone(DEFAULT_RECIPES[0]); r.id = uid(); r.name = 'ახალი რეცეპტი'; r.style = '';
-    S.recipes.push(r); save(); go(`#/recipe/${r.id}`);
+    const r = clone(DEFAULT_RECIPES[0]); r.id = uid(); r.name = ''; r.style = '';
+    newDraft(r); go('#/recipe/new');
+    setTimeout(() => { const n = $('#r-name'); if (n) n.focus(); }, 50);
   },
   dupRecipe() {
     const r = clone(editTarget()); r.id = uid(); r.name += ' (ასლი)';
-    S.recipes.push(r); save(); toast('დუბლირებულია'); go(`#/recipe/${r.id}`);
+    newDraft(r); toast('ასლი — შეცვალე და შეინახე'); go('#/recipe/new');
+  },
+  recipeSave() {
+    if (!draft) return;
+    const r = draft.r;
+    r.name = (r.name || '').trim();
+    if (!r.name) { toast('რეცეპტს სახელი სჭირდება'); const n = $('#r-name'); if (n) n.focus(); return; }
+    r.grains = r.grains.filter(g => g.name || g.grams); r.hops = r.hops.filter(h => h.name || h.grams);
+    if (draft.kind === 'new') S.recipes.push(r);
+    else if (draft.kind === 'lib') { const i = S.recipes.findIndex(x => x.id === draft.id); if (i >= 0) S.recipes[i] = r; else S.recipes.push(r); }
+    else { const b = getBatch(draft.id); if (b) b.recipe = r; }
+    const back = draftBack();
+    save(); draft = null; toast(`„${r.name}" შენახულია`); go(back);
+  },
+  async recipeCancel() {
+    const back = draftBack();
+    if (draftDirty() && !await ask(draft.kind === 'new' ? 'ახალი რეცეპტი არ შეინახება.' : 'ცვლილებები არ შეინახება.', 'გაუქმება', true)) return;
+    draft = null; go(back);
   },
   async delRecipe() {
     if (S.recipes.length < 2) { toast('ბოლო რეცეპტს ვერ წაშლი'); return; }
-    const r = editTarget();
+    const r = getRecipe(draft.id);
     const used = S.batches.filter(b => !b.recipe && b.recipeId === r.id).length;
     if (!await ask(`წავშალო „${r.name}"?${used ? ` ${used} დაგეგმილი პარტია პირველ რეცეპტზე გადავა.` : ''}`, 'წაშლა', true)) return;
-    S.recipes = S.recipes.filter(x => x !== r); save(); go('#/recipes');
+    S.recipes = S.recipes.filter(x => x !== r); save(); draft = null; go('#/recipes');
   },
   async restoreRecipes() {
     if (!await ask('ჩაშენებული რეცეპტები დაბრუნდეს საწყის მნიშვნელობებზე? შენი სხვა რეცეპტები არ შეიცვლება.', 'აღდგენა')) return;
@@ -2676,14 +2737,14 @@ const ACTIONS = {
   },
   async resetBatchRecipe() {
     const b = curBatch();
-    if (!await ask('პარტიის რეცეპტი ჩანაცვლდეს ბიბლიოთეკის ვერსიით?', 'ჩანაცვლება', true)) return;
-    b.recipe = clone(getRecipe(b.recipeId)); save(); render();
+    if (!await ask('პარტიის რეცეპტი ჩანაცვლდეს ბიბლიოთეკის ვერსიით? შენახვამდე გაუქმება შეგიძლია.', 'ჩანაცვლება', true)) return;
+    draft.r = clone(getRecipe(b.recipeId)); render();
   },
   addRow(el) {
     const r = editTarget();
     if (el.dataset.list === 'grains') r.grains.push({ name: '', grams: 0, minute: 0 });
     else r.hops.push({ name: '', grams: 0, minute: 0 });
-    save(); render();
+    render();
     const ix = r[el.dataset.list].length - 1;
     const inp = $(`#r-${el.dataset.list === 'grains' ? 'g' : 'h'}${ix}-n`); if (inp) inp.focus();
   },
@@ -2692,7 +2753,7 @@ const ACTIONS = {
     if (!await ask(`წავშალო „${item.name || 'ეს რიგი'}"?`, 'წაშლა', true)) return;
     r[el.dataset.list].splice(+el.dataset.i, 1);
     if (el.dataset.list === 'grains') rescaleRecipe(r, recipeBaseTotal, grainTotal(r));
-    save(); render();
+    render();
   },
   notifyPerm() {
     if (!('Notification' in window)) { toast('ბრაუზერი არ უჭერს მხარს'); return; }
@@ -2733,11 +2794,18 @@ async function copyText(text) {
 
 document.addEventListener('click', e => {
   ensureAudio();   // ბრაუზერს ხმისთვის მომხმარებლის შეხება სჭირდება
+  if (e.target.matches && e.target.matches('input[type=date]') && typeof e.target.showPicker === 'function') {
+    try { e.target.showPicker(); } catch (err) { /* ზოგი ბრაუზერი თავად ხსნის */ }
+  }
   const el = e.target.closest('[data-act]');
   if (!el || el.disabled) return;
   const fn = ACTIONS[el.dataset.act];
   if (fn) { e.preventDefault(); fn(el, e); }
 });
+document.addEventListener('toggle', e => {
+  const d = e.target;
+  if (d.tagName === 'DETAILS' && d.open && d.dataset.lessonId && !S.settings.read.includes(d.dataset.lessonId)) { S.settings.read.push(d.dataset.lessonId); save(); }
+}, true);
 window.addEventListener('hashchange', render);
 document.addEventListener('visibilitychange', () => { tick(); applyWake(); });
 window.addEventListener('storage', e => { if (e.key === STORAGE_KEY) { S = load(); render(); } });
