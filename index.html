@@ -378,6 +378,12 @@
   .days button small { font-family: var(--font-ui); font-size: 10px; color: var(--faint); font-weight: 600; }
   .days button.has { border-color: rgba(127,216,160,.5); color: var(--ok); }
   .days button.now { border-color: var(--cream); box-shadow: 0 0 0 2px rgba(244,231,197,.25); }
+  .days button { position: relative; }
+  .days button .dot { position: absolute; top: 5px; right: 5px; width: 8px; height: 8px; box-shadow: none; }
+  .days button.future { opacity: .6; }
+  .days button.add { flex: 0 0 52px; border-style: dashed; }
+  .paper .days button.sel { background: var(--ink); color: var(--paper); border-color: var(--ink); opacity: 1; }
+  .paper .days button.sel small { color: var(--paper-2); }
   .bottles { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
   .bottles svg { width: 22px; height: 44px; filter: drop-shadow(0 3px 4px rgba(0,0,0,.4)); }
   .bottles svg.pop { animation: pop .3s ease-out backwards; }
@@ -2235,22 +2241,49 @@ function assessFerm(b, e) {
 
 /* ფორმის დროებითი მდგომარეობა (შენახვამდე) */
 let fermDraft = null;
-function fermFormDefault(b) {
-  const d = clamp(daysBetween(brewDay(b), todayStr()), 0, 60);
-  const ex = b.fermentationLog.find(x => x.day === d);
-  return ex ? clone(ex) : { day: d, temp: null, airlock: '', foam: '', note: '', fg: null };
+const blankEntry = day => ({ day, temp: null, airlock: '', foam: '', note: '', fg: null });
+const FERM_MAX_DAY = 40;
+function fermDays(b) { return [...new Set([...FERM_DAYS, ...b.fermentationLog.map(e => e.day)])].sort((x, y) => x - y); }
+function fermDefaultDay(b) {
+  const dayNow = daysBetween(brewDay(b), todayStr());
+  const has = d => b.fermentationLog.some(e => e.day === d);
+  const days = fermDays(b);
+  const due = days.filter(d => !has(d) && d <= dayNow);            // გამოტოვებული ან დღევანდელი
+  if (due.length) return due[due.length - 1];
+  if (has(dayNow)) return dayNow;
+  return days.find(d => !has(d)) ?? days[days.length - 1];
+}
+function fermSelect(b, day) {
+  const ex = b.fermentationLog.find(x => x.day === day);
+  fermDraft = { batchId: b.id, sel: day, e: ex ? clone(ex) : blankEntry(day), editing: !ex };
 }
 function viewFerm(b) {
-  const today = todayStr();
-  if (!fermDraft || fermDraft.batchId !== b.id) fermDraft = { batchId: b.id, e: fermFormDefault(b), justSaved: null };
-  const e = fermDraft.e;
-  const dayNow = daysBetween(brewDay(b), today);
+  if (!fermDraft || fermDraft.batchId !== b.id) fermSelect(b, fermDefaultDay(b));
+  const dayNow = daysBetween(brewDay(b), todayStr());
   const log = b.fermentationLog.slice().sort((x, y) => x.day - y.day);
-  const last = log[log.length - 1];
-  const lastA = last ? assessFerm(b, last) : null;
-  const shown = fermDraft.justSaved ? b.fermentationLog.find(x => x.day === fermDraft.justSaved) : null;
-  const shownA = shown ? assessFerm(b, shown) : null;
+  const days = fermDays(b);
+  const sel = fermDraft.sel, e = fermDraft.e;
+  const entry = log.find(x => x.day === sel);
+  const A = entry ? assessFerm(b, entry) : null;
+  const last = log[log.length - 1], lastA = last ? assessFerm(b, last) : null;
   const dot = lv => `<span class="dot ${lv}"></span>`;
+  const chip = d => {
+    const x = log.find(y => y.day === d); const lv = x ? assessFerm(b, x).level : null;
+    return `<button type="button" class="${d === sel ? 'sel' : ''} ${x ? 'has' : ''} ${d === dayNow ? 'now' : ''} ${d > dayNow ? 'future' : ''}" data-act="fermSelect" data-day="${d}" aria-pressed="${d === sel}">
+      ${lv ? dot(lv) : ''}${d}<small>${FG_DAYS[d] ? 'FG' : FERM_DAYS.includes(d) ? 'დღე' : 'დამატ.'}</small></button>`;
+  };
+  const form = `<div class="sec" style="gap:12px">
+      <label class="field"><span class="lbl">ტემპერატურა</span>${unitInput('id="fd-temp" data-fd="temp" data-num="1" placeholder="მაგ. 24"', e.temp ?? '', '°C')}</label>
+      <div class="field"><span class="lbl small muted" style="font-weight:600">საკეტი</span>
+        <div class="chips" id="fd-air">${AIRLOCK.map((a2, k) => `<button type="button" class="${e.airlock === a2 ? 'on' : ''} ${['', 'slow', 'stop'][k]}" aria-pressed="${e.airlock === a2}" data-act="fermAir" data-v="${a2}">${ic(['bubbles', 'drop', 'pause'][k])}${a2}</button>`).join('')}</div></div>
+      <div class="grid2">
+        <label class="field"><span class="lbl">ქაფი (სადამდე)</span><input id="fd-foam" data-fd="foam" value="${esc(e.foam)}" placeholder="მაგ. 2 სმ"></label>
+        <label class="field"><span class="lbl">FG${sel >= 7 ? '' : ' (მე-7 დღიდან)'}</span>${unitInput('id="fd-fg" data-fd="fg" data-num="1"', e.fg ?? '', 'Bx')}</label>
+      </div>
+      <label class="field"><span class="lbl">შენიშვნა</span><input id="fd-note" data-fd="note" value="${esc(e.note)}" placeholder="სუნი, ფერი, რამე უცნაური"></label>
+      <button class="primary" data-act="fermSave">${ic('check')} ${entry ? 'ცვლილების შენახვა' : 'შენახვა და შეფასება'}</button>
+      ${entry ? `<button class="ghost" data-act="fermDelete">${ic('trash')} ჩანაწერის წაშლა</button>` : ''}
+    </div>`;
   return `${appbar('დადუღება', `#/batch/${b.id}`)}<main class="wrap">
     <section class="paper label-cut panel airlock-hero">
       ${airlockSvg(last ? last.airlock : '')}
@@ -2258,37 +2291,22 @@ function viewFerm(b) {
         <span class="eyebrow">${esc(b.name)}</span>
         <h2 style="font-size:1.6rem">${dayNow >= 0 ? `დუღილის ${dayNow}-ე დღე` : 'ჯერ არ დაწყებულა'}</h2>
         <p class="muted small">ხარშვის დღე: ${fmtDate(brewDay(b))}</p>
-        ${lastA ? `<p class="small" style="display:flex;gap:8px;align-items:center">${dot(lastA.level)}<span>${esc(lastA.title)} — ბოლო ჩანაწერი დღე ${last.day}</span></p>` : '<p class="small muted">ჩანაწერი ჯერ არ არის — პირველი დღეს ჩაწერე.</p>'}
+        ${lastA ? `<p class="small" style="display:flex;gap:8px;align-items:center">${dot(lastA.level)}<span>${esc(lastA.title)} — ბოლო ჩანაწერი: დღე ${last.day}</span></p>` : '<p class="small muted">ჩანაწერი ჯერ არ არის.</p>'}
       </div>
+    </section>
+    <section class="paper panel" style="gap:10px">
+      <div class="sec-head" style="margin:0"><h3>გრაფიკი</h3><span class="small muted">${log.length} / ${days.length} ჩაწერილი</span></div>
+      <div class="days">${days.map(chip).join('')}<button type="button" class="add" data-act="fermAddDay" aria-label="სხვა დღის დამატება">${ic('plus')}<small>სხვა</small></button></div>
+      <p class="hint">დღეები 1, 2, 3, 5 — ტემპერატურა და საკეტი; დღეები 7 და 9 — FG. ორი ერთნაირი FG = დასრულდა.</p>
     </section>
     ${inlineLesson('ferment', 'რა ხდება ფერმენტერში?')}
-    ${shownA ? `<section class="paper panel assess ${shownA.level}" id="ferm-assess">
-      <h2 style="font-size:1.4rem">${dot(shownA.level)} დღე ${shown.day}: ${esc(shownA.title)}</h2>
-      ${shownA.pts.map(x => msgHtml(x.cls, x.text)).join('')}
-      <p class="why">${esc(shownA.next)}</p>
-      ${shownA.finished ? `<a class="btn primary" href="#/bottle/${b.id}">${ic('bottle')} ჩამოსხმაზე გადასვლა</a>` : ''}
-    </section>` : ''}
-    <section class="paper panel" id="ferm-form">
-      <div class="sec-head" style="margin:0"><h2>${shown ? 'კიდევ ერთი ჩანაწერი' : 'რას ხედავ დღეს?'}</h2><span class="small muted">${b.fermentationLog.some(x => x.day === e.day) ? 'რედაქტირება' : 'ახალი'}</span></div>
-      <div class="reading"><span class="lbl"><span>დღე</span><span class="muted">${fmtDate(addDays(brewDay(b), e.day))}</span></span>
-        <div class="stepper"><button type="button" data-act="fermDay" data-d="-1" aria-label="წინა დღე">${ic('minus')}</button>
-          ${unitInput('id="fd-day" data-fd="day" data-num="1"', e.day, 'დღე')}
-          <button type="button" data-act="fermDay" data-d="1" aria-label="შემდეგი დღე">${ic('plus')}</button></div></div>
-      <label class="field"><span class="lbl">ტემპერატურა</span>${unitInput('id="fd-temp" data-fd="temp" data-num="1" placeholder="მაგ. 24"', e.temp ?? '', '°C')}</label>
-      <div class="field"><span class="lbl small muted" style="font-weight:600">საკეტი</span>
-        <div class="chips" id="fd-air">${AIRLOCK.map((a, k) => `<button type="button" class="${e.airlock === a ? 'on' : ''} ${['', 'slow', 'stop'][k]}" aria-pressed="${e.airlock === a}" data-act="fermAir" data-v="${a}">${ic(['bubbles', 'drop', 'pause'][k])}${a}</button>`).join('')}</div></div>
-      <div class="grid2">
-        <label class="field"><span class="lbl">ქაფი (სადამდე)</span><input id="fd-foam" data-fd="foam" value="${esc(e.foam)}" placeholder="მაგ. 2 სმ"></label>
-        <label class="field"><span class="lbl">FG${e.day >= 7 ? '' : ' (მე-7 დღიდან)'}</span>${unitInput('id="fd-fg" data-fd="fg" data-num="1"', e.fg ?? '', 'Bx')}</label>
-      </div>
-      <label class="field"><span class="lbl">შენიშვნა</span><input id="fd-note" data-fd="note" value="${esc(e.note)}" placeholder="სუნი, ფერი, რამე უცნაური"></label>
-      <button class="primary" data-act="fermSave">${ic('check')} შენახვა და შეფასება</button>
+    <section class="paper panel ${A ? `assess ${A.level}` : ''}" id="ferm-day" style="gap:12px">
+      <div class="sec-head" style="margin:0"><h2 style="font-size:1.5rem">${A ? dot(A.level) : ''} დღე ${sel}${FG_DAYS[sel] ? ` · ${FG_DAYS[sel]}` : ''}</h2><span class="small muted">${fmtDate(addDays(brewDay(b), sel))}${sel === dayNow ? ', დღეს' : sel > dayNow ? ', მომავალი' : ''}</span></div>
+      ${A ? `<h3 style="margin:0">${esc(A.title)}</h3>${A.pts.map(x => msgHtml(x.cls, x.text)).join('')}<p class="why">${esc(A.next)}</p>
+        ${A.finished ? `<a class="btn primary" href="#/bottle/${b.id}">${ic('bottle')} ჩამოსხმაზე გადასვლა</a>` : ''}
+        <details ${fermDraft.editing ? 'open' : ''}><summary>${ic('edit')} ჩანაწერის რედაქტირება${ic('chev', 'chev')}</summary><div class="inner">${form}</div></details>`
+      : (sel > dayNow + 1 ? msgHtml('info', `ეს დღე ${fmtDate(addDays(brewDay(b), sel))}-ს დგება — ჩაწერე, როცა მოვა.`) : '') + form}
     </section>
-    ${log.length ? `<section class="paper panel" style="gap:4px"><h3>დღიური</h3>
-      ${log.map(x => { const A = assessFerm(b, x); return `<button type="button" class="list-row" style="min-height:52px;padding:8px 2px" data-act="fermEdit" data-day="${x.day}">
-        ${dot(A.level)}<span class="body"><span class="title">დღე ${x.day} <span class="muted small">${fmtDate(x.date)}</span></span>
-        <span class="sub">${[x.temp != null ? `${x.temp}°C` : '', x.airlock, x.foam ? `ქაფი ${x.foam}` : '', x.fg != null ? `FG ${x.fg} Bx` : '', x.note].filter(Boolean).join(', ') || '—'}</span></span>${ic('edit', 'chev')}</button>`; }).join('')}
-      </section>` : ''}
     <label class="field"><span class="lbl">Brix-ის ინსტრუმენტი</span><select id="f-instr" data-bind="batch:instrument">
       <option value="hydro" ${b.instrument !== 'refract' ? 'selected' : ''}>არეომეტრი — SG = 1 + Brix × 0.004</option>
       <option value="refract" ${b.instrument === 'refract' ? 'selected' : ''}>რეფრაქტომეტრი — ალკოჰოლის კორექციით</option></select></label>
@@ -2809,34 +2827,47 @@ const ACTIONS = {
     if (!await ask(`წავშალო „${b.name}"? ყველა ჩანაწერი დაიკარგება.`, 'წაშლა', true)) return;
     S.batches = S.batches.filter(x => x !== b); save(); go('#/');
   },
-  fermDay(el) {
-    const b = curBatch(); const d = clamp(fermDraft.e.day + +el.dataset.d, 0, 60);
-    const ex = b.fermentationLog.find(x => x.day === d);
-    fermDraft.e = ex ? clone(ex) : { day: d, temp: null, airlock: '', foam: '', note: '', fg: null };
-    fermDraft.justSaved = null; render();
-  },
+  fermSelect(el) { const b = curBatch(); fermSelect(b, +el.dataset.day); render(); const t = $('#ferm-day'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
   fermAir(el) {
     fermDraft.e.airlock = fermDraft.e.airlock === el.dataset.v ? '' : el.dataset.v;
     document.querySelectorAll('#fd-air button').forEach(x => { const on = x.dataset.v === fermDraft.e.airlock; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
   },
-  fermEdit(el) {
-    const b = curBatch(); const ex = b.fermentationLog.find(x => x.day === +el.dataset.day);
-    if (ex) { fermDraft.e = clone(ex); fermDraft.justSaved = null; render(); const f = $('#ferm-form'); if (f) f.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-  },
   fermSave() {
     const b = curBatch(), e = fermDraft.e;
     if (e.temp == null && !e.airlock && !e.foam && e.fg == null && !e.note) { toast('ჩაწერე მინიმუმ ტემპერატურა ან საკეტი'); return; }
-    e.date = addDays(brewDay(b), e.day);
+    e.day = fermDraft.sel; e.date = addDays(brewDay(b), e.day);
     const i = b.fermentationLog.findIndex(x => x.day === e.day);
     if (i >= 0) b.fermentationLog[i] = clone(e); else b.fermentationLog.push(clone(e));
     b.fermentationLog.sort((x, y) => x.day - y.day);
-    save();
-    fermDraft.justSaved = e.day;
-    const nd = FERM_DAYS.find(d => d > e.day) ?? e.day + 2;
-    fermDraft.e = { day: nd, temp: null, airlock: '', foam: '', note: '', fg: null };
+    save(); fermDraft.editing = false;
     if (navigator.vibrate) navigator.vibrate(15);
     render();
-    const a = $('#ferm-assess'); if (a) a.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const t = $('#ferm-day'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  },
+  async fermDelete() {
+    const b = curBatch();
+    if (!await ask(`წავშალო დღე ${fermDraft.sel}-ის ჩანაწერი?`, 'წაშლა', true)) return;
+    b.fermentationLog = b.fermentationLog.filter(x => x.day !== fermDraft.sel); save();
+    fermSelect(b, fermDraft.sel); render();
+  },
+  fermAddDay() {
+    const b = curBatch(), m = $('#modal');
+    const taken = new Set(fermDays(b));
+    let d = clamp(daysBetween(brewDay(b), todayStr()), 0, FERM_MAX_DAY); while (taken.has(d) && d < FERM_MAX_DAY) d++;
+    m.innerHTML = `<div class="sheet"><p>რომელი დღე დავამატო?</p>
+      <p class="small muted">გრაფიკში უკვე არის: ${[...taken].join(', ')}. ხარშვიდან 0–${FERM_MAX_DAY} დღე.</p>
+      <div class="stepper"><button type="button" id="ad-m">${ic('minus')}</button>${unitInput('id="ad-day" data-num="1"', d, 'დღე')}<button type="button" id="ad-p">${ic('plus')}</button></div>
+      <p class="small muted" id="ad-date">${fmtDate(addDays(brewDay(b), d))}</p>
+      <button class="primary" id="ad-ok">დამატება</button><button class="ghost" id="ad-no">გაუქმება</button></div>`;
+    m.classList.add('on');
+    const inp = $('#ad-day');
+    const show = () => { const v = clamp(Math.round(num(inp.value) ?? 0), 0, FERM_MAX_DAY); inp.value = v; $('#ad-date').textContent = fmtDate(addDays(brewDay(b), v)) + (taken.has(v) ? ' — უკვე არის გრაფიკში' : ''); return v; };
+    $('#ad-m').onclick = () => { inp.value = (num(inp.value) ?? 0) - 1; show(); };
+    $('#ad-p').onclick = () => { inp.value = (num(inp.value) ?? 0) + 1; show(); };
+    inp.oninput = show;
+    const close = () => { m.classList.remove('on'); m.innerHTML = ''; };
+    $('#ad-no').onclick = close; m.onclick = ev => { if (ev.target === m) close(); };
+    $('#ad-ok').onclick = () => { const v = show(); close(); fermSelect(b, v); render(); const t = $('#ferm-day'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   },
   markBottled() {
     const b = curBatch();
