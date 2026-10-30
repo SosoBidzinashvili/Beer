@@ -513,6 +513,77 @@
   .ink-wash { position: absolute; left: 0; right: 0; bottom: 0; height: 36%; pointer-events: none; z-index: 0; background: linear-gradient(180deg, transparent, rgba(26,18,11,.06)); }
   .beer-strip { height: 10px; border-radius: 3px; background: var(--c); box-shadow: 0 0 0 1px rgba(26,18,11,.3) inset; }
 
+  /* ---------- ლუდის სკოლა ---------- */
+  .tabbar .wrap { grid-template-columns: repeat(4, 1fr); }
+  .tabbar a { font-size: 11px; }
+  .lesson-card { display: grid; grid-template-columns: 84px 1fr auto; gap: 12px; align-items: center; text-decoration: none; }
+  .lesson-card .no { font-family: var(--font-fig); font-size: 2.2rem; font-weight: 600; color: var(--copper); line-height: 1; text-align: center; }
+  .lesson-card .no small { display: block; font-family: var(--font-ui); font-size: 10px; color: var(--ink-3); font-weight: 600; }
+  .lesson-card .ttl { font-family: var(--font-display); font-stretch: 78%; font-weight: 800; font-size: 1.25rem; line-height: 1.1; }
+  .lesson-card .sub { font-size: var(--t-sm); color: var(--ink-3); }
+  .lesson-card .read { color: var(--hop); }
+  .fig { width: 100%; height: auto; display: block; border-radius: 8px; background: #fbf8f0; border: 1px solid rgba(26,18,11,.2); }
+  .fig text { font-family: var(--font-ui); font-size: 10.5px; fill: var(--ink-2); }
+  .fig .num { font-family: var(--font-fig); font-size: 13px; }
+  .fig .ink { stroke: var(--ink); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .fig .thin { stroke: var(--ink-3); fill: none; stroke-width: 1; stroke-dasharray: 3 3; }
+  .lesson p { line-height: 1.6; }
+  .lesson .lead { font-family: var(--font-display); font-style: italic; font-size: 1.15rem; color: var(--ink-2); }
+  .lesson h3 { margin-top: 6px; color: var(--copper); }
+  .lesson .why { padding-left: 14px; border-left: 3px solid var(--brass); color: var(--ink-2); }
+  .lesson ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+  .slider { display: flex; flex-direction: column; gap: 8px; }
+  .slider input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 36px; background: transparent; border: 0; padding: 0; min-height: 0; }
+  .slider input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: rgba(26,18,11,.18); }
+  .slider input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ink); border: 3px solid var(--paper); box-shadow: 0 2px 6px rgba(0,0,0,.3); }
+  .slider input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: rgba(26,18,11,.18); }
+  .slider input[type=range]::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: var(--ink); border: 3px solid var(--paper); }
+  .slider .val { font-family: var(--font-fig); font-size: 1.6rem; font-weight: 600; text-align: center; }
+  .bars { display: grid; grid-template-columns: 7em 1fr 3em; gap: 8px 10px; align-items: center; font-size: var(--t-sm); }
+  .bars .bar { height: 12px; border-radius: 6px; background: rgba(26,18,11,.12); overflow: hidden; }
+  .bars .bar > i { display: block; height: 100%; background: var(--copper); border-radius: 6px; transition: width .3s; }
+  .bars .bar.g > i { background: var(--hop); }
+  .bars .bar.b > i { background: var(--brass); }
+  .bars b { font-family: var(--font-fig); text-align: right; }
+  .learn-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brass); font-weight: 700; font-size: var(--t-sm); text-decoration: none; margin-top: 2px; }
+  .paper .learn-link { color: var(--copper); }
+
+  /* ანიმაციები დიაგრამებისთვის */
+  .fig .sweep { animation: sweep 4s ease-in-out infinite; }
+  @keyframes sweep { 0%, 15% { transform: translateX(-60px); } 70%, 100% { transform: translateX(300px); } }
+  .fig .germ { animation: germ 4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes germ { 0%, 30% { opacity: 1; transform: scale(1); } 60%, 100% { opacity: 0; transform: scale(.3); } }
+  .fig .chain { animation: chainfade 6s ease-in-out infinite; }
+  @keyframes chainfade { 0%, 35% { opacity: 1; } 55%, 100% { opacity: 0; } }
+  .fig .sugar { animation: sugar 6s ease-in-out infinite; transform-box: fill-box; }
+  @keyframes sugar { 0%, 35% { opacity: 0; transform: translate(0, 0); } 55% { opacity: 1; } 100% { opacity: 1; transform: translate(var(--dx), var(--dy)); } }
+  .fig .enzyme { animation: enzyme 6s linear infinite; }
+  @keyframes enzyme { 0% { transform: translateX(0); } 50%, 100% { transform: translateX(220px); } }
+  .fig .drop { animation: drop 2.4s linear infinite; }
+  @keyframes drop { 0% { transform: translateY(-20px); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(150px); opacity: 0; } }
+  .fig .bub { animation: bubup 2.2s ease-in infinite; }
+  @keyframes bubup { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: .9; } 100% { transform: translateY(-70px); opacity: 0; } }
+  .fig .hopdrop { animation: hopdrop 8s ease-in infinite; }
+  @keyframes hopdrop { 0%, 5% { transform: translateY(-40px) rotate(0); opacity: 1; } 20% { transform: translateY(60px) rotate(160deg); opacity: 1; } 24%, 100% { opacity: 0; } }
+  .fig .hopdrop.late { animation-delay: 5s; }
+  .fig .draw { stroke-dasharray: 600; stroke-dashoffset: 600; animation: draw 6s ease-out infinite; }
+  @keyframes draw { 0% { stroke-dashoffset: 600; } 70%, 100% { stroke-dashoffset: 0; } }
+  .fig .mercury { animation: cool 6s ease-in-out infinite; transform-box: fill-box; transform-origin: bottom; }
+  @keyframes cool { 0%, 10% { transform: scaleY(1); } 80%, 100% { transform: scaleY(.22); } }
+  .fig .sink { animation: sink 6s ease-in infinite; }
+  @keyframes sink { 0%, 30% { transform: translateY(0); opacity: 0; } 45% { opacity: 1; } 100% { transform: translateY(70px); opacity: .8; } }
+  .fig .bob { animation: bob 3s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: translateY(5px); } }
+  .fig .bud { animation: bud 4s ease-in-out infinite; transform-box: fill-box; transform-origin: left center; }
+  @keyframes bud { 0%, 15% { transform: scale(0); } 55% { transform: scale(1) translateX(0); } 75%, 100% { transform: scale(1) translateX(26px); } }
+  .fig .co2 { animation: bubup 3s ease-in infinite; }
+  .fig .needle { animation: needle 8s ease-in-out infinite; transform-box: fill-box; transform-origin: bottom center; }
+  @keyframes needle { 0%, 10% { transform: rotate(-70deg); } 80%, 100% { transform: rotate(60deg); } }
+  .fig .fizz { animation: fizz 8s ease-in infinite; }
+  @keyframes fizz { 0%, 40% { opacity: 0; transform: translateY(0); } 55% { opacity: .9; } 100% { opacity: 0; transform: translateY(-60px); } }
+  .fig .krausen { animation: krausen 8s ease-in-out infinite; transform-box: fill-box; transform-origin: bottom; }
+  @keyframes krausen { 0%, 10% { transform: scaleY(0); } 40% { transform: scaleY(1); } 70%, 100% { transform: scaleY(.15); } }
+
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
   @media (max-width: 360px) { .grid3 { grid-template-columns: 1fr 1fr; } .digits { font-size: 4rem; } .label-hero h1 { font-size: 2.5rem; } }
 </style>
@@ -866,6 +937,7 @@ const ICON = {
   glass: '<path d="M6 4h12l-1.5 16.5a1.5 1.5 0 0 1-1.5 1.5H9a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M6.5 9h11"/><path d="M10 13v.1M13 16v.1M14 12v.1"/>',
   sparkle: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 17l.7 1.8 1.8.7-1.8.7L19 22l-.7-1.8-1.8-.7 1.8-.7z"/>',
   close: '<path d="M6 6l12 12M18 6L6 18"/>',
+  school: '<path d="M3 9l9-4.5L21 9l-9 4.5z"/><path d="M6.5 11v5c0 1.5 2.5 3 5.5 3s5.5-1.5 5.5-3v-5M21 9v6"/>',
   map: '<path d="M9 4l-5 2v14l5-2 6 2 5-2V4l-5 2z"/><path d="M9 4v14M15 6v14"/>'
 };
 const ic = (n, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[n] || ''}</svg>`;
@@ -1002,6 +1074,7 @@ function beerFor(rt) {
     case 'brecipe': return [b && b.recipe ? beerColor(b.recipe) : gold, 0.4];
     case 'recipes': return [gold, 0.3];
     case 'settings': return [srmHex(3), 0.18];
+    case 'learn': { const L = LESSONS.find(l => l.id === rt.id); return [L ? L.beer : srmHex(8), rt.id ? 0.22 : 0.3]; }
     case 'new': return [beerColor(S.recipes[0]), 0.26];
     default: {
       const h = S.batches.find(x => x.status === 'brewing') || S.batches.find(x => x.status === 'fermenting') || S.batches[S.batches.length - 1];
@@ -1064,6 +1137,276 @@ function labelArt(r) {
   const url = cv.toDataURL(); artCache.set(key, url); return url;
 }
 const artImg = r => `<img class="art" src="${labelArt(r)}" alt="">`;
+
+/* =====================================================================
+   ლუდის სკოლა — რა ხდება თითო ეტაპზე. ტექსტი და დიაგრამები ცალკე, რომ ადვილად რედაქტირდეს.
+   fig() აბრუნებს ანიმირებულ SVG-ს; interactive() — სლაიდერს, რომელიც update()-ით ითვლის.
+   ===================================================================== */
+const STAGE_LESSON = { 0: 'sanitize', 1: 'mash', 2: 'sparge', 3: 'boil', 4: 'chill', 5: 'measure', 6: 'yeast', 7: 'ferment' };
+
+const FIG = {
+  sanitize: () => `<svg class="fig" viewBox="0 0 320 180" aria-hidden="true">
+    <rect x="20" y="30" width="280" height="120" rx="10" class="ink"/>
+    ${Array.from({ length: 14 }, (_, i) => { const x = 40 + (i % 7) * 40, y = 60 + Math.floor(i / 7) * 55; return `<g class="germ" style="animation-delay:${(x / 320 * 2.2).toFixed(2)}s"><circle cx="${x}" cy="${y}" r="9" fill="rgba(111,157,74,.35)" stroke="#6f9d4a" stroke-width="1.4"/><path d="M${x - 4} ${y - 12}l-3-5M${x + 5} ${y - 11}l4-4M${x + 11} ${y + 2}l5 1M${x - 11} ${y + 4}l-5 2M${x} ${y + 12}l1 5" stroke="#6f9d4a" stroke-width="1.2"/></g>`; }).join('')}
+    <g class="sweep"><rect x="-40" y="24" width="52" height="132" fill="rgba(217,164,65,.35)"/><path d="M-14 24v132" stroke="#c8962e" stroke-width="2"/></g>
+    <text x="160" y="170" text-anchor="middle">სპირტი 70%, 30 წამი კონტაქტი</text></svg>`,
+  mash: () => `<svg class="fig" viewBox="0 0 320 180" aria-hidden="true">
+    <text x="20" y="22">სახამებელი (გრძელი ჯაჭვი)</text>
+    <g class="chain"><path d="M24 48 ${Array.from({ length: 11 }, (_, i) => `L${44 + i * 25} ${48 + (i % 2 ? -8 : 8)}`).join(' ')}" class="ink"/>
+    ${Array.from({ length: 12 }, (_, i) => `<circle cx="${24 + i * 25}" cy="${i === 0 ? 48 : 48 + ((i - 1) % 2 ? -8 : 8)}" r="6" fill="#d9a441" stroke="#1a120b" stroke-width="1.4"/>`).join('')}</g>
+    <g class="enzyme"><path d="M30 78l14-10 14 10-14 10z" fill="#b5562b"/><text x="44" y="100" text-anchor="middle" font-size="10">ფერმენტი</text></g>
+    ${Array.from({ length: 12 }, (_, i) => `<circle class="sugar" style="--dx:${(i % 3 - 1) * 18}px;--dy:${80 + (i % 4) * 10}px;animation-delay:${(i * 0.12).toFixed(2)}s" cx="${24 + i * 25}" cy="48" r="5" fill="#d9a441" stroke="#1a120b" stroke-width="1.2"/>`).join('')}
+    <text x="20" y="168">მოკლე შაქრები — საფუარის საკვები</text></svg>`,
+  sparge: () => `<svg class="fig" viewBox="0 0 320 180" aria-hidden="true">
+    <path d="M90 30h140l-14 90H104z" class="ink"/>
+    ${Array.from({ length: 30 }, (_, i) => `<circle cx="${105 + (i % 10) * 12}" cy="${45 + Math.floor(i / 10) * 24}" r="4" fill="#c9a86a" stroke="#1a120b" stroke-width=".8"/>`).join('')}
+    ${Array.from({ length: 6 }, (_, i) => `<path class="drop" style="animation-delay:${(i * 0.4).toFixed(1)}s" d="M${110 + i * 20} 0c-3 5-3 9 0 9s3-4 0-9z" fill="#9cc2ff" stroke="#1a120b" stroke-width=".8"/>`).join('')}
+    ${Array.from({ length: 8 }, (_, i) => `<circle class="drop" style="animation-delay:${(0.8 + i * 0.3).toFixed(1)}s" cx="${120 + i * 11}" cy="110" r="3" fill="#d9a441"/>`).join('')}
+    <path d="M60 150h200" class="ink"/><path d="M70 150v16h180v-16" class="ink"/>
+    <text x="250" y="60">77°C წყალი</text><text x="250" y="140">ტკბილი</text></svg>`,
+  boil: () => `<svg class="fig" viewBox="0 0 320 180" aria-hidden="true">
+    <path d="M40 60h130v90a8 8 0 0 1-8 8H48a8 8 0 0 1-8-8z" class="ink"/><path d="M34 60h142" class="ink"/>
+    <rect x="44" y="80" width="122" height="74" fill="rgba(217,164,65,.45)"/>
+    ${Array.from({ length: 9 }, (_, i) => `<circle class="bub" style="animation-delay:${(i * 0.25).toFixed(2)}s" cx="${54 + i * 13}" cy="150" r="${2 + (i % 3)}" fill="#fff8e6" stroke="#1a120b" stroke-width=".7"/>`).join('')}
+    <g class="hopdrop"><ellipse cx="90" cy="30" rx="8" ry="11" fill="#6f9d4a" stroke="#1a120b" stroke-width="1"/><text x="90" y="15" text-anchor="middle" font-size="10">60 წთ</text></g>
+    <g class="hopdrop late"><ellipse cx="130" cy="30" rx="8" ry="11" fill="#8dc26a" stroke="#1a120b" stroke-width="1"/><text x="130" y="15" text-anchor="middle" font-size="10">5 წთ</text></g>
+    <path d="M200 150h100M200 150V40" class="ink"/>
+    <path class="draw" d="M200 148 C230 120 260 80 300 62" stroke="#b5562b" stroke-width="2.4" fill="none"/>
+    <path class="draw" d="M200 70 C230 72 260 110 300 146" stroke="#6f9d4a" stroke-width="2.4" fill="none"/>
+    <text x="200" y="165" font-size="10">0</text><text x="300" y="165" font-size="10" text-anchor="end">60 წთ</text>
+    <text x="236" y="56" fill="#b5562b" font-size="10">სიმწარე</text><text x="236" y="130" fill="#6f9d4a" font-size="10">არომატი</text></svg>`,
+  chill: () => `<svg class="fig" viewBox="0 0 320 180" aria-hidden="true">
+    <rect x="60" y="20" width="22" height="130" rx="11" class="ink"/><circle cx="71" cy="152" r="14" fill="#b5562b" stroke="#1a120b" stroke-width="1.6"/>
+    <rect class="mercury" x="66" y="30" width="10" height="118" rx="5" fill="#b5562b"/>
+    <text x="92" y="36" class="num">100°</text><text x="92" y="100" class="num">60°</text><text x="92" y="122" class="num">30°</text><text x="92" y="150" class="num">20°</text>
+    <rect x="130" y="96" width="170" height="30" fill="rgba(181,86,43,.14)" stroke="#b5562b" stroke-dasharray="3 3"/>
+    <text x="140" y="115" fill="#b5562b">30–60°C: საშიში ზონა</text>
+    <path d="M140 40h150v40H140z" class="thin"/><text x="145" y="56">ქვაბი ყინულიან წყალში,</text><text x="145" y="72">წყალი გამოცვალე</text>
+    ${Array.from({ length: 6 }, (_, i) => `<circle class="sink" style="animation-delay:${(i * 0.5).toFixed(1)}s" cx="${150 + i * 25}" cy="130" r="2.5" fill="#1a120b"/>`).join('')}
+    <text x="140" y="172">cold break: ცილები ლექდება</text></svg>`,
+  measure: () => `<svg class="fig" viewBox="0 0 320 180" aria-hidden="true">
+    <path d="M60 20h60v140a6 6 0 0 1-6 6H66a6 6 0 0 1-6-6z" class="ink"/>
+    <rect x="63" y="50" width="54" height="113" fill="rgba(217,164,65,.45)"/>
+    <g class="bob"><path d="M86 30h8v60l5 8v40a9 9 0 0 1-18 0v-40l5-8z" fill="#fbf8f0" stroke="#1a120b" stroke-width="1.4"/>
+      ${[0, 1, 2, 3, 4].map(i => `<path d="M88 ${44 + i * 10}h4" stroke="#1a120b" stroke-width="1"/>`).join('')}<text x="90" y="128" text-anchor="middle" font-size="9">14</text></g>
+    <text x="140" y="40">მკვრივ სითხეში უფრო ტივტივებს.</text>
+    <text x="140" y="60">Brix = შაქარი %, SG = სიმკვრივე</text>
+    <text x="140" y="92" class="num" font-size="15">SG ≈ 1 + Brix × 0.004</text>
+    <text x="140" y="118">14 Brix → 1.056 → ~6% ABV</text>
+    <text x="140" y="150">ნიმუში 20°C-ზე გაზომე:</text><text x="140" y="166">თბილი ნაკლებს აჩვენებს.</text></svg>`,
+  yeast: () => `<svg class="fig" viewBox="0 0 320 180" aria-hidden="true">
+    <g><ellipse cx="80" cy="90" rx="34" ry="28" fill="#f3e6c2" stroke="#1a120b" stroke-width="1.6"/><circle cx="72" cy="86" r="7" fill="rgba(26,18,11,.25)"/>
+      <g class="bud"><ellipse cx="118" cy="82" rx="16" ry="13" fill="#f3e6c2" stroke="#1a120b" stroke-width="1.4"/><circle cx="116" cy="80" r="4" fill="rgba(26,18,11,.25)"/></g></g>
+    <text x="46" y="140">საფუარი კვირტით მრავლდება</text><text x="46" y="156">(~90 წუთში ორმაგდება)</text>
+    <polygon points="200,45 212,52 212,66 200,73 188,66 188,52" fill="#d9a441" stroke="#1a120b" stroke-width="1.2"/><text x="200" y="90" text-anchor="middle" font-size="10">შაქარი</text>
+    <text x="226" y="63" font-size="16">→</text>
+    <path d="M250 50h26v16h-26z" fill="#fbf8f0" stroke="#1a120b" stroke-width="1.2"/><text x="263" y="62" text-anchor="middle" font-size="9">C₂H₅OH</text><text x="263" y="90" text-anchor="middle" font-size="10">სპირტი</text>
+    ${[0, 1, 2].map(i => `<circle class="co2" style="animation-delay:${i}s" cx="${292 + i * 6}" cy="70" r="3" fill="#fff" stroke="#1a120b" stroke-width=".8"/>`).join('')}
+    <text x="298" y="90" text-anchor="middle" font-size="10">CO₂</text>
+    <text x="190" y="130">+ სითბო, + ესტერები</text><text x="190" y="150">Kveik: 20–30°C</text></svg>`,
+  ferment: () => `<svg class="fig" viewBox="0 0 320 180" aria-hidden="true">
+    <path d="M40 40h50v110a6 6 0 0 1-6 6H46a6 6 0 0 1-6-6z" class="ink"/><rect x="43" y="70" width="44" height="83" fill="rgba(217,164,65,.45)"/>
+    <rect class="krausen" x="43" y="48" width="44" height="22" fill="#fff4dc" stroke="#1a120b" stroke-width="1"/>
+    <rect x="58" y="22" width="14" height="18" fill="#d9c6a5" stroke="#1a120b" stroke-width="1.2"/>
+    ${[0, 1, 2, 3].map(i => `<circle class="bub" style="animation-delay:${(i * 0.55).toFixed(2)}s" cx="${52 + i * 9}" cy="140" r="2.5" fill="#fff8e6" stroke="#1a120b" stroke-width=".6"/>`).join('')}
+    <path d="M120 150h180M120 150V40" class="ink"/>
+    <path class="draw" d="M120 50 C150 52 170 100 200 125 S260 140 300 141" stroke="#b5562b" stroke-width="2.4" fill="none"/>
+    <path d="M120 141h180" class="thin"/>
+    ${[1, 3, 5, 7, 9].map(d => `<text x="${120 + d * 19}" y="165" text-anchor="middle" font-size="10">${d}</text>`).join('')}
+    <text x="214" y="177" text-anchor="middle" font-size="10">დღე</text>
+    <text x="124" y="46" fill="#b5562b" font-size="10">OG 14 Bx</text><text x="250" y="136" font-size="10">FG ≈ 5–6 Bx</text>
+    <text x="120" y="32">ქაფი ადის და ეშვება</text></svg>`,
+  bottle: () => `<svg class="fig" viewBox="0 0 320 180" aria-hidden="true">
+    <path d="M70 20h22v22l12 18v100a6 6 0 0 1-6 6H64a6 6 0 0 1-6-6V60l12-18z" class="ink"/>
+    <rect x="61" y="80" width="40" height="82" fill="rgba(217,164,65,.45)"/>
+    ${[0, 1, 2, 3, 4].map(i => `<circle cx="${68 + i * 7}" cy="158" r="2" fill="#fff" stroke="#1a120b" stroke-width=".6"/>`).join('')}
+    ${Array.from({ length: 10 }, (_, i) => `<circle class="fizz" style="animation-delay:${(i * 0.35).toFixed(2)}s" cx="${66 + (i * 7) % 32}" cy="150" r="${1.5 + (i % 2)}" fill="#fff8e6" stroke="#1a120b" stroke-width=".6"/>`).join('')}
+    <path d="M150 120a50 50 0 0 1 100 0" class="ink"/><path d="M150 120h100" class="ink"/>
+    <line class="needle" x1="200" y1="120" x2="200" y2="80" stroke="#b5562b" stroke-width="2.5"/><circle cx="200" cy="120" r="4" fill="#1a120b"/>
+    <text x="156" y="108" font-size="9">0</text><text x="236" y="108" font-size="9">2.5 ტ.</text><text x="200" y="140" text-anchor="middle">CO₂ წნევა</text>
+    <text x="140" y="40">5.5 გ/ლ შაქარი ბოთლში:</text><text x="140" y="56">საფუარი იღვიძებს, CO₂</text><text x="140" y="72">სითხეში იხსნება — გაზი.</text>
+    <text x="140" y="168">14 დღე ოთახში, 2–3 მაცივარში</text></svg>`
+};
+
+const LESSONS = [
+  { id: 'sanitize', n: 'ა', title: 'სისუფთავე', sub: 'რატომ არის დეზინფექცია ყველაზე მნიშვნელოვანი ნაბიჯი', beer: '#f4e7c5',
+    lead: 'ლუდი ერთი ორგანიზმის სამსახურია: საფუარის. ყველა სხვა, ვინც ტკბილამდე მიაღწევს, მისი კონკურენტია.',
+    sections: [
+      ['რა ხდება', 'ტკბილი შაქრიანი, თბილი და ჟანგბადიანი სითხეა — ბაქტერიებისთვის და ველური საფუარისთვის იდეალური. ხარშვამდე ყველაფერი უვნებელია: დუღილი კლავს. ხარშვის შემდეგ კი ყველა ზედაპირი, რომელსაც ტკბილი ეხება, უნდა იყოს დეზინფიცირებული.'],
+      ['რას აკეთებს სპირტი', '70%-იანი სპირტი უჯრედის მემბრანას შლის და ცილებს აკეცავს. 30 წამი კონტაქტი საკმარისია; 96%-იანი უარესად მუშაობს, რადგან ზედმეტად სწრაფად აორთქლდება და გარე ფენას "აშრობს" ისე, რომ შიგნით ვერ აღწევს.'],
+      ['ზეჟანგი ფერმენტერზე', '3%-იანი ზეჟანგი ჟანგვით კლავს და წყლად და ჟანგბადად იშლება — ჩამორეცხვა არ ჭირდება. 5–10 წუთი შენჯღრევით, მერე გადაღვარე.']
+    ],
+    why: 'ინფექციის ნიშნები: ძმრის ან ხილის მჟავე სუნი, ზედაპირზე თეთრი ფირი, ზედმეტად ბევრი გაზი ბოთლში. ეს ლუდი ჯანმრთელობას არ ვნებს, მაგრამ გემო გაფუჭებულია.',
+    numbers: [['70%', 'სპირტი'], ['30 წმ', 'კონტაქტი'], ['3%', 'ზეჟანგი']],
+    mistakes: ['სპირტის სპრეი ღია ცეცხლთან — აალდება.', 'ხელით ჩაყოფა ფერმენტერში "მხოლოდ ერთხელ".', 'საფუარის პაკეტის გარე მხარე დაუმუშავებელი.'] },
+
+  { id: 'mash', n: 'ბ', title: 'გაშაქრება', sub: 'ფერმენტები სახამებელს შაქრად აქცევენ', beer: '#f8a600',
+    lead: 'მარცვალში შაქარი თითქმის არ არის — სახამებელია. ერთი საათი თბილ წყალში და მარცვლის საკუთარი ფერმენტები მას შაქრად დაჭრიან.',
+    sections: [
+      ['რა ხდება', 'ალაოს მარცვალი ორ მთავარ ფერმენტს შეიცავს. β-ამილაზა ჯაჭვის ბოლოებიდან ორ-ორ ერთეულს ჭრის — მალტოზას, რომელსაც საფუარი მთლიანად შეჭამს. α-ამილაზა ჯაჭვს შუაში ჭრის — უფრო მსხვილ ნაჭრებად, დექსტრინებად, რომლებიც საფუარს არ "ეჭმევა" და ლუდში სხეულად და სიტკბოდ რჩება.'],
+      ['ტემპერატურა წყვეტს ხასიათს', 'β-ამილაზას 60–65°C უყვარს, α-ამილაზას — 68–72°C. 70°C-ზე გაშაქრება უფრო სავსე, ნაკლებად ალკოჰოლიან ლუდს იძლევა; 64°C-ზე — მშრალს და მაგარს. ამიტომ ითხოვს რეცეპტი ±1°C სიზუსტეს.'],
+      ['ტომარა BIAB-ში', 'ტომარა ფილტრია: მარცვალი შიგნით რჩება, შაქარი — წყალში გადადის. ურევა იმიტომ გჭირდება, რომ ტემპერატურა ყველგან ერთნაირი იყოს და გუნდებში ფერმენტებმა წყალი იპოვონ.']
+    ],
+    why: 'შაქრის რაოდენობას Brix-ით ზომავ. დაბალი Brix თითქმის ყოველთვის უხეში დაფქვის ან დაბალი ტემპერატურის ბრალია — არა მარცვლის.',
+    numbers: [['60–65°', 'β: მშრალი'], ['68–72°', 'α: სავსე'], ['60 წთ', 'ხანგრძლივობა']],
+    interactive: 'mash',
+    mistakes: ['მარცვლის ჩაყრა 80°C-იან წყალში — ფერმენტები იღუპება.', 'ურევის გარეშე: ზემოთ ცხელი, ქვემოთ ცივი.', 'ფქვილად დაფქვა — ტომარა იჭედება, ტკბილი ბურღულდება.'] },
+
+  { id: 'sparge', n: 'გ', title: 'ჩამორეცხვა', sub: 'ბოლო შაქრის ამოღება მარცვლიდან', beer: '#f39c00',
+    lead: 'გაშაქრების ბოლოს მარცვალი ჯერ კიდევ სველია და ეს სისველე ტკბილია. ცხელი წყალი მას ქვაბში ჩამორეცხავს.',
+    sections: [
+      ['რა ხდება', 'მარცვლის ნაწილაკებს შორის ტკბილი ფენა რჩება — ჯამური შაქრის 15–25%. 77°C-იანი წყალი ამ ფენას ცვლის და შაქარს ჩამოიტანს. ეს ეფექტურობის განსხვავებაა 55%-სა და 70%-ს შორის.'],
+      ['რატომ 77 და არა 90', '80°C-ზე ზემოთ მარცვლის ქერქიდან ტანინები გამოდის — მშრალი, ჩაისნაირი მწკლარტე გემო. 77°C საკმარისად ცხელია შაქრის გასახსნელად და საკმარისად ცივი ტანინებისთვის.'],
+      ['რატომ არ დაწურო', 'დაწურვისას წვრილი ნაწილაკები და ქერქის ტანინები ტკბილში გადადის. ნება მიეცი ტომარას თავისით ჩამოიწუროს 2–3 წუთი.']
+    ],
+    why: 'ამ ნაბიჯის შემდეგ ზომავ მოცულობას ხარშვის წინ: 5 ლ ქვაბში 4 ლ-ზე მეტი ადუღებისას გადმოვა.',
+    numbers: [['77°C', 'წყალი'], ['≤ 80°C', 'ზღვარი'], ['1.5 ლ', 'ტიპური მოცულობა']],
+    mistakes: ['მდუღარე წყალი — ტანინები.', 'ტომრის ძლიერი დაწურვა.', 'ძალიან სწრაფად გადასხმა: წყალი მარცვალს გვერდს უვლის.'] },
+
+  { id: 'boil', n: 'დ', title: 'ხარშვა და სვია', sub: 'სიმწარე, არომატი და სისუფთავე ერთ საათში', beer: '#e58500',
+    lead: 'ხარშვა ერთდროულად სამ საქმეს აკეთებს: ასტერილებს ტკბილს, ალექებს ცილებს და სვიის მწარე ნივთიერებებს ხსნადს ხდის.',
+    sections: [
+      ['იზომერიზაცია', 'სვიის ალფა-მჟავები ცივ წყალში არ იხსნება. მდუღარეში მოლეკულა "გადატრიალდება" (იზომერიზაცია) და ხსნადი, მწარე იზო-ალფა-მჟავა ხდება. რაც მეტხანს დუღს სვია, მით მეტი სიმწარე — 60 წუთში ~25–30% გადადის.'],
+      ['არომატი სხვა გზით მოდის', 'სვიის ეთერზეთები, რომლებიც ყვავილის და ციტრუსის სუნს იძლევა, ორთქლთან ერთად მიფრინავს. ამიტომ 60-ე წუთზე ჩაყრილი სვია სიმწარეს იძლევა, არომატს კი არა; ბოლო 5 წუთის სვია — პირიქით.'],
+      ['Hot break', 'ადუღებისას ქაფი ადის — ეს ცილები და ტანინებია, რომლებიც კოაგულირდება და ლექდება. ამ მომენტში ქვაბთან დადექი: ქაფი 10 წამში გადმოდის.'],
+      ['DMS', 'ღია ლუდის ალაო შეიცავს წინამორბედს, რომელიც მოხარშულ სიმინდის სუნს იძლევა. ღია თავსახურით ხარშვა მას ორთქლთან ერთად აქროლებს.']
+    ],
+    why: 'სიმწარის ინდიკატორი აპში (გ/ლ) მარტივი მიახლოებაა: ~2.75 გ/ლ Perle 60 წუთზე ≈ 30 IBU, ზომიერი ელისთვის ბევრი არ არის.',
+    numbers: [['60 წთ', 'სიმწარე'], ['5 წთ', 'არომატი'], ['ღია', 'თავსახური']],
+    interactive: 'boil',
+    mistakes: ['თავსახური დახურული — DMS და გადმოსვლა.', 'ძლიერი დუღილი: აორთქლება 1 ლ-ზე მეტი.', 'სვია ერთად ჩაყრილი.'] },
+
+  { id: 'chill', n: 'ე', title: 'გაცივება', sub: 'რატომ სწრაფად და რატომ დახურული', beer: '#ffbf42',
+    lead: 'ხარშვის შემდეგ ტკბილი სტერილურია. ყოველი წუთი 30-დან 60°C-მდე იმის შანსია, რომ ასე არ დარჩეს.',
+    sections: [
+      ['Cold break', 'სწრაფი გაცივებისას ცილები და ტანინები მკვრივ ფანტელებად ლექდება. ნელი გაცივებისას ისინი ხსნარში რჩება და მოგვიანებით ლუდს ამღვრევს (chill haze).'],
+      ['საშიში ზონა', '60°C-ზე ზემოთ ბაქტერიები ვერ მრავლდება, 30°C-ს ქვემოთ — ნელა. შუა ზონა სწრაფად უნდა გაიარო: ყინულიანი წყალი და წყლის ხშირი გამოცვლა 20 წუთში 4 ლიტრს 32°C-მდე დაიყვანს.'],
+      ['თავსახური დახურული', 'ცივდება და ჰაერს "ისრუტავს" — ჰაერთან ერთად მტვერს და მიკრობებს. თავსახური ახლა უკვე დეზინფიცირებულ ზონას იცავს.']
+    ],
+    why: 'საფუარი 32°C-ზე ზემოთ სტრესს განიცდის და უცნაურ არომატებს ქმნის; Kveik ამ მხრივ ყველაზე გამძლეა, მაგრამ 40°C მასაც ვნებს.',
+    numbers: [['20 წთ', 'ყინულიან წყალში'], ['≤ 32°C', 'საფუარისთვის'], ['30–60°', 'საშიში ზონა']],
+    mistakes: ['თავსახურის ახდა "შესამოწმებლად".', 'ერთი და იგივე წყალი 20 წუთი — თბება და აღარ აცივებს.'] },
+
+  { id: 'measure', n: 'ვ', title: 'გაზომვა და განზავება', sub: 'Brix, სიმკვრივე და რატომ ვამატებთ წყალს', beer: '#ffca5a',
+    lead: 'არეომეტრი ზომავს, რამდენად მძიმეა ტკბილი წყალთან შედარებით. რაც მეტი შაქარი, მით უფრო ამოტივტივდება.',
+    sections: [
+      ['Brix და SG', 'Brix = შაქრის პროცენტი წონით. SG (specific gravity) = სიმკვრივე წყალთან შედარებით. 14 Brix ≈ 1.056. საფუარი ამ შაქარს სპირტად აქცევს: ABV ≈ (OG − FG) × 131.'],
+      ['რატომ ვაზავებთ', 'პატარა ქვაბში კონცენტრირებული ტკბილი ხარშვა უფრო ადვილია, მერე კი ცივი წყლით სამიზნე Brix-მდე ვაზავებთ. აპი ითვლის: საბოლოო ლ = ტკბილი × Brix ÷ სამიზნე Brix.'],
+      ['ტემპერატურა ატყუებს', 'არეომეტრი 20°C-ზეა დაკალიბრებული. 40°C-იანი ნიმუში ~1 Brix-ით ნაკლებს აჩვენებს. ნიმუში ცივ წყალში 2–3 წუთი.']
+    ],
+    why: 'ნიმუში უკან არ დააბრუნო — არეომეტრი და ცილინდრი ყველაზე ხშირად ინფექციის წყაროა.',
+    numbers: [['×0.004', 'Brix → SG'], ['×131', 'ABV ფორმულა'], ['20°C', 'ნიმუში']],
+    mistakes: ['არეომეტრი ცილინდრის კედელს ეხება.', 'ქაფიანი ნიმუში — ქაფს მოაცილე.', 'წყალი 4 ლ-ზე მეტი: ფერმენტერში ადგილი აღარ რჩება.'] },
+
+  { id: 'yeast', n: 'ზ', title: 'საფუარი', sub: 'ერთუჯრედიანი, რომელიც ლუდს აკეთებს', beer: '#fbb123',
+    lead: 'ყველაფერი, რაც აქამდე გააკეთე, საფუარისთვის სადილის მომზადება იყო. ახლა ის მუშაობს.',
+    sections: [
+      ['რა ხდება', 'საფუარი შაქარს ორ ნაწილად შლის: ეთილის სპირტი და ნახშირორჟანგი. გზად სითბო გამოიყოფა და ასობით არომატული ნაერთი — ესტერები (ხილი), ფენოლები (მიხაკი). ტემპერატურა წყვეტს, რამდენი.'],
+      ['Kveik vs ჩვეულებრივი', 'M12 Kveik ნორვეგიული ფერმის საფუარია: 20–30°C-ზე სუფთად მუშაობს და 2–3 დღეში ამთავრებს. M44 ამერიკული ელის საფუარია: 18–24°C, ნეიტრალური, უფრო ნელი. მაღალი ტემპერატურა ჩვეულებრივ საფუარს აცეტონის და ფუზელის სუნს აძლევს.'],
+      ['რატომ არ ურიო', 'მშრალი საფუარი ზემოდან ნელ-ნელა იკვებება და ტენიანდება. ურევა მას ჟანგბადით აწვდის — ეს კარგია, მაგრამ 1 წუთი შენჯღრევა ტკბილის ჩასხმის წინ იმავეს აკეთებს უფრო უსაფრთხოდ.']
+    ],
+    why: '1 გ/ლ მშრალი საფუარი 4 ლ-ზე ბევრია (კომერციული ნორმა ~0.5 გ/ლ), მაგრამ სახლში სიჭარბე უსაფრთხოების ზღვარია: სწრაფი სტარტი ინფექციას ადგილს არ უტოვებს.',
+    numbers: [['1 გ/ლ', 'დოზა'], ['12–48 სთ', 'სტარტი'], ['20–30°', 'Kveik']],
+    mistakes: ['საფუარი 35°C-იან ტკბილში — ნახევარი კვდება.', 'ცივ ოთახში (15°C) Kveik "იძინებს".'] },
+
+  { id: 'ferment', n: 'თ', title: 'დადუღება', sub: 'რა ხდება ფერმენტერში 9 დღის განმავლობაში', beer: '#f8a600',
+    lead: 'პირველი დღე ჩუმია, მეორე — ქარიშხალი, მერე სიმშვიდე. ამ სიმშვიდეს ორჯერ გაზომვა სჭირდება.',
+    sections: [
+      ['ლაგი (0–24 სთ)', 'საფუარი ჟანგბადს იყენებს, მრავლდება და ჯერ არაფერს აჩენს. საკეტი ჩუმია. ნორმალურია.'],
+      ['აქტიური ფაზა (1–3 დღე)', 'მილიარდობით უჯრედი შაქარს ჭამს. ზევით ქაფის ქუდი ადის — krausen, საკეტი წამში რამდენჯერმე ბუშტუკობს. ტემპერატურა 2–3°C-ით მატულობს — საფუარი თავად თბება.'],
+      ['დამთავრება (4–9 დღე)', 'შაქარი ილევა, ქაფი ეშვება, საფუარი თავის დიაცეტილს (კარაქის გემო) "ასუფთავებს" და ძირში ლექდება. ამიტომ არ ჩამოასხა ქაფის ჩამოსვლისთანავე.'],
+      ['FG ორჯერ', 'დუღილი დასრულებულია, როცა Brix ორ დღეში არ იცვლება. ერთი გაზომვა არაფერს ნიშნავს: შესაძლოა უბრალოდ შენელდა. ცვალებადი FG-ით ჩამოსხმა ბოთლის აფეთქებას ნიშნავს.']
+    ],
+    why: 'რეფრაქტომეტრით FG-ს სპირტი ამახინჯებს (ზედმეტს აჩვენებს) — აპი კორექციას აკეთებს. არეომეტრით პირდაპირ 1 + Brix × 0.004.',
+    numbers: [['24 სთ', 'ლაგი'], ['2–3°C', 'თვითგაცხელება'], ['= FG', 'ორჯერ ზედიზედ']],
+    mistakes: ['თავსახურის ახდა "სუნის შესამოწმებლად".', 'მზე ფერმენტერზე — ლუდი "სკუნკის" სუნს იძენს.', 'ჩამოსხმა მე-3 დღეს, "რადგან საკეტი გაჩერდა".'] },
+
+  { id: 'bottle', n: 'ი', title: 'ბოთლი და გაზი', sub: 'კარბონიზაცია და ორი კვირა მოთმინება', beer: '#f8a600',
+    lead: 'გაზი ლუდში არ იყიდება — საფუარი აკეთებს, ბოთლის შიგნით, ცოტა შაქრისგან.',
+    sections: [
+      ['რა ხდება', 'ბოთლში ჩასხმისას ლუდში ჯერ კიდევ მილიონობით ცოცხალი უჯრედია. 5.5 გ შაქარი ლიტრზე მათ მცირე სამუშაოს აძლევს. ნახშირორჟანგი დახურული ბოთლიდან ვერ გადის, წნევა იზრდება და გაზი სითხეში იხსნება.'],
+      ['რამდენი შაქარი', '5.5 გ/ლ ≈ 2.4 მოცულობა CO₂ — ევროპული ელის ნორმა. 8 გ/ლ-ზე ზემოთ ხელოვნური ბოთლი იბერება, მინა კი ფეთქდება. შაქარი წყალში გახსენი და საერთო ჭურჭელში ჩაასხი — სხვანაირად ზოგ ბოთლში ბევრი მოხვდება, ზოგში არაფერი.'],
+      ['რატომ ოთახში', 'საფუარს თბილი სჭირდება, რომ იმუშაოს: 18–24°C-ზე ორი კვირა. მაცივარში ის ჩერდება. ბოლო 2–3 დღე მაცივარში ლუდს ასუფთავებს და გაზს უკეთ ხსნის.']
+    ],
+    why: 'ლუდი გამჭვირვალე ან ყავისფერი ბოთლით ინახება — მწვანე და ხელოვნური სინათლეს ატარებს, სინათლე სვიას შლის.',
+    numbers: [['5.5 გ/ლ', 'შაქარი'], ['14 დღე', 'ოთახში'], ['2–3 დღე', 'მაცივარში']],
+    mistakes: ['შაქარი თითო ბოთლში "თვალით".', 'ბოთლი პირამდე სავსე — ჰაერი 2–3 სმ დატოვე.', 'ჩამოსხმა არასტაბილური FG-ით.'] }
+];
+
+/* ინტერაქტიული ნაწილები */
+function interactiveHtml(kind) {
+  if (kind === 'mash') return `<div class="slider"><span class="lbl muted small" style="font-weight:600">გაშაქრების ტემპერატურა</span>
+    <div class="val num" id="mashT">70°C</div>
+    <input type="range" id="mashRange" min="60" max="74" step="1" value="70" data-lesson="mash" aria-label="ტემპერატურა">
+    <div class="bars" id="mashBars">${interactiveCalc('mash', 70)}</div></div>`;
+  if (kind === 'boil') return `<div class="slider"><span class="lbl muted small" style="font-weight:600">სვიის ჩაყრა — რამდენი წუთი რჩება ხარშვის ბოლომდე</span>
+    <div class="val num" id="boilT">60 წთ</div>
+    <input type="range" id="boilRange" min="0" max="60" step="5" value="60" data-lesson="boil" aria-label="წუთი">
+    <div class="bars" id="boilBars">${interactiveCalc('boil', 60)}</div></div>`;
+  return '';
+}
+function interactiveCalc(kind, v) {
+  const bar = (label, cls, pct, txt) => `<span>${label}</span><div class="bar ${cls}"><i style="width:${clamp(pct, 0, 100)}%"></i></div><b>${txt}</b>`;
+  if (kind === 'mash') {
+    const beta = clamp(100 - Math.abs(v - 63) * 11, 5, 100), alpha = clamp(100 - Math.abs(v - 70) * 10, 5, 100);
+    const ferm = Math.round(68 + (beta - alpha) * 0.12);
+    return bar('β-ამილაზა', 'g', beta, `${Math.round(beta)}%`) + bar('α-ამილაზა', 'b', alpha, `${Math.round(alpha)}%`)
+      + bar('ფერმენტირება', '', ferm, `${ferm}%`) + bar('სხეული', 'b', 130 - ferm, v < 65 ? 'მშრალი' : v > 70 ? 'სავსე' : 'საშუალო');
+  }
+  const bitter = 100 * (1 - Math.exp(-v / 20)) / (1 - Math.exp(-3)), aroma = v === 0 ? 100 : clamp(100 * Math.exp(-v / 9), 2, 100);
+  return bar('სიმწარე', '', bitter, `${Math.round(bitter)}%`) + bar('არომატი', 'g', aroma, `${Math.round(aroma)}%`);
+}
+function updateLesson(el) {
+  const v = +el.value;
+  if (el.dataset.lesson === 'mash') { $('#mashT').textContent = `${v}°C`; $('#mashBars').innerHTML = interactiveCalc('mash', v); }
+  else { $('#boilT').textContent = v === 0 ? 'ცეცხლის გამორთვისას' : `${v} წთ`; $('#boilBars').innerHTML = interactiveCalc('boil', v); }
+}
+
+function viewLearn() {
+  const read = S.settings.read;
+  return `<main class="wrap">
+    <section class="paper label-cut panel" style="margin-top:14px;gap:6px">
+      <span class="eyebrow">ლუდის სკოლა</span>
+      <h1>რა ხდება ქვაბში</h1>
+      <p class="muted">ცხრა მოკლე გაკვეთილი — ხარშვის თითო ეტაპზე რა ხდება ქიმიურად, რატომ არის ციფრები ისეთი, როგორიც არის, და რა ფუჭდება ყველაზე ხშირად.</p>
+      <p class="small muted">${read.length} / ${LESSONS.length} წაკითხული</p>
+    </section>
+    <div class="sec">${LESSONS.map((L, i) => `<a class="paper panel lesson-card" href="#/learn/${L.id}">
+      <span class="no">${L.n}<small>გაკვეთილი ${i + 1}</small></span>
+      <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span class="ttl">${esc(L.title)}</span><span class="sub">${esc(L.sub)}</span></span>
+      ${read.includes(L.id) ? ic('check', 'read') : ic('chev', 'chev')}</a>`).join('')}</div>
+  </main>${tabbar('learn')}`;
+}
+function viewLesson(id) {
+  const i = LESSONS.findIndex(l => l.id === id); const L = LESSONS[i];
+  if (!L) return null;
+  if (!S.settings.read.includes(id)) { S.settings.read.push(id); save(); }
+  const next = LESSONS[i + 1], prev = LESSONS[i - 1];
+  return `${appbar(`გაკვეთილი ${i + 1}`, '#/learn')}<main class="wrap lesson">
+    <section class="paper label-cut panel" style="gap:14px">
+      <div style="display:flex;gap:14px;align-items:center">
+        ${sealSvg(L.n, `${L.title} ✦ ლუდის სკოლა ✦ გაკვეთილი ${i + 1} ✦ `, { fs: 46 })}
+        <div class="sec" style="gap:4px"><h1 style="font-size:2rem">${esc(L.title)}</h1><p class="muted small">${esc(L.sub)}</p></div>
+      </div>
+      ${FIG[L.id] ? FIG[L.id]() : ''}
+      <p class="lead">${esc(L.lead)}</p>
+    </section>
+    <section class="paper panel" style="gap:12px">
+      ${L.sections.map(([h, t]) => `<h3>${esc(h)}</h3><p>${esc(t)}</p>`).join('')}
+    </section>
+    ${L.interactive ? `<section class="paper panel"><h3 style="margin:0">სცადე</h3>${interactiveHtml(L.interactive)}</section>` : ''}
+    <section class="paper panel" style="gap:12px">
+      <div class="tiles">${L.numbers.map(([v, k]) => `<div class="tile"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')}</div>
+      <p class="why">${esc(L.why)}</p>
+      <h3>ხშირი შეცდომები</h3>
+      <ul>${L.mistakes.map(m => `<li>${esc(m)}</li>`).join('')}</ul>
+    </section>
+    <div class="btn-row">
+      ${prev ? `<a class="btn" href="#/learn/${prev.id}">${ic('back')} ${esc(prev.title)}</a>` : ''}
+      ${next ? `<a class="btn primary" href="#/learn/${next.id}">${esc(next.title)} ${ic('chev')}</a>` : `<a class="btn primary" href="#/learn">${ic('check')} სკოლა დასრულდა</a>`}
+    </div>
+  </main>${tabbar('learn')}`;
+}
 
 /* ბოთლი (ჩამოსხმის გვერდისთვის) */
 const bottleSvg = (color, i) => `<svg class="pop" style="animation-delay:${i * 40}ms" viewBox="0 0 22 44" aria-hidden="true">
@@ -1137,13 +1480,14 @@ function ask(text, okLabel = 'დიახ', danger = false) {
 let S = load();
 
 function freshState() {
-  return { recipes: clone(DEFAULT_RECIPES), batches: [], settings: { debug: false, wake: true } };
+  return { recipes: clone(DEFAULT_RECIPES), batches: [], settings: { debug: false, wake: true, read: [] } };
 }
 function migrate(s) {
   s = s && typeof s === 'object' ? s : {};
   s.recipes = Array.isArray(s.recipes) && s.recipes.length ? s.recipes : clone(DEFAULT_RECIPES);
   s.batches = Array.isArray(s.batches) ? s.batches : [];
-  s.settings = Object.assign({ debug: false, wake: true }, s.settings || {});
+  s.settings = Object.assign({ debug: false, wake: true, read: [] }, s.settings || {});
+  if (!Array.isArray(s.settings.read)) s.settings.read = [];
   s.recipes.forEach(fixRecipe);
   s.batches.forEach(b => {
     Object.assign(b, Object.assign({
@@ -1405,7 +1749,7 @@ const debugTag = () => S.settings.debug ? ' <span class="debug">DEBUG</span>' : 
 function tabbar(on) {
   const t = (h, n, icon, l) => `<a href="${h}" class="${on === n ? 'on' : ''}" ${on === n ? 'aria-current="page"' : ''}>${ic(icon)}<span>${l}</span></a>`;
   return `<nav class="tabbar" aria-label="მთავარი"><div class="wrap">
-    ${t('#/', 'home', 'mug', 'პარტიები')}${t('#/recipes', 'recipes', 'book', 'რეცეპტები')}${t('#/settings', 'settings', 'sliders', 'პარამეტრები')}
+    ${t('#/', 'home', 'mug', 'პარტიები')}${t('#/recipes', 'recipes', 'book', 'რეცეპტები')}${t('#/learn', 'learn', 'school', 'სკოლა')}${t('#/settings', 'settings', 'sliders', 'პარამეტრები')}
   </div></nav>`;
 }
 function appbar(title, backHref, extra = '') {
@@ -1627,6 +1971,7 @@ function viewBrew(b) {
         <span class="eyebrow num">ნაბიჯი ${i + 1} / ${STEPS.length}</span>
         <h1>${st.title}</h1>
         ${STEPS.findIndex(s => s.stage === st.stage) === i ? `<span class="intro">${esc(stage.intro)}</span>` : ''}
+        ${STAGE_LESSON[st.stage] ? `<a class="learn-link" href="#/learn/${STAGE_LESSON[st.stage]}">${ic('school')} რა ხდება ახლა?</a>` : ''}
       </div>
     </div>
     <section class="paper label-cut panel" style="gap:14px"><ul class="instr">${st.lines(r, b, c).map(l => typeof l === 'string'
@@ -1782,7 +2127,8 @@ function viewFerm(b) {
       <div class="sec">
         <span class="eyebrow">${esc(b.name)}</span>
         <h2>${dayNow >= 0 ? `დღე ${dayNow}` : 'ჯერ არ დაწყებულა'}</h2>
-        <p class="muted small">ხარშვის დღე: ${fmtDate(brewDay(b))}${lastAir ? ` · საკეტი: ${lastAir.airlock.toLowerCase()}` : ''}</p>
+        <p class="muted small">ხარშვის დღე: ${fmtDate(brewDay(b))}${lastAir ? `, საკეტი ${lastAir.airlock.toLowerCase()}` : ''}</p>
+        <a class="learn-link" href="#/learn/ferment">${ic('school')} რა ხდება ფერმენტერში?</a>
       </div>
     </section>
     <div class="days" role="list">${days.map(day => {
@@ -1830,7 +2176,7 @@ function viewBottle(b) {
   const bt = b.bottling;
   const tasteDate = bt.date ? addDays(bt.date, 14) : null;
   return `${appbar('ჩამოსხმა', `#/batch/${b.id}`)}<main class="wrap">
-    <div class="step-head"><span class="eyebrow">${esc(b.name)}</span><div>${pill(b.status)}</div></div>
+    <div class="step-head"><span class="eyebrow">${esc(b.name)}</span><div>${pill(b.status)}</div><a class="learn-link" href="#/learn/bottle">${ic('school')} როგორ ჩნდება გაზი ბოთლში?</a></div>
     <div class="reading">
       <label class="lbl" for="bt-vol"><span>მოცულობა</span></label>
       <div class="stepper">
@@ -2066,8 +2412,11 @@ function viewSettings() {
 /* =====================================================================
    9. რენდერი და მოვლენები
    ===================================================================== */
+let lastRoute = '';
 function render() {
   const rt = route();
+  const key = `${rt.name}/${rt.id || ''}`;
+  if (key !== lastRoute) { lastRoute = key; scrollTo(0, 0); }
   let html;
   const b = rt.id ? getBatch(rt.id) : null;
   switch (rt.name) {
@@ -2081,6 +2430,7 @@ function render() {
     case 'recipe': { const r = getRecipe(rt.id); html = r ? viewRecipe(r) : null; break; }
     case 'brecipe': html = b && b.recipe ? viewRecipe(b.recipe, b) : null; break;
     case 'settings': html = viewSettings(); break;
+    case 'learn': html = rt.id ? viewLesson(rt.id) : viewLearn(); break;
     default: html = viewHome();
   }
   if (html == null) { location.hash = '#/'; return; }
@@ -2148,6 +2498,7 @@ function onBind(el, isChange) {
 }
 document.addEventListener('input', e => {
   const el = e.target;
+  if (el.dataset.lesson) { updateLesson(el); return; }
   if (el.dataset.bind && el.type !== 'checkbox' && el.tagName !== 'SELECT') onBind(el, false);
 });
 document.addEventListener('change', e => {
