@@ -1577,12 +1577,14 @@ function calc(b, r) {
   options.forEach(o => { o.ok = o.bitter <= BITTER_HIGH_G_PER_L && o.abv >= 4; });
   // რეკომენდაცია: ნორმალური სიმწარე და ≥4% ABV, სამიზნესთან ყველაზე ახლოს; თუ არაა — ყველაზე რბილი
   const good = options.filter(o => o.ok).sort((a, z) => Math.abs(a.finalBrix - r.targetBrix) - Math.abs(z.finalBrix - r.targetBrix));
-  const rec = good[0] || options.slice().sort((a, z) => a.bitter - z.bitter)[0];
+  // ვერცერთი არ გადის? — რეცეპტის სამიზნე (ან „ასე დატოვება", თუ Brix უკვე დაბალია), წყლიანი ლუდის ნაცვლად
+  const rec = good[0] || options.find(o => o.tb === r.targetBrix) || options[0];
+  const allBitter = options.every(o => o.bitter > BITTER_HIGH_G_PER_L);
   const planTb = val(b, 'planBrix');
   const chosen = options.find(o => planTb != null && Math.abs(o.tb - planTb) < 0.01) || rec;
   options.forEach(o => { o.rec = o === rec; o.chosen = o === chosen; });
   return {
-    ready: true, wortL, brix, idealL, hopG, options, chosen, rec, lowEff, belowTarget,
+    ready: true, wortL, brix, idealL, hopG, options, chosen, rec, lowEff, belowTarget, allBitter,
     vol: chosen.L, addL: chosen.add, finalBrix: chosen.finalBrix, og: chosen.og, abv: chosen.abv,
     bitter: chosen.bitter, bitterHigh: chosen.bitter > BITTER_HIGH_G_PER_L, capped: chosen.capped
   };
@@ -2110,8 +2112,10 @@ function renderCalc(r, b, c) {
   if (c.belowTarget) verdict = `${fmt(c.wortL, 2)} ლ ტკბილი გამოვიდა ${fmt(c.brix)} Brix-ით — სამიზნე ${r.targetBrix}-ზე ნაკლები. შაქარი ცოტაა, წყალი არ დაამატო: ლუდი უფრო მსუბუქი გამოვა (~${fmt(c.abv)}%), მაგრამ კარგი.`;
   else if (c.lowEff) verdict = `${fmt(c.wortL, 2)} ლ ტკბილი გამოვიდა ${fmt(c.brix)} Brix-ით. რეცეპტი ${r.maxVolumeL} ლ-ს ითვალისწინებდა — მარცვლიდან მოსალოდნელზე ნაკლები შაქარი ამოვიდა (ალბათ უხეში დაფქვა ან დაბალი ტემპერატურა გაშაქრებისას). ახლა არჩევანია: ნაკლები ლუდი სავსე გემოთი, თუ მეტი ლუდი — მსუბუქი.`;
   else verdict = `${fmt(c.wortL, 2)} ლ ტკბილი ${fmt(c.brix)} Brix-ით — გეგმისამებრ. წყლით ${fmt(ch.L, 2)} ლ-მდე გავაზავებთ და ${fmt(ch.finalBrix)} Brix დარჩება.`;
-  const bitterNote = ch.bitter > BITTER_HIGH_G_PER_L
-    ? `სიმწარე: ${fmt(c.hopG)} გ სვია ${fmt(ch.L, 2)} ლ-ზე = ${fmt(ch.bitter, 2)} გ/ლ — ლუდი მოსალოდნელზე უფრო მწარე იქნება. ეს ხარვეზი არ არის; მეტი წყალი არბილებს.`
+  const bitterNote = c.allBitter
+    ? `სიმწარე: ${fmt(c.hopG)} გ სვია ამ მოცულობისთვის ბევრია — ყველა ვარიანტში ${BITTER_HIGH_G_PER_L} გ/ლ-ზე მეტი გამოდის. ლუდი მწარე იქნება, მაგრამ ეს ხარვეზი არ არის. შემდეგ ჯერზე სვია შეამცირე ან მეტი ტკბილი მოხარშე.`
+    : ch.bitter > BITTER_HIGH_G_PER_L
+    ? `სიმწარე: ${fmt(c.hopG)} გ სვია ${fmt(ch.L, 2)} ლ-ზე = ${fmt(ch.bitter, 2)} გ/ლ — ლუდი მოსალოდნელზე უფრო მწარე იქნება. მეტი წყალი არბილებს.`
     : `სიმწარე ${fmt(ch.bitter, 2)} გ/ლ — ნორმაშია.`;
   // 2. ვარიანტები
   const cards = c.options.map(o => {
