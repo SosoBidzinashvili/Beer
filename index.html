@@ -20,7 +20,7 @@
      ===================================================================== */
   :root {
     color-scheme: light;
-    --yellow: #fff200; --green: #16b60d; --green-d: #0a5c05; --pink: #ff2fb3; --blue: #22c7ff; --purple: #b06cff; --coral: #ff4d1f; --amber: #ffb400; --cyan: #7df9ff;
+    --yellow: #fff6a8; --yellow-s: #fff200; --green: #58d66a; --green-d: #1f8a2c; --pink: #ff9ad6; --pink-s: #ff2fb3; --blue: #8fe3ff; --blue-s: #22c7ff; --purple: #d4b3ff; --coral: #ff8a65; --coral-s: #ff4d1f; --amber: #ffd166; --amber-s: #ffb400; --cyan: #b9fbff;
     --ink: #111111; --ink-2: #3a3a3a; --ink-3: #6b6b6b; --white: #ffffff; --cream: #fffbe6;
     --bg: var(--yellow); --fg: var(--ink); --muted: var(--ink-3); --faint: #8a8a8a;
     --paper: var(--white); --paper-2: #f3f3f3; --line: rgba(17,17,17,.14); --line-2: rgba(17,17,17,.3);
@@ -34,7 +34,7 @@
     --r: 28px; --r-sm: 16px; --tap: 56px;
     --gutter-l: max(16px, env(safe-area-inset-left, 0px)); --gutter-r: max(16px, env(safe-area-inset-right, 0px));
     --side: 0px;            /* დესკტოპზე გვერდითი პანელის სიგანე */
-    --shadow: 5px 5px 0 var(--ink);
+    --shadow: 3px 3px 0 var(--ink); --bw: 2px;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--fg); }
@@ -46,7 +46,7 @@
 
   .wrap { max-width: 760px; margin: 0 auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
   main.wrap { padding-block: 12px 28px; display: flex; flex-direction: column; gap: 16px; }
-  h1, h2, h3 { margin: 0; line-height: 1.08; letter-spacing: -.02em; font-weight: 900; text-wrap: balance; }
+  h1, h2, h3 { margin: 0; line-height: 1.08; letter-spacing: -.02em; font-weight: 800; text-wrap: balance; }
   h1 { font-size: var(--t-xl); } h2 { font-size: var(--t-lg); display: flex; align-items: center; gap: 10px; } h3 { font-size: var(--t-md); }
   p { margin: 0; } a { color: var(--ink); }
   .eyebrow { font-size: var(--t-sm); font-weight: 800; color: var(--ink); }
@@ -58,27 +58,27 @@
   .sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 8px; }
   .rule, .rule-ink { height: 3px; background: var(--ink); border: 0; margin: 4px 0; border-radius: 2px; }
   /* ბუშტუკოვანი ციფრები ფერადი ჩრდილით */
-  .bub { font-weight: 900; letter-spacing: -.02em; -webkit-text-stroke: 1.5px var(--ink); paint-order: stroke fill; color: var(--white); text-shadow: 3px 3px 0 var(--pink), 6px 6px 0 var(--blue), 9px 9px 0 var(--green); }
+  .bub { font-weight: 800; letter-spacing: -.02em; -webkit-text-stroke: 1.2px var(--ink); paint-order: stroke fill; color: var(--white); text-shadow: 2px 2px 0 var(--pink-s), 4px 4px 0 var(--blue-s), 6px 6px 0 var(--green); }
 
   /* ---------- ფილები ---------- */
-  .panel, .paper, .batch, .list, details, .tile, .pick, .item, .taplist { background: var(--white); color: var(--ink); border: 3px solid var(--ink); border-radius: var(--r); box-shadow: var(--shadow); }
+  .panel, .paper, .batch, .list, details, .tile, .pick, .item, .taplist { background: var(--white); color: var(--ink); border: var(--bw) solid var(--ink); border-radius: var(--r); box-shadow: var(--shadow); }
   .panel { padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
   .panel.hl { background: var(--cream); }
   .paper { position: relative; } .paper::before, .paper::after { display: none; }
   .paper > * { position: relative; z-index: 1; }
   .label-cut { border-radius: var(--r); }
   .tile { border-radius: var(--r-sm); border-width: 2px; box-shadow: none; padding: 10px 12px; display: flex; flex-direction: column; gap: 0; min-width: 0; background: var(--cream); }
-  .tile .k { font-size: var(--t-xs); color: var(--ink-3); font-weight: 700; } .tile .v { font-size: 1.5rem; font-weight: 900; line-height: 1.2; }
+  .tile .k { font-size: var(--t-xs); color: var(--ink-3); font-weight: 700; } .tile .v { font-size: 1.5rem; font-weight: 800; line-height: 1.2; }
   .tile.warn .v { color: var(--coral); }
   .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
-  .spec { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: var(--t-sm); color: var(--ink-3); } .spec b { color: var(--ink); font-weight: 900; margin-left: 4px; }
-  .kv { display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; align-items: baseline; } .kv > b { text-align: right; font-weight: 900; }
+  .spec { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: var(--t-sm); color: var(--ink-3); } .spec b { color: var(--ink); font-weight: 800; margin-left: 4px; }
+  .kv { display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; align-items: baseline; } .kv > b { text-align: right; font-weight: 800; }
   .stat { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0; }
-  .stat .big { font-size: 3.6rem; font-weight: 900; line-height: 1; } .stat .cap { font-size: var(--t-sm); color: var(--ink-3); text-align: center; font-weight: 700; }
+  .stat .big { font-size: 3.6rem; font-weight: 800; line-height: 1; } .stat .cap { font-size: var(--t-sm); color: var(--ink-3); text-align: center; font-weight: 700; }
 
   /* ---------- ღილაკები ---------- */
   button, .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: var(--tap); padding: 10px 20px; border-radius: 999px;
-    border: 3px solid var(--ink); background: var(--white); color: var(--ink); font: inherit; font-weight: 800; cursor: pointer; width: 100%; text-decoration: none; text-align: center;
+    border: var(--bw) solid var(--ink); background: var(--white); color: var(--ink); font: inherit; font-weight: 800; cursor: pointer; width: 100%; text-decoration: none; text-align: center;
     touch-action: manipulation; box-shadow: var(--shadow); transition: transform .08s, box-shadow .08s; }
   button:active, .btn:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink); }
   :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
@@ -94,7 +94,7 @@
   /* ---------- ველები ---------- */
   label.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
   label.field > .lbl, .reading .lbl { font-size: var(--t-sm); color: var(--ink-2); font-weight: 800; }
-  input, select, textarea { font: inherit; font-weight: 600; color: var(--ink); background: var(--white); border: 3px solid var(--ink); border-radius: var(--r-sm); padding: 12px 16px; width: 100%; min-height: var(--tap); min-width: 0; }
+  input, select, textarea { font: inherit; font-weight: 600; color: var(--ink); background: var(--white); border: var(--bw) solid var(--ink); border-radius: var(--r-sm); padding: 12px 16px; width: 100%; min-height: var(--tap); min-width: 0; }
   textarea { min-height: 104px; resize: vertical; }
   input:focus, select:focus, textarea:focus { outline: none; box-shadow: 0 0 0 4px var(--blue); }
   input[type=date] { cursor: pointer; -webkit-appearance: none; appearance: none; }
@@ -107,27 +107,27 @@
   .reading { display: flex; flex-direction: column; gap: 8px; } .reading .lbl { display: flex; justify-content: space-between; gap: 8px; }
   .stepper { display: grid; grid-template-columns: 66px 1fr 66px; gap: 10px; align-items: stretch; }
   .stepper button { min-height: 76px; padding: 0; border-radius: 22px; font-size: 1.6rem; }
-  .stepper .unit-in input { min-height: 76px; font-size: 2.3rem; font-weight: 900; text-align: center; padding: 6px 1.5em 6px .7em; border-radius: 22px; }
+  .stepper .unit-in input { min-height: 76px; font-size: 2.3rem; font-weight: 800; text-align: center; padding: 6px 1.5em 6px .7em; border-radius: 22px; }
   .stepper .unit-in > span { right: 12px; }
   .checks { display: flex; flex-direction: column; }
   .check { display: flex; align-items: center; gap: 14px; min-height: 54px; padding: 8px 2px; border-bottom: 2px solid var(--line); cursor: pointer; font-weight: 600; }
   .check:last-child { border-bottom: 0; }
-  .check input { appearance: none; -webkit-appearance: none; width: 30px; height: 30px; min-height: 0; padding: 0; flex: none; border: 3px solid var(--ink); border-radius: 50%; background: var(--white); display: grid; place-items: center; }
+  .check input { appearance: none; -webkit-appearance: none; width: 30px; height: 30px; min-height: 0; padding: 0; flex: none; border: var(--bw) solid var(--ink); border-radius: 50%; background: var(--white); display: grid; place-items: center; }
   .check input:checked { background: var(--green); animation: pop .25s ease-out; }
   .check input:checked::after { content: ""; width: 7px; height: 12px; border: solid var(--ink); border-width: 0 3px 3px 0; transform: translateY(-1px) rotate(45deg); }
   .check.done > span { color: var(--ink-3); text-decoration: line-through; }
   @keyframes pop { 50% { transform: scale(1.2); } }
   .switch { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 60px; cursor: pointer; }
-  .switch input { appearance: none; -webkit-appearance: none; width: 58px; height: 34px; min-height: 0; padding: 0; border-radius: 99px; background: var(--white); border: 3px solid var(--ink); position: relative; flex: none; }
+  .switch input { appearance: none; -webkit-appearance: none; width: 58px; height: 34px; min-height: 0; padding: 0; border-radius: 99px; background: var(--white); border: var(--bw) solid var(--ink); position: relative; flex: none; }
   .switch input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); transition: transform .15s; }
   .switch input:checked { background: var(--green); } .switch input:checked::after { transform: translateX(24px); }
 
   /* ---------- სტიკერები, ტეგები, შეტყობინებები ---------- */
-  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 99px; font-size: var(--t-xs); font-weight: 900; white-space: nowrap; background: var(--white); color: var(--ink); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); transform: rotate(var(--tilt, -2deg)); }
-  .pill.planned { --tilt: 2deg; background: var(--blue); } .pill.brewing { --tilt: -3deg; background: var(--amber); } .pill.fermenting { --tilt: 2.5deg; background: var(--green); color: var(--white); }
-  .pill.bottled { --tilt: -2deg; background: var(--purple); } .pill.done { --tilt: 1.5deg; background: var(--ink); color: var(--yellow); }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 99px; font-size: var(--t-xs); font-weight: 800; white-space: nowrap; background: var(--white); color: var(--ink); border: var(--bw) solid var(--ink); box-shadow: 2px 2px 0 var(--ink); transform: rotate(var(--tilt, -1.5deg)); }
+  .pill.planned { --tilt: 1.5deg; background: var(--blue); } .pill.brewing { --tilt: -2deg; background: var(--amber); } .pill.fermenting { --tilt: 1.5deg; background: var(--green); }
+  .pill.bottled { --tilt: -1.5deg; background: var(--purple); } .pill.done { --tilt: 1deg; background: var(--ink); color: var(--yellow); }
   .tag { display: inline-block; padding: 2px 10px; border-radius: 99px; background: var(--ink); color: var(--yellow); font-size: var(--t-xs); font-weight: 800; white-space: nowrap; }
-  .debug { display: inline-block; background: var(--coral); color: var(--white); font-size: 10px; padding: 2px 8px; border-radius: 6px; font-weight: 900; vertical-align: middle; letter-spacing: .1em; border: 2px solid var(--ink); transform: rotate(3deg); }
+  .debug { display: inline-block; background: var(--coral); color: var(--ink); font-size: 10px; padding: 2px 8px; border-radius: 6px; font-weight: 800; vertical-align: middle; letter-spacing: .1em; border: 2px solid var(--ink); transform: rotate(2deg); }
   .msg { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: var(--r-sm); font-weight: 700; border: 2px solid var(--ink); }
   .msg .ic { margin-top: 2px; }
   .msg.ok { background: var(--ok-soft); color: var(--ok); } .msg.warn { background: var(--warn-soft); color: var(--warn); } .msg.bad { background: var(--bad-soft); color: var(--bad); } .msg.info { background: var(--info-soft); color: var(--info); }
@@ -140,38 +140,38 @@
   .list-row, .paper button.list-row { display: flex; align-items: center; gap: 14px; padding: 14px 18px; min-height: 70px; color: var(--ink); text-decoration: none; background: none; border: 0; border-bottom: 2px solid var(--line); border-radius: 0; text-align: left; font-weight: 600; justify-content: flex-start; box-shadow: none; width: 100%; }
   .list-row:last-child, .paper button.list-row:last-child { border-bottom: 0; }
   .list-row .ic.lead { color: var(--ink); width: 1.6em; height: 1.6em; } .list-row .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-  .list-row .title { font-weight: 900; } .list-row .sub { font-size: var(--t-sm); color: var(--ink-3); } .list-row .chev { color: var(--ink-3); }
+  .list-row .title { font-weight: 800; } .list-row .sub { font-size: var(--t-sm); color: var(--ink-3); } .list-row .chev { color: var(--ink-3); }
   .batch { display: flex; flex-direction: column; gap: 8px; padding: 18px 20px; color: var(--ink); text-decoration: none; }
   .batch .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; } .batch .top .ic { color: var(--ink-3); }
-  .batch .name { font-weight: 900; font-size: 1.45rem; line-height: 1.1; min-width: 0; overflow-wrap: anywhere; letter-spacing: -.02em; }
+  .batch .name { font-weight: 800; font-size: 1.45rem; line-height: 1.1; min-width: 0; overflow-wrap: anywhere; letter-spacing: -.02em; }
   .meter { height: 10px; background: var(--white); border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; } .meter > div { height: 100%; background: var(--green); }
   .card-glass { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; } .card-glass .body { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
-  .art { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 14px; border: 3px solid var(--ink); }
+  .art { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 14px; border: var(--bw) solid var(--ink); }
   .artbox { width: 64px; height: 64px; flex: none; } .artbox.lg { width: 96px; height: 96px; } .tap .artbox { width: 56px; height: 56px; }
   .beer-strip { height: 12px; border-radius: 6px; background: var(--c); border: 2px solid var(--ink); }
   .taplist { display: flex; flex-direction: column; overflow: hidden; padding: 4px 0; }
   .taplist .tl-head { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 20px 8px; }
   .tap { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; padding: 12px 20px; color: var(--ink); text-decoration: none; border-top: 2px solid var(--line); }
-  .tap .nm { font-weight: 900; font-size: 1.3rem; line-height: 1.1; overflow-wrap: anywhere; letter-spacing: -.02em; } .tap .meta { font-size: var(--t-sm); color: var(--ink-3); } .tap .now { font-size: var(--t-sm); font-weight: 600; }
-  .tap .side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; } .tap .abv { font-size: 1.4rem; font-weight: 900; line-height: 1; } .tap .abv small { font-size: var(--t-xs); color: var(--ink-3); margin-left: 2px; }
+  .tap .nm { font-weight: 800; font-size: 1.3rem; line-height: 1.1; overflow-wrap: anywhere; letter-spacing: -.02em; } .tap .meta { font-size: var(--t-sm); color: var(--ink-3); } .tap .now { font-size: var(--t-sm); font-weight: 600; }
+  .tap .side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; } .tap .abv { font-size: 1.4rem; font-weight: 800; line-height: 1; } .tap .abv small { font-size: var(--t-xs); color: var(--ink-3); margin-left: 2px; }
   .picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
   .pick { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 10px; color: var(--ink); text-align: center; font-weight: 800; min-height: 0; box-shadow: none; border-width: 3px; }
-  .pick span { font-size: 1.1rem; font-weight: 900; } .pick small { color: var(--ink-3); font-weight: 600; } .pick.on { background: var(--blue); box-shadow: var(--shadow); }
+  .pick span { font-size: 1.1rem; font-weight: 800; } .pick small { color: var(--ink-3); font-weight: 600; } .pick.on { background: var(--blue); box-shadow: var(--shadow); }
   .paper .pick { background: var(--white); } .paper .pick.on { background: var(--blue); }
 
   /* ---------- ზოლები ---------- */
-  .appbar, .brewbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--yellow); border-bottom: 3px solid var(--ink); }
+  .appbar, .brewbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--yellow); border-bottom: var(--bw) solid var(--ink); }
   .appbar .wrap { display: flex; align-items: center; gap: 12px; padding-block: 10px; min-height: 68px; }
-  .appbar .ttl { flex: 1; min-width: 0; font-weight: 900; font-size: 1.4rem; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .appbar .ttl { flex: 1; min-width: 0; font-weight: 800; font-size: 1.4rem; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .appbar .icon-btn, .brewbar .icon-btn { min-height: 48px; width: 48px; min-width: 48px; box-shadow: 3px 3px 0 var(--ink); }
   .saved { font-size: var(--t-xs); color: var(--ink-3); white-space: nowrap; font-weight: 700; } .saved.flash { color: var(--ok); }
   /* ტაბ-ზოლი: ტელეფონზე ქვევით, დესკტოპზე — მარცხენა მწვანე მენიუ ყვითელ რელსზე */
-  .tabbar { position: fixed; left: var(--gutter-l); right: var(--gutter-r); bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 6; background: var(--green); border: 3px solid var(--ink); border-radius: 24px; box-shadow: var(--shadow); max-width: 760px; margin: 0 auto; }
+  .tabbar { position: fixed; left: var(--gutter-l); right: var(--gutter-r); bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 6; background: var(--green); border: var(--bw) solid var(--ink); border-radius: 24px; box-shadow: var(--shadow); max-width: 760px; margin: 0 auto; }
   .tabbar .rail { display: none; }
   .tabbar .wrap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 6px; }
   .tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 54px; border-radius: 16px; color: var(--ink); text-decoration: none; font-size: 11px; font-weight: 800; }
   .tabbar a.on { background: var(--ink); color: var(--yellow); }
-  .actionbar { position: fixed; left: var(--gutter-l); right: var(--gutter-r); bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 6; background: var(--white); border: 3px solid var(--ink); border-radius: 999px; box-shadow: var(--shadow); max-width: 760px; margin: 0 auto; }
+  .actionbar { position: fixed; left: var(--gutter-l); right: var(--gutter-r); bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 6; background: var(--white); border: var(--bw) solid var(--ink); border-radius: 999px; box-shadow: var(--shadow); max-width: 760px; margin: 0 auto; }
   .actionbar .wrap { display: grid; grid-template-columns: 54px 1fr 2fr; gap: 8px; padding: 8px; }
   .actionbar button { min-height: 52px; white-space: nowrap; padding: 8px 10px; box-shadow: none; }
   .actionbar .icon-btn { width: 54px; min-width: 54px; }
@@ -183,23 +183,23 @@
   .segs { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; cursor: pointer; }
   .segs > div { height: 10px; border-radius: 5px; background: var(--white); border: 2px solid var(--ink); overflow: hidden; } .segs > div > i { display: block; height: 100%; }
   .where-btn { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 0; min-height: 46px; padding: 2px 4px; background: none; border: 0; box-shadow: none; text-align: left; line-height: 1.25; font-weight: 400; border-radius: 10px; }
-  .where-btn .eyebrow { display: flex; align-items: center; gap: 6px; } .where-btn b { font-weight: 900; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-  .tchip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 99px; background: var(--white); border: 3px solid var(--ink); color: var(--ink); font-weight: 900; font-size: var(--t-sm); white-space: nowrap; min-height: 40px; }
+  .where-btn .eyebrow { display: flex; align-items: center; gap: 6px; } .where-btn b { font-weight: 800; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .tchip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 99px; background: var(--white); border: var(--bw) solid var(--ink); color: var(--ink); font-weight: 800; font-size: var(--t-sm); white-space: nowrap; min-height: 40px; }
   .step-head { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
-  .stage-row { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; margin-top: 6px; padding: 18px 20px; border-radius: var(--r); background: var(--stage, var(--white)); border: 3px solid var(--ink); box-shadow: var(--shadow); }
+  .stage-row { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; margin-top: 6px; padding: 18px 20px; border-radius: var(--r); background: color-mix(in srgb, var(--stage, var(--white)) 55%, white); border: var(--bw) solid var(--ink); box-shadow: var(--shadow); }
   .stage-row .txt { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
   .stage-row h1 { font-size: 2.3rem; }
   .seal { width: 84px; height: 84px; flex: none; display: block; }
   .seal .ring { fill: none; stroke: var(--ink); } .seal text { fill: var(--ink); }
-  .seal .lt { font-weight: 900; } .seal .arc { font-weight: 800; letter-spacing: .14em; }
+  .seal .lt { font-weight: 800; } .seal .arc { font-weight: 800; letter-spacing: .14em; }
   .intro { color: var(--ink-2); font-weight: 600; font-size: var(--t-sm); }
   .instr { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 1.25rem; line-height: 1.4; counter-reset: ln; font-weight: 600; }
   .instr li { display: grid; grid-template-columns: 34px 1fr; gap: 12px; counter-increment: ln; }
-  .instr li::before { content: counter(ln); width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--yellow); font-weight: 900; font-size: .95rem; display: grid; place-items: center; margin-top: .2em; }
+  .instr li::before { content: counter(ln); width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--yellow); font-weight: 800; font-size: .95rem; display: grid; place-items: center; margin-top: .2em; }
   .instr li.later { color: var(--ink-3); } .instr li.later::before { background: var(--white); color: var(--ink); border: 2px solid var(--ink); content: "◦"; }
   .stamp { display: inline-flex; align-self: flex-start; gap: 8px; align-items: center; color: var(--ok); font-weight: 800; font-size: var(--t-sm); }
   .nextup { display: flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: var(--t-sm); font-weight: 700; padding: 10px 16px; border-radius: 99px; background: var(--white); border: 2px solid var(--ink); align-self: flex-start; }
-  .nextup b { font-weight: 900; }
+  .nextup b { font-weight: 800; }
   .learn-link { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 800; font-size: var(--t-sm); text-decoration: underline; }
   .gauge { display: flex; flex-direction: column; gap: 6px; padding: 6px 2px 0; }
   .gauge .track { position: relative; height: 14px; border-radius: 7px; background: var(--white); border: 2px solid var(--ink); }
@@ -210,27 +210,27 @@
   /* ტაიმერი */
   .timer { display: flex; flex-direction: column; gap: 12px; }
   .timer .head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-  .timer .head .lbl { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: var(--t-sm); }
-  .digits { font-weight: 900; font-variant-numeric: tabular-nums; font-size: 5rem; line-height: 1; text-align: center; letter-spacing: -.03em; -webkit-text-stroke: 1.5px var(--ink); paint-order: stroke fill; color: var(--yellow); text-shadow: 4px 4px 0 var(--pink), 8px 8px 0 var(--blue); transform: rotate(-2deg); }
-  .digits.paused { color: var(--white); text-shadow: 4px 4px 0 var(--ink-3); } .digits.over { color: var(--coral); }
-  .digits.mini { font-size: 1.8rem; text-align: right; text-shadow: 2px 2px 0 var(--pink); transform: none; -webkit-text-stroke: 1px var(--ink); }
+  .timer .head .lbl { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: var(--t-sm); }
+  .digits { font-weight: 800; font-variant-numeric: tabular-nums; font-size: 5rem; line-height: 1; text-align: center; letter-spacing: -.03em; -webkit-text-stroke: 1.5px var(--ink); paint-order: stroke fill; color: var(--yellow-s); text-shadow: 3px 3px 0 var(--pink-s), 6px 6px 0 var(--blue-s); transform: rotate(-1deg); }
+  .digits.paused { color: var(--white); text-shadow: 3px 3px 0 var(--ink-3); } .digits.over { color: var(--coral-s); }
+  .digits.mini { font-size: 1.8rem; text-align: right; text-shadow: 2px 2px 0 var(--pink-s); transform: none; -webkit-text-stroke: 1px var(--ink); }
   .digits.chip-d { font-size: var(--t-md); color: var(--ink); text-shadow: none; -webkit-text-stroke: 0; transform: none; }
   .tbar { position: relative; height: 12px; border-radius: 6px; background: var(--white); border: 2px solid var(--ink); margin: 10px 0 6px; }
   .tbar > i { position: absolute; left: -2px; top: -2px; bottom: -2px; background: var(--green); border-radius: 6px; border: 2px solid var(--ink); }
-  .tbar > b { position: absolute; top: -8px; width: 16px; height: 16px; margin-left: -8px; background: var(--white); border: 3px solid var(--ink); border-radius: 50%; } .tbar > b.fired { background: var(--ink); }
+  .tbar > b { position: absolute; top: -8px; width: 16px; height: 16px; margin-left: -8px; background: var(--white); border: var(--bw) solid var(--ink); border-radius: 50%; } .tbar > b.fired { background: var(--ink); }
   .alerts { display: flex; flex-direction: column; }
   .alerts div { display: grid; grid-template-columns: 4.4em 1fr; gap: 10px; padding: 8px 0; font-size: var(--t-sm); border-top: 2px solid var(--line); font-weight: 600; }
-  .alerts div .num { font-weight: 900; } .alerts div.fired { color: var(--ink-3); } .alerts div.fired .num { text-decoration: line-through; }
+  .alerts div .num { font-weight: 800; } .alerts div.fired { color: var(--ink-3); } .alerts div.fired .num { text-decoration: line-through; }
 
   .tablewrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: var(--t-sm); }
   td, th { border-bottom: 2px solid var(--line); padding: 8px 6px; text-align: left; vertical-align: top; } th { color: var(--ink-3); font-weight: 800; font-size: var(--t-xs); }
   td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 800; }
   details { border-radius: var(--r); }
-  details > summary { min-height: 58px; display: flex; align-items: center; gap: 10px; padding: 0 18px; font-weight: 900; cursor: pointer; list-style: none; }
+  details > summary { min-height: 58px; display: flex; align-items: center; gap: 10px; padding: 0 18px; font-weight: 800; cursor: pointer; list-style: none; }
   details > summary::-webkit-details-marker { display: none; }
   details > summary .chev { margin-left: auto; transition: transform .2s; } details[open] > summary .chev { transform: rotate(90deg); }
-  details.trouble { background: var(--amber); } details.paper > summary { color: var(--ink); }
+  details.trouble { background: var(--cream); } details.paper > summary { color: var(--ink); }
   details > .inner { padding: 0 18px 18px; display: flex; flex-direction: column; gap: 8px; } details ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
   .paper details { box-shadow: none; }
 
@@ -250,11 +250,11 @@
   .masthead h1 { font-size: 2.8rem; line-height: .95; }
   .masthead .est { font-size: var(--t-sm); color: var(--ink-3); font-weight: 700; margin-top: 6px; }
   .masthead .seal { display: none; }
-  .mascot { width: 150px; height: 165px; flex: none; transform: rotate(-6deg); filter: drop-shadow(5px 5px 0 var(--ink)); }
+  .mascot { width: 150px; height: 165px; flex: none; transform: rotate(-6deg); filter: drop-shadow(3px 3px 0 var(--ink)); }
   .mascot.sm { width: 96px; height: 106px; }
   .star { position: absolute; width: 56px; height: 56px; pointer-events: none; }
   .star path { stroke: var(--ink); stroke-width: 1.3; }
-  .sticker { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 99px; background: var(--white); border: 3px solid var(--ink); font-weight: 900; transform: rotate(-4deg); box-shadow: 3px 3px 0 var(--ink); align-self: flex-start; }
+  .sticker { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 99px; background: var(--white); border: var(--bw) solid var(--ink); font-weight: 800; transform: rotate(-2deg); box-shadow: 2px 2px 0 var(--ink); align-self: flex-start; }
   .label { display: inline-block; background: var(--ink); color: var(--white); font-weight: 800; padding: 6px 12px; font-size: var(--t-sm); align-self: flex-start; }
 
   /* დადუღება, ჩამოსხმა */
@@ -265,9 +265,9 @@
   @keyframes bloop { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: .9; } 100% { transform: translateY(-26px); opacity: 0; } }
   .chips { display: flex; gap: 8px; }
   .chips button { flex: 1; min-height: 48px; padding: 6px 4px; font-size: var(--t-sm); font-weight: 800; gap: 6px; box-shadow: none; }
-  .chips button.on { background: var(--green); color: var(--white); } .chips button.on.slow { background: var(--amber); color: var(--ink); } .chips button.on.stop { background: var(--ink); color: var(--white); }
+  .chips button.on { background: var(--green); color: var(--ink); } .chips button.on.slow { background: var(--amber); color: var(--ink); } .chips button.on.stop { background: var(--ink); color: var(--white); }
   .days { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 6px; }
-  .days button { flex: 1 0 50px; min-height: 60px; padding: 4px; flex-direction: column; gap: 0; border-radius: 16px; font-size: 1.3rem; font-weight: 900; box-shadow: none; position: relative; }
+  .days button { flex: 1 0 50px; min-height: 60px; padding: 4px; flex-direction: column; gap: 0; border-radius: 16px; font-size: 1.3rem; font-weight: 800; box-shadow: none; position: relative; }
   .days button small { font-size: 10px; color: var(--ink-3); font-weight: 800; }
   .days button.has { background: var(--ok-soft); } .days button.now { box-shadow: 3px 3px 0 var(--ink); } .days button.future { opacity: .55; }
   .days button.add { flex: 0 0 56px; border-style: dashed; }
@@ -279,37 +279,37 @@
   .opt { display: flex; flex-direction: column; align-items: stretch; gap: 6px; text-align: left; padding: 12px 16px; border-radius: var(--r-sm); min-height: 0; box-shadow: none; background: var(--cream); }
   .opt.on { background: var(--blue); box-shadow: 4px 4px 0 var(--ink); }
   .opt-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-  .opt-n { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--t-sm); font-weight: 600; } .opt-n i { font-style: normal; font-size: 1.15rem; font-weight: 900; }
+  .opt-n { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--t-sm); font-weight: 600; } .opt-n i { font-style: normal; font-size: 1.15rem; font-weight: 800; }
   .opt-c { font-size: var(--t-sm); color: var(--ink-2); font-weight: 600; }
 
   /* ჭიქა, ბოთლი, მასკოტი */
     .glass { display: block; flex: none; overflow: visible; filter: drop-shadow(3px 3px 0 var(--ink)); }
   .glass .bub { animation: rise 2.6s ease-in infinite; transform-box: fill-box; }
-  .glass .foam circle, .glass .foam rect { fill: #fff4dc; }
-  .glass .outline { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
-  .glass .shine { fill: none; stroke: rgba(255,255,255,.3); stroke-width: 2.5; stroke-linecap: round; }
+  .glass .foam circle, .glass .foam rect { fill: #fff; }
+  .glass .outline { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  .glass .shine { fill: none; stroke: rgba(255,255,255,.55); stroke-width: 2; stroke-linecap: round; }
   @keyframes rise { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: .85; } 100% { transform: translateY(-58px); opacity: 0; } }
 
   /* ---------- ლუდის სკოლა ---------- */
   .lesson-card { display: grid; grid-template-columns: 84px 1fr auto; gap: 12px; align-items: center; text-decoration: none; }
-  .lesson-card .no { font-size: 2.2rem; font-weight: 900; line-height: 1; text-align: center; } .lesson-card .no small { display: block; font-size: 10px; color: var(--ink-3); font-weight: 800; }
-  .lesson-card .ttl { font-weight: 900; font-size: 1.25rem; line-height: 1.1; } .lesson-card .sub { font-size: var(--t-sm); color: var(--ink-3); } .lesson-card .read { color: var(--ok); }
-  .fig { width: 100%; height: auto; display: block; border-radius: var(--r-sm); background: var(--cream); border: 2px solid var(--ink); }
+  .lesson-card .no { font-size: 2.2rem; font-weight: 800; line-height: 1; text-align: center; } .lesson-card .no small { display: block; font-size: 10px; color: var(--ink-3); font-weight: 800; }
+  .lesson-card .ttl { font-weight: 800; font-size: 1.25rem; line-height: 1.1; } .lesson-card .sub { font-size: var(--t-sm); color: var(--ink-3); } .lesson-card .read { color: var(--ok); }
+  .fig { width: 100%; height: auto; display: block; border-radius: var(--r-sm); background: var(--white); border: 2px solid var(--ink); }
   .fig text { font-family: var(--font-ui); font-size: 10.5px; fill: var(--ink-2); font-weight: 600; } .fig .num { font-size: 13px; }
-  .fig .ink { stroke: var(--ink); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; } .fig .thin { stroke: var(--ink-3); fill: none; stroke-width: 1; stroke-dasharray: 3 3; }
+  .fig .ink { stroke: var(--ink); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; } .fig .thin { stroke: var(--ink-3); fill: none; stroke-width: 1.2; stroke-dasharray: 3 3; }
   .lesson p { line-height: 1.6; } .lesson .lead { font-weight: 700; font-size: 1.15rem; }
   .lesson h3 { margin-top: 6px; } .lesson .why { padding-left: 14px; border-left: 4px solid var(--ink); color: var(--ink-2); font-weight: 600; }
   .lesson ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
   .slider { display: flex; flex-direction: column; gap: 8px; }
   .slider input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 40px; background: transparent; border: 0; padding: 0; min-height: 0; }
   .slider input[type=range]::-webkit-slider-runnable-track { height: 10px; border-radius: 5px; background: var(--white); border: 2px solid var(--ink); }
-  .slider input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; margin-top: -12px; border-radius: 50%; background: var(--pink); border: 3px solid var(--ink); }
+  .slider input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; margin-top: -12px; border-radius: 50%; background: var(--pink); border: var(--bw) solid var(--ink); }
   .slider input[type=range]::-moz-range-track { height: 10px; border-radius: 5px; background: var(--white); border: 2px solid var(--ink); }
-  .slider input[type=range]::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: var(--pink); border: 3px solid var(--ink); }
-  .slider .val { font-size: 1.8rem; font-weight: 900; text-align: center; }
+  .slider input[type=range]::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: var(--pink); border: var(--bw) solid var(--ink); }
+  .slider .val { font-size: 1.8rem; font-weight: 800; text-align: center; }
   .bars { display: grid; grid-template-columns: 7em 1fr 3em; gap: 8px 10px; align-items: center; font-size: var(--t-sm); font-weight: 700; }
   .bars .bar { height: 14px; border-radius: 7px; background: var(--white); border: 2px solid var(--ink); overflow: hidden; } .bars .bar > i { display: block; height: 100%; background: var(--coral); transition: width .3s; }
-  .bars .bar.g > i { background: var(--green); } .bars .bar.b > i { background: var(--amber); } .bars b { text-align: right; font-weight: 900; }
+  .bars .bar.g > i { background: var(--green); } .bars .bar.b > i { background: var(--amber); } .bars b { text-align: right; font-weight: 800; }
   /* ანიმაციები დიაგრამებისთვის */
   .fig .sweep { animation: sweep 4s ease-in-out infinite; }
   @keyframes sweep { 0%, 15% { transform: translateX(-60px); } 70%, 100% { transform: translateX(300px); } }
@@ -350,26 +350,26 @@
   #overlay, #modal { position: fixed; inset: 0; z-index: 50; display: none; }
   #overlay.on, #modal.on { display: flex; }
   #modal { background: rgba(17,17,17,.55); align-items: flex-end; justify-content: center; }
-  #modal .sheet { width: 100%; max-width: 760px; background: var(--white); border: 3px solid var(--ink); border-bottom: 0; border-radius: 30px 30px 0 0; padding: 22px var(--gutter-r) calc(22px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); display: flex; flex-direction: column; gap: 14px; }
-  #modal .sheet p { font-size: 1.3rem; font-weight: 900; }
+  #modal .sheet { width: 100%; max-width: 760px; background: var(--white); border: var(--bw) solid var(--ink); border-bottom: 0; border-radius: 30px 30px 0 0; padding: 22px var(--gutter-r) calc(22px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); display: flex; flex-direction: column; gap: 14px; }
+  #modal .sheet p { font-size: 1.3rem; font-weight: 800; }
   .map { display: flex; flex-direction: column; gap: 14px; max-height: 68vh; overflow-y: auto; }
-  .map .grp { display: flex; flex-direction: column; gap: 2px; } .map .grp-h { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 1.05rem; padding: 4px 0; }
+  .map .grp { display: flex; flex-direction: column; gap: 2px; } .map .grp-h { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 1.05rem; padding: 4px 0; }
   .map button { justify-content: flex-start; min-height: 46px; padding: 6px 12px; background: transparent; border: 0; box-shadow: none; font-weight: 600; text-align: left; gap: 10px; border-radius: 12px; }
-  .map button.cur { background: var(--yellow); font-weight: 900; } .map button .ic { color: var(--ink-3); } .map button.ok .ic { color: var(--ok); }
+  .map button.cur { background: var(--yellow); font-weight: 800; } .map button .ic { color: var(--ink-3); } .map button.ok .ic { color: var(--ok); }
   #overlay { background: var(--pink); flex-direction: column; justify-content: center; gap: 18px; padding: calc(24px + env(safe-area-inset-top, 0px)) var(--gutter-r) calc(24px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); }
-  #overlay .ring { width: 110px; height: 110px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center; background: var(--yellow); border: 3px solid var(--ink); box-shadow: var(--shadow); animation: pulse 1.1s ease-in-out infinite; }
+  #overlay .ring { width: 110px; height: 110px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center; background: var(--yellow); border: var(--bw) solid var(--ink); box-shadow: var(--shadow); animation: pulse 1.1s ease-in-out infinite; }
   #overlay .ring .ic { width: 50px; height: 50px; }
-  #overlay .big { font-size: 2.4rem; font-weight: 900; text-align: center; line-height: 1.1; text-wrap: balance; letter-spacing: -.02em; }
+  #overlay .big { font-size: 2.4rem; font-weight: 800; text-align: center; line-height: 1.1; text-wrap: balance; letter-spacing: -.02em; }
   #overlay .cap { text-align: center; font-weight: 800; }
   #overlay .digits { color: var(--white); }
   #overlay button { max-width: 520px; margin: 0 auto; width: 100%; }
   @keyframes pulse { 50% { transform: scale(1.06) rotate(-4deg); } }
-  .toast { pointer-events: none; position: fixed; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) rotate(-2deg); background: var(--white); color: var(--ink); border: 3px solid var(--ink); box-shadow: var(--shadow); padding: 10px 18px; font-size: var(--t-sm); border-radius: 18px; font-weight: 800; z-index: 60; width: max-content; max-width: calc(100vw - 32px); text-align: center; display: flex; flex-direction: column; gap: 2px; }
+  .toast { pointer-events: none; position: fixed; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) rotate(-2deg); background: var(--white); color: var(--ink); border: var(--bw) solid var(--ink); box-shadow: var(--shadow); padding: 10px 18px; font-size: var(--t-sm); border-radius: 18px; font-weight: 800; z-index: 60; width: max-content; max-width: calc(100vw - 32px); text-align: center; display: flex; flex-direction: column; gap: 2px; }
   .empty { text-align: center; padding: 28px 16px; display: flex; flex-direction: column; gap: 14px; align-items: center; }
   #party { position: fixed; inset: 0; z-index: 55; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; overflow: hidden; background: var(--yellow);
     padding: 24px var(--gutter-r) calc(24px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); }
   #party.on { display: flex; }
-  #party h1 { font-size: 3.8rem; font-weight: 900; -webkit-text-stroke: 1.5px var(--ink); paint-order: stroke fill; color: var(--white); text-shadow: 4px 4px 0 var(--pink), 8px 8px 0 var(--blue), 12px 12px 0 var(--green); transform: rotate(-3deg); }
+  #party h1 { font-size: 3.8rem; font-weight: 800; -webkit-text-stroke: 1.5px var(--ink); paint-order: stroke fill; color: var(--white); text-shadow: 3px 3px 0 var(--pink-s), 6px 6px 0 var(--blue-s), 9px 9px 0 var(--green); transform: rotate(-2deg); }
   #party p { font-weight: 700; font-size: var(--t-lg); max-width: 32ch; }
   #party > *:not(.conf) { position: relative; z-index: 1; }
   #party .conf { position: absolute; bottom: -30px; border-radius: 50%; background: var(--pink); border: 2px solid var(--ink); animation: float linear forwards; }
@@ -386,10 +386,10 @@
     :root { --side: 290px; }
     body { padding-left: var(--side); padding-bottom: 40px; }
     .wrap { max-width: 860px; }
-    .tabbar { left: 0; right: auto; top: 0; bottom: 0; width: var(--side); max-width: none; margin: 0; border-radius: 0; border: 0; border-right: 3px solid var(--ink); background: var(--yellow); box-shadow: none; display: grid; grid-template-columns: 84px 1fr; }
-    .tabbar .rail { display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 24px 0; border-right: 3px solid var(--ink); }
-    .tabbar .rail .mark { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 900; font-size: 2.6rem; letter-spacing: .02em; line-height: 1; }
-    .tabbar .wrap { display: flex; flex-direction: column; gap: 0; padding: 18px 14px; background: var(--green); margin: 14px 14px 14px 0; border-radius: 26px; border: 3px solid var(--ink); justify-content: flex-start; max-width: none; }
+    .tabbar { left: 0; right: auto; top: 0; bottom: 0; width: var(--side); max-width: none; margin: 0; border-radius: 0; border: 0; border-right: var(--bw) solid var(--ink); background: var(--yellow); box-shadow: none; display: grid; grid-template-columns: 84px 1fr; }
+    .tabbar .rail { display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 24px 0; border-right: var(--bw) solid var(--ink); }
+    .tabbar .rail .mark { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 800; font-size: 2.6rem; letter-spacing: .02em; line-height: 1; }
+    .tabbar .wrap { display: flex; flex-direction: column; gap: 0; padding: 18px 14px; background: var(--green); margin: 14px 14px 14px 0; border-radius: 26px; border: var(--bw) solid var(--ink); justify-content: flex-start; max-width: none; }
     .tabbar a { flex-direction: row; justify-content: flex-start; gap: 14px; font-size: 1.15rem; min-height: 64px; padding: 0 12px; border-radius: 0; border-bottom: 2px solid var(--green-d); }
     .tabbar a:last-child { border-bottom: 0; } .tabbar a .ic { width: 1.6em; height: 1.6em; }
     .tabbar a.on { background: transparent; color: var(--ink); text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; }
@@ -495,13 +495,13 @@ const BOTTLING_CHECKS = [
 
 /* ეტაპები: თითოს თავისი ფერი, ხატულა და მოკლე შესავალი */
 const STAGES = [
-  { letter: 'ა', name: 'მომზადება', icon: 'scale', color: '#b06cff', intro: 'ყველაფერი ხელთ გქონდეს — და დავიწყოთ.' },
-  { letter: 'ბ', name: 'გაშაქრება', icon: 'pot', color: '#ffb400', intro: 'სახამებელი შაქრად იქცევა.' },
-  { letter: 'გ', name: 'ჩამორეცხვა', icon: 'drop', color: '#22c7ff', intro: 'ბოლო ტკბილ წვეთამდე.' },
-  { letter: 'დ', name: 'ხარშვა', icon: 'flame', color: '#ff4d1f', intro: 'სვიის დრო!' },
-  { letter: 'ე', name: 'გაცივება', icon: 'snow', color: '#7df9ff', intro: 'სწრაფად და სუფთად.' },
-  { letter: 'ვ', name: 'გაზომვა და განზავება', icon: 'hydro', color: '#ff2fb3', intro: 'ციფრები, რომლებიც ლუდის ხასიათს წყვეტს.' },
-  { letter: 'ზ', name: 'საფუარი', icon: 'yeast', color: '#16b60d', intro: 'საფუარი სამუშაოდ ემზადება.' },
+  { letter: 'ა', name: 'მომზადება', icon: 'scale', color: '#d4b3ff', intro: 'ყველაფერი ხელთ გქონდეს — და დავიწყოთ.' },
+  { letter: 'ბ', name: 'გაშაქრება', icon: 'pot', color: '#ffd166', intro: 'სახამებელი შაქრად იქცევა.' },
+  { letter: 'გ', name: 'ჩამორეცხვა', icon: 'drop', color: '#8fe3ff', intro: 'ბოლო ტკბილ წვეთამდე.' },
+  { letter: 'დ', name: 'ხარშვა', icon: 'flame', color: '#ff8a65', intro: 'სვიის დრო!' },
+  { letter: 'ე', name: 'გაცივება', icon: 'snow', color: '#b9fbff', intro: 'სწრაფად და სუფთად.' },
+  { letter: 'ვ', name: 'გაზომვა და განზავება', icon: 'hydro', color: '#ff9ad6', intro: 'ციფრები, რომლებიც ლუდის ხასიათს წყვეტს.' },
+  { letter: 'ზ', name: 'საფუარი', icon: 'yeast', color: '#58d66a', intro: 'საფუარი სამუშაოდ ემზადება.' },
   { letter: 'თ', name: 'დასრულება', icon: 'glass', color: '#ffffff', intro: 'თითქმის ლუდია!' }
 ];
 
@@ -837,7 +837,7 @@ function glassSvg(color, fill = 0.85, size = 64, bubbles = true) {
   const f = clamp(fill, 0, 1), top = 90 - f * 74;
   const h = size * 1.5;
   const bubs = bubbles && f > 0.15 ? [22, 30, 37, 43, 27, 40].map((x, i) =>
-    `<circle class="bub" cx="${x}" cy="88" r="${1.2 + (i % 3) * 0.5}" fill="rgba(255,244,220,.75)" style="animation-delay:${(i * 0.43).toFixed(2)}s;animation-duration:${(2.2 + (i % 3) * 0.5).toFixed(1)}s"/>`).join('') : '';
+    `<circle class="bub" cx="${x}" cy="88" r="${1.2 + (i % 3) * 0.5}" fill="rgba(255,255,255,.85)" style="animation-delay:${(i * 0.43).toFixed(2)}s;animation-duration:${(2.2 + (i % 3) * 0.5).toFixed(1)}s"/>`).join('') : '';
   const foam = f > 0.06 ? `<g class="foam">${[16, 24, 32, 40, 48].map((x, i) => `<circle cx="${x}" cy="${top - 1 + (i % 2) * 1.5}" r="${5.5 - (i % 2)}"/>`).join('')}<rect x="10" y="${top - 1}" width="44" height="5"/></g>` : '';
   return `<svg class="glass" width="${size}" height="${h}" viewBox="0 0 64 96" aria-hidden="true">
     <defs><clipPath id="${id}"><path d="M11 8h42l-5.6 80.5a3 3 0 0 1-3 2.8H19.6a3 3 0 0 1-3-2.8z"/></clipPath>
@@ -924,38 +924,37 @@ function hopMark() {
 /* რეცეპტის ეტიკეტის ნახატი: ამოტვიფრული მზის სხივები, რგოლები — რეცეპტის ციფრებიდან (დეტერმინისტული) */
 const artCache = new Map();
 function labelArt(r) {
-  const key = JSON.stringify([r.id, r.name, r.grains, r.hops.length, r.mashTemp, r.targetBrix]);
+  const key = JSON.stringify(['v2', r.id, r.name, r.grains, r.hops.length, r.mashTemp, r.targetBrix]);
   if (artCache.has(key)) return artCache.get(key);
   let h = 0; for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
   const rnd = () => { h = (h * 1664525 + 1013904223) >>> 0; return h / 4294967296; };
   const S0 = 240, cv = document.createElement('canvas'); cv.width = cv.height = S0;
   const x = cv.getContext('2d'), c = beerColor(r), cx = S0 / 2, cy = S0 / 2;
   x.fillStyle = c; x.fillRect(0, 0, S0, S0);
-  const g = x.createRadialGradient(cx * 0.8, cy * 0.7, 10, cx, cy, S0 * 0.75);
-  g.addColorStop(0, 'rgba(255,245,215,.35)'); g.addColorStop(1, 'rgba(0,0,0,.45)'); x.fillStyle = g; x.fillRect(0, 0, S0, S0);
-  // სხივები — რაოდენობა სვიისა და მარცვლის მიხედვით
-  const rays = 24 + r.hops.length * 6 + r.grains.length * 4;
-  x.strokeStyle = 'rgba(255,248,230,.55)'; x.lineWidth = 1;
+  // სხივები — რაოდენობა სვიისა და მარცვლის მიხედვით (თეთრი, ერთი სისქე)
+  const rays = 12 + r.hops.length * 2 + r.grains.length * 2;
+  x.strokeStyle = 'rgba(255,255,255,.55)'; x.lineWidth = 3; x.lineCap = 'round';
   for (let i = 0; i < rays; i++) {
-    const a = (i / rays) * Math.PI * 2, len = S0 * (0.5 + rnd() * 0.3);
-    x.beginPath(); x.moveTo(cx + Math.cos(a) * 58, cy + Math.sin(a) * 58); x.lineTo(cx + Math.cos(a) * len, cy + Math.sin(a) * len); x.stroke();
+    const a = (i / rays) * Math.PI * 2;
+    x.beginPath(); x.moveTo(cx + Math.cos(a) * 64, cy + Math.sin(a) * 64); x.lineTo(cx + Math.cos(a) * S0, cy + Math.sin(a) * S0); x.stroke();
   }
-  // რგოლები — გაშაქრების ტემპერატურა და Brix
-  x.lineWidth = 1.2;
-  [44 + (r.mashTemp - 60), 52 + r.targetBrix, 24].forEach((rad, i) => {
-    x.strokeStyle = i === 2 ? 'rgba(26,18,11,.7)' : 'rgba(255,248,230,.8)';
-    x.beginPath(); x.arc(cx, cy, rad, 0, Math.PI * 2); x.stroke();
-  });
-  // ცენტრი: ქაფის დისკი + მელნის ინიციალი
-  x.fillStyle = '#f3efe6'; x.beginPath(); x.arc(cx, cy, 36, 0, Math.PI * 2); x.fill();
-  x.fillStyle = '#1a120b'; x.font = '900 40px "Noto Serif Georgian", serif'; x.textAlign = 'center'; x.textBaseline = 'middle';
-  x.fillText((r.name || 'ლ').trim().charAt(0), cx, cy + 3);
-  // ტეხილი (halftone) ზედაპირზე
-  x.fillStyle = 'rgba(26,18,11,.18)';
-  for (let yy = 4; yy < S0; yy += 8) for (let xx = (yy / 8) % 2 ? 8 : 4; xx < S0; xx += 8) {
-    const d = Math.hypot(xx - cx, yy - cy) / (S0 * 0.72); if (d < 0.35) continue;
-    x.beginPath(); x.arc(xx, yy, clamp(d * 1.9, 0, 2.2), 0, Math.PI * 2); x.fill();
+  // პატარა ვარსკვლავები — პალიტრის ფერებში, მელნის კონტურით
+  const pal = ['#ff9ad6', '#8fe3ff', '#ffd166', '#58d66a', '#d4b3ff'];
+  const star = (sx, sy, rr, col) => {
+    x.beginPath();
+    for (let k = 0; k < 10; k++) { const ra = k % 2 ? rr * 0.45 : rr, an = -Math.PI / 2 + k * Math.PI / 5; x.lineTo(sx + Math.cos(an) * ra, sy + Math.sin(an) * ra); }
+    x.closePath(); x.fillStyle = col; x.fill(); x.strokeStyle = '#111'; x.lineWidth = 2.5; x.lineJoin = 'round'; x.stroke();
+  };
+  const n = 3 + Math.min(3, r.hops.length);
+  for (let i = 0; i < n; i++) {
+    const a = rnd() * Math.PI * 2, d = 88 + rnd() * 20;
+    star(cx + Math.cos(a) * d, cy + Math.sin(a) * d, 9 + rnd() * 6, pal[(i + r.grains.length) % pal.length]);
   }
+  // ცენტრი: თეთრი დისკი მელნის კონტურით + ინიციალი
+  x.fillStyle = '#fff'; x.strokeStyle = '#111'; x.lineWidth = 4;
+  x.beginPath(); x.arc(cx, cy, 46, 0, Math.PI * 2); x.fill(); x.stroke();
+  x.fillStyle = '#111'; x.font = '800 48px "Noto Sans Georgian", sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.fillText((r.name || 'ლ').trim().charAt(0), cx, cy + 4);
   const url = cv.toDataURL(); artCache.set(key, url); return url;
 }
 const artImg = r => `<img class="art" src="${labelArt(r)}" alt="">`;
@@ -1019,13 +1018,13 @@ const FIG = {
   yeast: () => `<svg class="fig" viewBox="0 0 320 180" aria-hidden="true">
     <g><ellipse cx="80" cy="90" rx="34" ry="28" fill="#f3e6c2" stroke="#1a120b" stroke-width="1.6"/><circle cx="72" cy="86" r="7" fill="rgba(26,18,11,.25)"/>
       <g class="bud"><ellipse cx="118" cy="82" rx="16" ry="13" fill="#f3e6c2" stroke="#1a120b" stroke-width="1.4"/><circle cx="116" cy="80" r="4" fill="rgba(26,18,11,.25)"/></g></g>
-    <text x="46" y="140">საფუარი კვირტით მრავლდება</text><text x="46" y="156">(~90 წუთში ორმაგდება)</text>
+    <text x="20" y="150">საფუარი კვირტით მრავლდება</text><text x="20" y="166">(~90 წუთში ორმაგდება)</text>
     <polygon points="200,45 212,52 212,66 200,73 188,66 188,52" fill="#d9a441" stroke="#1a120b" stroke-width="1.2"/><text x="200" y="90" text-anchor="middle" font-size="10">შაქარი</text>
     <text x="226" y="63" font-size="16">→</text>
-    <path d="M250 50h26v16h-26z" fill="#fbf8f0" stroke="#1a120b" stroke-width="1.2"/><text x="263" y="62" text-anchor="middle" font-size="9">C₂H₅OH</text><text x="263" y="90" text-anchor="middle" font-size="10">სპირტი</text>
+    <path d="M244 50h38v16h-38z" fill="#fbf8f0" stroke="#1a120b" stroke-width="1.2"/><text x="263" y="62" text-anchor="middle" font-size="9">C₂H₅OH</text><text x="263" y="90" text-anchor="middle" font-size="10">სპირტი</text>
     ${[0, 1, 2].map(i => `<circle class="co2" style="animation-delay:${i}s" cx="${292 + i * 6}" cy="70" r="3" fill="#fff" stroke="#1a120b" stroke-width=".8"/>`).join('')}
     <text x="298" y="90" text-anchor="middle" font-size="10">CO₂</text>
-    <text x="190" y="130">+ სითბო, + ესტერები</text><text x="190" y="150">Kveik: 20–30°C</text></svg>`,
+    <text x="186" y="118">+ სითბო, + ესტერები</text><text x="186" y="134">Kveik: 20–30°C</text></svg>`,
   ferment: () => `<svg class="fig" viewBox="0 0 320 180" aria-hidden="true">
     <path d="M40 40h50v110a6 6 0 0 1-6 6H46a6 6 0 0 1-6-6z" class="ink"/><rect x="43" y="70" width="44" height="83" fill="rgba(217,164,65,.45)"/>
     <rect class="krausen" x="43" y="48" width="44" height="22" fill="#fff4dc" stroke="#1a120b" stroke-width="1"/>
@@ -1200,9 +1199,21 @@ function viewLearn() {
   </main>${tabbar('learn')}`;
 }
 /* გაკვეთილის სხეული: დიაგრამა, ტექსტი, სლაიდერი, ციფრები, შეცდომები */
+/* დიაგრამების ფერები ერთ პალიტრაში და ერთი ხაზის სისქით, რომ ყველა ნახატი ერთნაირი იყოს */
+const FIG_PAL = [
+  ['#1a120b', '#111'], ['rgba(26,18,11,.25)', 'rgba(17,17,17,.2)'], ['rgba(26,18,11,.18)', 'rgba(17,17,17,.15)'],
+  ['#d9a441', '#ffd166'], ['rgba(217,164,65,.45)', '#ffe9a8'], ['rgba(217,164,65,.35)', 'rgba(255,209,102,.5)'], ['#c8962e', '#ffb400'], ['#c9a86a', '#ffd166'],
+  ['#b5562b', '#f05a28'], ['rgba(181,86,43,.14)', 'rgba(255,138,101,.25)'],
+  ['#6f9d4a', '#1f8a2c'], ['#8dc26a', '#58d66a'], ['rgba(111,157,74,.35)', 'rgba(88,214,106,.45)'],
+  ['#9cc2ff', '#8fe3ff'], ['#f3e6c2', '#ffe9a8'], ['#fbf8f0', '#fff'], ['#d9c6a5', '#ffd166'], ['#fff4dc', '#fff'], ['#fff8e6', '#fff']
+];
+function figPal(svg) {
+  for (const [a, b] of FIG_PAL) svg = svg.split(a).join(b);
+  return svg.replace(/stroke-width="(?:\.6|\.8|1|1\.2|1\.4|1\.6)"/g, 'stroke-width="1.6"').replace(/stroke-width="(?:2|2\.4|2\.5)"/g, 'stroke-width="2.4"');
+}
 function lessonBody(L) {
   return `<div class="sec" style="gap:12px">
-    ${FIG[L.id] ? FIG[L.id]() : ''}
+    ${FIG[L.id] ? figPal(FIG[L.id]()) : ''}
     <p class="lead">${esc(L.lead)}</p>
     ${L.sections.map(([h, t]) => `<h3>${esc(h)}</h3><p>${esc(t)}</p>`).join('')}
     ${L.interactive ? `<h3>სცადე</h3>${interactiveHtml(L.interactive)}` : ''}
@@ -1242,32 +1253,32 @@ function viewLesson(id) {
 
 /* ბოთლი (ჩამოსხმის გვერდისთვის) */
 const bottleSvg = (color, i) => `<svg class="pop" style="animation-delay:${i * 40}ms" viewBox="0 0 22 44" aria-hidden="true">
-  <path d="M8.5 2h5v7l3.5 5v26a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V14l3.5-5z" fill="${color}" stroke="rgba(255,244,220,.6)" stroke-width="1.2"/>
-  <rect x="8" y="1" width="6" height="3" rx="1" fill="#d9c6a5"/><rect x="5.6" y="20" width="10.8" height="10" rx="1" fill="rgba(255,244,220,.75)"/></svg>`;
+  <path d="M8.5 2h5v7l3.5 5v26a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V14l3.5-5z" fill="${color}" stroke="#111" stroke-width="1.5" stroke-linejoin="round"/>
+  <rect x="7.5" y=".8" width="7" height="3.2" rx="1" fill="#ffd166" stroke="#111" stroke-width="1.2"/><rect x="5" y="20" width="12" height="10" fill="#fff" stroke="#111" stroke-width="1.2"/></svg>`;
 /* მასკოტი: ჭიქა ვარსკვლავა თვალებით და ქაფით; ფერი — ლუდის */
 function mascotSvg(color = '#ffb400', cls = '') {
   const star = (cx, cy) => `<path d="M${cx} ${cy - 10}l3.5 7 7.5 1-5.5 5 1.5 7.5-7-3.8-7 3.8 1.5-7.5-5.5-5 7.5-1z" fill="#111"/>`;
   return `<svg class="mascot ${cls}" viewBox="0 0 120 130" aria-hidden="true">
-    <path d="M26 18h68l-8 98a6 6 0 0 1-6 6H40a6 6 0 0 1-6-6z" fill="${color}" stroke="#111" stroke-width="4"/>
-    <path d="M22 30h76" stroke="#111" stroke-width="4"/>
-    <path d="M28 14c6-12 18-12 24-6 6-8 20-8 24 2 8-6 20 0 16 12H26c-4-4-2-8 2-8z" fill="#fff" stroke="#111" stroke-width="4"/>
+    <path d="M26 18h68l-8 98a6 6 0 0 1-6 6H40a6 6 0 0 1-6-6z" fill="${color}" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M22 30h76" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+    <path d="M28 14c6-12 18-12 24-6 6-8 20-8 24 2 8-6 20 0 16 12H26c-4-4-2-8 2-8z" fill="#fff" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
     ${star(44, 68)}${star(76, 68)}
-    <path d="M44 92q16 14 32 0" stroke="#111" stroke-width="5" fill="none" stroke-linecap="round"/>
-    <circle cx="40" cy="104" r="4" fill="#fff" stroke="#111" stroke-width="2"/><circle cx="82" cy="110" r="3" fill="#fff" stroke="#111" stroke-width="2"/>
+    <path d="M44 92q16 14 32 0" stroke="#111" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <circle cx="40" cy="104" r="4" fill="#fff" stroke="#111" stroke-width="2.5"/><circle cx="82" cy="110" r="3" fill="#fff" stroke="#111" stroke-width="2.5"/>
   </svg>`;
 }
-const starSvg = (color, style) => `<svg class="star" style="${style}" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z" fill="${color}"/></svg>`;
+const starSvg = (color, style) => `<svg class="star" style="${style}" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z" fill="${color}" stroke="#111" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
 
 /* საკეტი (airlock) ბუშტებით */
 function airlockSvg(state) {
   const cls = state === 'აქტიური' ? 'fast' : state === 'ნელი' ? 'slow' : '';
   return `<svg class="airlock ${cls}" width="64" height="96" viewBox="0 0 64 96" aria-hidden="true">
-    <rect x="26" y="70" width="12" height="22" rx="2" fill="#5a4a33"/>
-    <path d="M18 30h28v28a14 14 0 0 1-28 0z" fill="rgba(120,160,220,.18)" stroke="currentColor" stroke-width="1.6"/>
-    <rect x="20" y="46" width="24" height="16" fill="rgba(120,160,220,.4)"/>
-    <rect x="29" y="14" width="6" height="44" fill="none" stroke="currentColor" stroke-width="1.6"/>
-    <rect x="24" y="8" width="16" height="8" rx="2" fill="#d9c6a5"/>
-    ${[0, 1, 2].map(i => `<circle class="ab" cx="${28 + i * 4}" cy="58" r="${2.5 - i * 0.4}" fill="currentColor" style="animation-delay:${i * 0.35}s"/>`).join('')}
+    <rect x="26" y="70" width="12" height="22" rx="2" fill="#d4b3ff" stroke="#111" stroke-width="2"/>
+    <path d="M18 30h28v28a14 14 0 0 1-28 0z" fill="#fff" stroke="#111" stroke-width="2"/>
+    <path d="M20 46h24v12a12 12 0 0 1-24 0z" fill="#8fe3ff"/>
+    <rect x="29" y="14" width="6" height="44" fill="#fff" stroke="#111" stroke-width="2"/>
+    <rect x="24" y="8" width="16" height="8" rx="2" fill="#ffd166" stroke="#111" stroke-width="2"/>
+    ${[0, 1, 2].map(i => `<circle class="ab" cx="${28 + i * 4}" cy="58" r="${2.5 - i * 0.4}" fill="#fff" stroke="#111" stroke-width="1.2" style="animation-delay:${i * 0.35}s"/>`).join('')}
   </svg>`;
 }
 
@@ -1610,7 +1621,7 @@ const debugTag = () => S.settings.debug ? ' <span class="debug">DEBUG</span>' : 
 function tabbar(on, extra = '') {
   const t = (h, n, icon, l) => `<a href="${h}" class="${on === n ? 'on' : ''}" ${on === n ? 'aria-current="page"' : ''}>${ic(icon)}<span>${l}</span></a>`;
   return `<nav class="tabbar ${extra}" aria-label="მთავარი"><div class="rail"><span class="mark">სახარში</span>
-    <svg width="60" height="50" viewBox="0 0 70 60" aria-hidden="true"><path d="M10 14l4-8 4 8-8-2zM52 14l4-8 4 8-8-2z" fill="#111"/><path d="M14 36c10 14 32 14 42 0" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/></svg></div><div class="wrap">
+    <svg width="60" height="50" viewBox="0 0 70 60" aria-hidden="true"><path d="M16 4l2.4 4.8 5.2.7-3.8 3.5 1 5.2-4.8-2.6-4.8 2.6 1-5.2L8.4 9.5l5.2-.7z M54 4l2.4 4.8 5.2.7-3.8 3.5 1 5.2-4.8-2.6-4.8 2.6 1-5.2-3.8-3.5 5.2-.7z" fill="#111"/><path d="M14 34c10 14 32 14 42 0" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"/></svg></div><div class="wrap">
     ${t('#/', 'home', 'mug', 'პარტიები')}${t('#/recipes', 'recipes', 'book', 'რეცეპტები')}${t('#/learn', 'learn', 'school', 'სკოლა')}${t('#/settings', 'settings', 'sliders', 'პარამეტრები')}
   </div></nav>`;
 }
